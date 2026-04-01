@@ -1,5 +1,6 @@
 ---
 import type { Book } from '../types/catalog';
+import { withBase } from '../utils/withBase';
 
 interface Props {
   book: Book;
@@ -40,6 +41,10 @@ const paletteMap = {
 } as const;
 
 const palette = paletteMap[book.coverPalette];
+const coverSrc = withBase(`covers/${book.slug}.jpg`);
+const releaseYear = /^\d{4}/.test(book.releaseDate)
+  ? new Date(book.releaseDate).getFullYear()
+  : null;
 ---
 
 <div
@@ -59,12 +64,24 @@ const palette = paletteMap[book.coverPalette];
     <h3 class="mt-2 font-display text-[1.65rem] leading-[1] text-white">
       {book.title}
     </h3>
-    <p class="mt-3 text-[0.68rem] uppercase tracking-[0.28em] text-white/70">
-      {new Date(book.releaseDate).getFullYear()}
-    </p>
+    {
+      releaseYear && (
+        <p class="mt-3 text-[0.68rem] uppercase tracking-[0.28em] text-white/70">
+          {releaseYear}
+        </p>
+      )
+    }
   </div>
   <div
     class="absolute bottom-0 left-0 right-0 h-2"
     style={`background:${palette.glow};`}
   ></div>
+  <img
+    src={coverSrc}
+    alt={`Cover of ${book.title} by Jaclyn Osborn`}
+    class="absolute inset-0 z-20 h-full w-full object-cover"
+    loading="lazy"
+    decoding="async"
+    onerror="this.remove()"
+  />
 </div>
