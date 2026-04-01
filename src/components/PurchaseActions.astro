@@ -67,6 +67,7 @@ const showRetailComingSoon =
 
 const showPurchaseContent =
   showStatusRow ||
+  Boolean(book.purchase.priceNote) ||
   liveDirectFormats.length > 0 ||
   liveRetailerLinks.length > 0 ||
   showDirectComingSoon ||
@@ -112,6 +113,18 @@ const availabilityTone =
                 </span>
               )
             }
+          </div>
+        )
+      }
+
+      {
+        book.purchase.priceNote && (
+          <div class="space-y-2 rounded-[1.4rem] bg-[#fcf7f3] px-4 py-4 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.22)]">
+            <p class="eyebrow text-[#7c5a63]">
+              Amazon snapshot
+              {book.purchase.priceSnapshotDate ? ` (${book.purchase.priceSnapshotDate})` : ''}
+            </p>
+            <p class="text-sm leading-7 text-[#5d4b52]">{book.purchase.priceNote}</p>
           </div>
         )
       }

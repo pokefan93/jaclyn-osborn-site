@@ -31,7 +31,7 @@ export interface Series {
   lane: string;
   tagline: string;
   description: string;
-  status: 'Ongoing' | 'Complete';
+  status: string;
   entryPoint: string;
   gradient: [string, string, string];
   textColor: string;
@@ -42,7 +42,7 @@ export interface RetailerLink {
   id: string;
   retailer: string;
   label: string;
-  format: FormatKey;
+  format?: FormatKey;
   purchaseMode: 'external_retailer';
   purchaseUrl: string;
 }
@@ -59,6 +59,8 @@ export interface DirectSaleFormat {
 export interface BookPurchase {
   availabilityStatus: AvailabilityStatus;
   availabilityLabel?: string;
+  priceNote?: string;
+  priceSnapshotDate?: string;
   merchandisingFlags: MerchandisingFlag[];
   signedCopy: boolean;
   directFromAuthor: boolean;
@@ -75,6 +77,7 @@ export interface Book {
   slug: string;
   title: string;
   seriesSlug: string;
+  seriesLabel?: string;
   seriesOrder: number;
   releaseDate: string;
   shortHook: string;
@@ -85,5 +88,6 @@ export interface Book {
   formats: FormatKey[];
   featured: boolean;
   coverPalette: 'rose' | 'plum' | 'teal' | 'gold' | 'cobalt' | 'sage' | 'ember';
+  catalogStatus?: string;
   purchase: BookPurchase;
 }

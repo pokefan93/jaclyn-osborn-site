@@ -2,12 +2,18 @@
 import BookCard from '../components/BookCard.astro';
 import PageHero from '../components/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { books, booksBySeries, formatLabels, genreVibeTags, seriesMap } from '../data/catalog';
+import {
+  books,
+  booksBySeries,
+  formatLabels,
+  genreVibeTags,
+  getBookCollectionLabel,
+} from '../data/catalog';
 import { withBase } from '../utils/withBase';
 
 const sortedBooks = [...books].sort((a, b) => {
-  const seriesCompare = (seriesMap.get(a.seriesSlug)?.name ?? '').localeCompare(
-    seriesMap.get(b.seriesSlug)?.name ?? '',
+  const seriesCompare = getBookCollectionLabel(a).localeCompare(
+    getBookCollectionLabel(b),
   );
 
   if (seriesCompare !== 0) {
@@ -107,10 +113,10 @@ const categoryOptions = [...genreVibeTags]
         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-books-grid>
           {
             sortedBooks.map((book) => {
-              const series = seriesMap.get(book.seriesSlug);
+              const collectionLabel = getBookCollectionLabel(book);
               const searchText = [
                 book.title,
-                series?.name,
+                collectionLabel,
                 book.shortHook,
                 book.description,
               ]
@@ -123,7 +129,7 @@ const categoryOptions = [...genreVibeTags]
                   data-book-card
                   data-title={book.title}
                   data-series={book.seriesSlug}
-                  data-series-name={series?.name ?? ''}
+                  data-series-name={collectionLabel}
                   data-categories={book.genres.join(',')}
                   data-formats={book.formats.join(',')}
                   data-series-order={book.seriesOrder}
