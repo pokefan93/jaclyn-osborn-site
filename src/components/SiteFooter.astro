@@ -1,6 +1,5 @@
 ---
 import { navItems, siteMeta } from '../data/site';
-import { catalogStats } from '../data/catalog';
 import { withBase } from '../utils/withBase';
 ---
 
@@ -9,23 +8,14 @@ import { withBase } from '../utils/withBase';
     <div class="overflow-hidden rounded-[2.5rem] bg-[#241920] px-6 py-10 text-white shadow-[0_30px_80px_rgba(36,25,32,0.28)] sm:px-8">
       <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
         <div class="space-y-5">
-          <p class="eyebrow text-[#e6cdc4]">Concept storefront</p>
           <h2 class="font-display text-3xl sm:text-4xl">
-            Built to turn a large romance backlist into an easy, mood-first reader journey.
+            M/M romance across multiple worlds and genres.
           </h2>
-          <p class="max-w-2xl text-sm leading-7 text-white/72 sm:text-base">
-            This mock build uses representative seed metadata shaped around Jaclyn Osborn’s public series list. Replace the placeholder buy links, email addresses, and newsletter endpoint before launch.
-          </p>
           <div class="flex flex-wrap gap-3 text-sm text-white/80">
-            <span class="rounded-full border border-white/15 px-3 py-2">
-              {catalogStats.bookCount} sample titles
-            </span>
-            <span class="rounded-full border border-white/15 px-3 py-2">
-              {catalogStats.seriesCount} featured series
-            </span>
-            <span class="rounded-full border border-white/15 px-3 py-2">
-              Static GitHub Pages deploy
-            </span>
+            <span class="rounded-full border border-white/15 px-3 py-2">Contemporary</span>
+            <span class="rounded-full border border-white/15 px-3 py-2">Fantasy</span>
+            <span class="rounded-full border border-white/15 px-3 py-2">Paranormal</span>
+            <span class="rounded-full border border-white/15 px-3 py-2">Historical</span>
           </div>
         </div>
 
@@ -68,7 +58,7 @@ import { withBase } from '../utils/withBase';
       </div>
 
       <div class="mt-10 border-t border-white/10 pt-6 text-sm text-white/55">
-        {new Date().getFullYear()} {siteMeta.name}. Static concept site for GitHub Pages.
+        &copy; {new Date().getFullYear()} {siteMeta.name}. All rights reserved.
       </div>
     </div>
   </div>

@@ -38,20 +38,6 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
             </a>
           </div>
 
-          <div class="mt-10 grid gap-4 sm:grid-cols-3">
-            <div class="stat-card">
-              <span class="stat-number">{catalogStats.bookCount}</span>
-              <span class="stat-label">sample titles</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">{catalogStats.seriesCount}</span>
-              <span class="stat-label">entry-point series</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">5</span>
-              <span class="stat-label">romance lanes</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -61,9 +47,9 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
             <BookCover book={heroBooks[0]} />
           </div>
           <div class="card-shell animate-card-delay-2 rounded-[2.25rem] p-5">
-            <p class="eyebrow text-[#7c5a63]">Backlist promise</p>
+            <p class="eyebrow text-[#7c5a63]">Find your next read</p>
             <p class="mt-3 text-base leading-8 text-[#5d4b52]">
-              The site is organized like a storefront and a discovery hub at once: readers can start by series, by mood, or by format availability without digging through menus.
+              Browse by series, mood, or format. There's always a good place to start.
             </p>
           </div>
         </div>
@@ -83,8 +69,7 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
     <div class="mx-auto max-w-7xl space-y-10">
       <SectionHeading
         eyebrow="Featured releases"
-        title="Lead with the newest books, but keep the older worlds one tap away."
-        description="These cards are seeded to feel like a storefront row: strong covers, immediate trope scanning, and honest direct-sale plus retailer actions that stay compatible with GitHub Pages."
+        title="New and featured books."
       />
       <div class="grid gap-6 lg:grid-cols-3">
         {featuredBooks.map((book) => <BookCard book={book} />)}
@@ -96,8 +81,8 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
     <div class="mx-auto max-w-7xl space-y-10">
       <SectionHeading
         eyebrow="Browse by series"
-        title="Seven clear entry points, each with a distinct tone."
-        description="Every major series gets a branded card, a reading-order path, and a quick signal for the reader mood it serves best."
+        title="Each series has its own world."
+        description="Find a series and start from the beginning — every one has a recommended entry point."
       />
       <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {
@@ -116,9 +101,8 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
   <section class="px-4 pt-18 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-7xl space-y-10">
       <SectionHeading
-        eyebrow="Browse by vibe"
-        title="Let readers shop by feeling, not just by metadata."
-        description="The vibe cards below deep-link straight into the filtered catalog so someone can decide what to read from mood alone."
+        eyebrow="Browse by mood"
+        title="Not sure which series? Start with a feeling."
       />
       <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {
@@ -127,7 +111,7 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
               href={withBase(`books/?mood=${item.slug}`)}
               class:list={['card-shell rounded-[2rem] p-6 transition hover:-translate-y-1', `animate-card-delay-${(index % 3) + 1}`]}
             >
-              <p class="eyebrow text-[#7c5a63]">Mood route</p>
+              <p class="eyebrow text-[#7c5a63]">Mood</p>
               <h3 class="mt-4 font-display text-3xl text-[#241920]">{item.title}</h3>
               <p class="mt-3 text-sm leading-7 text-[#5d4b52]">{item.description}</p>
               <span class="mt-6 inline-flex text-sm font-semibold text-[#241920]">

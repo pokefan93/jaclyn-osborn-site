@@ -1,14 +1,14 @@
 export const siteMeta = {
   name: 'Jaclyn Osborn',
-  title: 'Jaclyn Osborn | Romantic Worlds With Teeth and Heart',
+  title: 'Jaclyn Osborn | M/M Romance',
   description:
-    'A polished static concept site for Jaclyn Osborn: M/M romance, cozy contemporary tenderness, and paranormal/fantasy atmosphere.',
+    'M/M romance by Jaclyn Osborn across contemporary, fantasy, paranormal, and historical worlds.',
   shortTagline: 'Author, coffee addict, & anime lover.',
   heroTitle: 'Romance with soft hearts, supernatural teeth, and a second cup of coffee.',
   heroCopy:
-    'This concept storefront is built to help readers find their lane fast, whether they want cozy contemporary comfort, small-town magic, portal fantasy chaos, or paranormal devotion with bite.',
+    'M/M romance across contemporary, fantasy, paranormal, and historical worlds. Find a series you love and settle in.',
   longBio:
-    'Jaclyn Osborn writes M/M romance across contemporary, fantasy, paranormal, historical, and spooky lanes. The brand space is big on yearning, warmth, danger, and character-first chemistry, with room for coffee-fueled tenderness, anime-level emotional stakes, and a backlist built for bingeing.',
+    'Jaclyn Osborn writes M/M romance — contemporary, fantasy, paranormal, historical, and everything in between. She believes in happy endings, emotional connection, and the kind of story you stay up too late to finish. When she\'s not writing, she\'s probably drinking coffee and rewatching her favorite anime.',
   instagramUrl: 'https://instagram.com/jaclynosbornauthor',
   newsletterUrl: 'https://example.com/jaclyn-osborn-newsletter',
   newsletterFormAction: 'https://example.com/jaclyn-osborn-newsletter/signup',
@@ -20,13 +20,13 @@ export const siteMeta = {
     thankYouPath: '/thank-you/',
     stripeBuyButtonPublishableKey: '',
     signedCopyNote:
-      'Signed copies and special direct editions are packed manually from Jaclyn’s stock.',
+      'Signed copies are packed manually from Jaclyn\'s personal stock.',
     shippingNote:
-      'Shipping placeholder: add destinations, packaging details, and any exclusions before launch.',
+      'Shipping details coming soon.',
     fulfillmentNote:
-      'Fulfillment placeholder: add the current packing window so readers know when direct-sale orders ship.',
+      'Signed orders ship from Jaclyn\'s personal stock. Check the listing for current packing windows.',
     whereToBuyNote:
-      'Direct editions use Stripe-hosted checkout. Standard editions and audio can also be bought from the retailers listed here.',
+      'Signed and direct editions use Stripe-hosted checkout. Standard editions and audio are also available from the retailers listed below.',
   },
 };
 
@@ -103,46 +103,33 @@ export const socialPreviewCards = [
   },
 ];
 
-export const newsletterArchive = [
-  {
-    title: 'A moody spring reading stack',
-    copy: 'A curator-style note linking cozy comfort reads with paranormal bite and direct entry points.',
-  },
-  {
-    title: 'Signed copies + preorder extras',
-    copy: 'A launch-week message that mixes storefront urgency with warm personal voice and clear next actions.',
-  },
-  {
-    title: 'Behind the series map',
-    copy: 'A reader-letter concept that explains where to start across Jaclyn’s worlds and what mood each one delivers.',
-  },
-];
+export const newsletterArchive: { title: string; copy: string }[] = [];
 
 export const faqItems = [
   {
     question: 'Where should a new reader start?',
     answer:
-      'Start with the series page and use the entry-point callouts. Blue Harbor is the softest contemporary entry, Ivy Grove is the coziest paranormal entry, and Sons of the Fallen is the high-stakes paranormal/fantasy lane.',
+      'Check the series page for entry-point recommendations. Blue Harbor and Unexpected Love are great starting places for contemporary romance. Ivy Grove is a warm entry into paranormal. Sons of the Fallen is the place to start for high-stakes paranormal fantasy.',
   },
   {
-    question: 'Is this site fully static?',
+    question: 'Do I need to read the series in order?',
     answer:
-      'Yes. The build is designed for GitHub Pages with no server-side runtime. Catalog filtering happens client-side, and newsletter/contact actions are structured so they can point to external providers later.',
+      'Most series follow different main characters per book and can be enjoyed on their own, but reading in order gives you the richest experience. Each series page shows the recommended reading order.',
   },
   {
-    question: 'Can signed copies live here without a backend?',
+    question: 'Are signed copies available?',
     answer:
-      'Yes. This version is designed around Stripe Payment Links for direct sales, which keeps checkout hosted by Stripe and avoids shipping any secret keys or custom cart logic to GitHub Pages.',
+      'Signed copies are available directly from Jaclyn for select titles. Check the individual book listing for current availability — stock is limited and ships manually from Jaclyn\'s personal supply.',
   },
   {
-    question: 'How should the newsletter be wired up later?',
+    question: 'How do I sign up for the newsletter?',
     answer:
-      'Swap the placeholder `newsletterFormAction` in the seed content for a MailerLite, ConvertKit, Buttondown, or Beehiiv embed endpoint. The page markup is already structured for an external form action.',
+      'Head to the newsletter page and add your email. You\'ll hear about new releases, cover reveals, signed copy restocks, and the occasional personal note from Jaclyn.',
   },
   {
-    question: 'Is the book metadata real?',
+    question: 'Where can I buy the books?',
     answer:
-      'The structure is production-minded, but the current titles, hooks, purchase links, and availability labels are representative seed content built around the named series. Replace anything placeholder before launch.',
+      'All titles are available from major retailers including Amazon, Kobo, Bookshop.org, and Apple Books. Select titles also have audiobook editions on Libro.fm. Signed and direct copies are available here when in stock.',
   },
 ];
 

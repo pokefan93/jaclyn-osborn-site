@@ -13,10 +13,10 @@ const { compact = false } = Astro.props;
     <div class="space-y-5">
       <p class="eyebrow text-[#e7cec6]">Newsletter</p>
       <h2 class="font-display text-4xl leading-tight sm:text-5xl">
-        Keep the storefront energy, but add a personal reader letter.
+        Get the reader letter.
       </h2>
       <p class="max-w-2xl text-base leading-8 text-white/76">
-        Use this page as the home for release alerts, signed-copy drops, cover reveals, and backlist curation. The current signup action is placeholder-only and ready to swap for a hosted newsletter provider.
+        Release alerts, cover reveals, signed copy updates, and the occasional personal note from Jaclyn.
       </p>
       <div class="flex flex-wrap gap-2">
         {newsletterBenefits.map((benefit) => <span class="pill border border-white/12 bg-white/8 text-white/84">{benefit}</span>)}
@@ -27,7 +27,7 @@ const { compact = false } = Astro.props;
       compact ? (
         <div class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
           <p class="text-sm leading-7 text-white/76">
-            Build anticipation with trope stacks, what-to-read-next paths, and launch-week urgency that feels personal instead of spammy.
+            New releases, cover reveals, and signed copy drops — delivered straight to your inbox.
           </p>
           <a
             href={siteMeta.newsletterUrl}
@@ -61,7 +61,7 @@ const { compact = false } = Astro.props;
               Subscribe to the reader letter
             </button>
             <p class="text-sm leading-6 text-white/56">
-              Mock external form action. Replace `newsletterFormAction` in the seed content before launch.
+              No spam. Unsubscribe any time.
             </p>
           </div>
         </form>

@@ -71,14 +71,7 @@ const availabilityTone =
           <p class="eyebrow text-[#7c5a63]">
             {book.purchase.directFromAuthor ? 'Direct from Jaclyn' : 'Direct checkout'}
           </p>
-          {
-            book.purchase.availabilityStatus === 'sold_out' && (
-              <span class="text-xs font-semibold uppercase tracking-[0.24em] text-[#8a5a58]">
-                Editorial status
-              </span>
-            )
-          }
-        </div>
+          </div>
 
         <div class="flex flex-wrap gap-2">
           {
