@@ -4,9 +4,9 @@ export const siteMeta = {
   description:
     'M/M romance by Jaclyn Osborn across contemporary, fantasy, paranormal, and historical stories.',
   shortTagline: 'Author, coffee addict, & anime lover.',
-  heroTitle: 'M/M romance with heart, hope, and happy endings.',
+  heroTitle: 'M/M romance by Jaclyn Osborn.',
   heroCopy:
-    'Jaclyn Osborn writes contemporary, fantasy, paranormal, and historical romance with emotional connection, redemption, and happily-ever-afters.',
+    'Explore contemporary, fantasy, paranormal, and historical stories, along with series reading order, book details, and updates.',
   longBio:
     'Jaclyn Osborn writes M/M romance across contemporary, fantasy, paranormal, and historical stories. Her books center emotional connection, redemption, and happy endings. When she is not writing, she is usually drinking coffee or watching anime.',
   instagramUrl: 'https://instagram.com/jaclynosbornauthor',
