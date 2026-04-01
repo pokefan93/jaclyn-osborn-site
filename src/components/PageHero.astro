@@ -13,6 +13,7 @@ interface Props {
   actions?: Action[];
   centered?: boolean;
   compact?: boolean;
+  backgroundStyle?: string;
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   actions = [],
   centered = false,
   compact = false,
+  backgroundStyle,
 } = Astro.props;
 ---
 
@@ -30,7 +32,7 @@ const {
     <div class:list={[
       'hero-shell overflow-hidden rounded-[2.75rem] px-6 sm:px-10',
       compact ? 'py-10 sm:py-12' : 'py-12 sm:py-16',
-    ]}>
+    ]} style={backgroundStyle}>
       <div class:list={[
         'relative z-10 flex flex-col gap-6',
         centered ? 'items-center text-center' : 'max-w-3xl',

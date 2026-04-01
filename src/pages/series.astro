@@ -5,6 +5,18 @@ import SeriesCard from '../components/SeriesCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { booksBySeries } from '../data/catalog';
 import { withBase } from '../utils/withBase';
+
+const seriesHeroStyle = `background:
+  radial-gradient(circle at top left, rgba(255,255,255,0.16), transparent 34%),
+  radial-gradient(circle at bottom right, rgba(255,255,255,0.1), transparent 28%),
+  linear-gradient(
+    135deg,
+    ${booksBySeries[0]?.gradient[0] ?? '#241920'} 0%,
+    ${booksBySeries[1]?.gradient[1] ?? '#6f425e'} 24%,
+    ${booksBySeries[2]?.gradient[1] ?? '#7ea495'} 48%,
+    ${booksBySeries[4]?.gradient[1] ?? '#6fa4b7'} 72%,
+    ${booksBySeries[5]?.gradient[2] ?? '#caa56c'} 100%
+  );`;
 ---
 
 <BaseLayout
@@ -19,10 +31,12 @@ import { withBase } from '../utils/withBase';
       { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
       { href: withBase('about/'), label: 'About Jaclyn', variant: 'secondary' },
     ]}
+    compact
+    backgroundStyle={seriesHeroStyle}
   />
 
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-2 xl:grid-cols-3">
+    <div class="mx-auto grid max-w-7xl gap-5 lg:grid-cols-2 xl:grid-cols-3">
       {
         booksBySeries.map((item) => (
           <SeriesCard series={item} books={item.books} href={`#${item.slug}`} />
@@ -31,46 +45,46 @@ import { withBase } from '../utils/withBase';
     </div>
   </section>
 
-  <section class="px-4 pb-6 pt-16 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl space-y-8">
+  <section class="px-4 pb-6 pt-14 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-6">
       {
         booksBySeries.map((item) => (
           <section
             id={item.slug}
-            class="card-shell scroll-mt-28 rounded-[2.6rem] p-6 sm:p-8"
+            class="card-shell scroll-mt-28 rounded-[2.35rem] p-5 sm:p-6"
           >
-            <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+            <div class="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
               <div
-                class="overflow-hidden rounded-[2.2rem] px-6 py-6"
+                class="overflow-hidden rounded-[1.95rem] px-5 py-5 sm:px-6 sm:py-6"
                 style={`background:linear-gradient(145deg, ${item.gradient[0]} 0%, ${item.gradient[1]} 52%, ${item.gradient[2]} 100%); color:${item.textColor};`}
               >
                 <p class="text-[0.68rem] uppercase tracking-[0.34em] text-white/72">
                   {item.lane}
                 </p>
-                <h2 class="mt-4 font-display text-4xl leading-none sm:text-5xl">
+                <h2 class="mt-3 font-display text-[2.45rem] leading-none sm:text-[3.2rem]">
                   {item.name}
                 </h2>
-                <p class="mt-4 text-base leading-8 text-white/82">
+                <p class="mt-4 text-sm leading-7 text-white/82 sm:text-base">
                   {item.description}
                 </p>
 
-                <div class="mt-8 grid gap-4 sm:grid-cols-2">
-                  <div class="rounded-[1.6rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
+                <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                  <div class="rounded-[1.35rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
                     <p class="eyebrow text-white/70">Start here</p>
-                    <p class="mt-2 text-lg font-semibold">{item.entryPoint}</p>
+                    <p class="mt-2 text-base font-semibold">{item.entryPoint}</p>
                   </div>
-                  <div class="rounded-[1.6rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
+                  <div class="rounded-[1.35rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
                     <p class="eyebrow text-white/70">Books</p>
-                    <p class="mt-2 text-lg font-semibold">{item.books.length} titles</p>
+                    <p class="mt-2 text-base font-semibold">{item.books.length} titles</p>
                   </div>
                 </div>
               </div>
 
-              <div class="space-y-5">
+              <div class="space-y-4">
                 <div class="flex items-center justify-between gap-4">
                   <div>
                     <p class="eyebrow text-[#7c5a63]">Reading order</p>
-                    <h3 class="mt-2 font-display text-3xl text-[#241920]">
+                    <h3 class="mt-2 font-display text-[2rem] text-[#241920]">
                       Read the series in order.
                     </h3>
                   </div>
@@ -79,7 +93,7 @@ import { withBase } from '../utils/withBase';
                   </a>
                 </div>
 
-                <div class="grid gap-5 md:grid-cols-2">
+                <div class="grid gap-4 md:grid-cols-2">
                   {item.books.map((book) => <BookCard book={book} showSeries={false} showOrder />)}
                 </div>
               </div>

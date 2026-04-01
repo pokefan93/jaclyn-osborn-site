@@ -12,45 +12,45 @@ const { series, books, href } = Astro.props;
 const [primaryBook, secondaryBook] = books;
 ---
 
-<a href={href} class="group block h-full rounded-[2.25rem] focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-[#241920]">
-  <article class="card-shell flex h-full flex-col overflow-hidden rounded-[2.25rem]">
+<a href={href} class="group block h-full rounded-[2rem] focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-[#241920]">
+  <article class="card-shell flex h-full flex-col overflow-hidden rounded-[2rem]">
     <div
-      class="relative overflow-hidden px-6 py-6"
+      class="relative overflow-hidden px-5 py-5"
       style={`background:linear-gradient(145deg, ${series.gradient[0]} 0%, ${series.gradient[1]} 52%, ${series.gradient[2]} 100%); color:${series.textColor};`}
     >
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.2),transparent_42%)]"></div>
-      <div class="relative z-10 max-w-[16rem]">
+      <div class="relative z-10 max-w-[14rem]">
         <p class="text-[0.68rem] uppercase tracking-[0.36em] text-white/70">
           {series.lane}
         </p>
-        <h3 class="mt-4 font-display text-3xl leading-none">
+        <h3 class="mt-3 font-display text-[1.9rem] leading-none">
           {series.name}
         </h3>
-        <p class="mt-3 text-sm leading-7 text-white/82">
+        <p class="mt-3 text-sm leading-6 text-white/82">
           {series.tagline}
         </p>
       </div>
 
-      <div class="relative z-10 mt-8 flex items-end justify-end gap-3">
+      <div class="relative z-10 mt-6 flex items-end justify-end gap-2.5">
         {
           primaryBook && (
-            <div class="w-24 rotate-[-8deg] transition duration-500 group-hover:-translate-y-1">
-              <BookCover book={primaryBook} className="rounded-[1.3rem]" />
+            <div class="w-20 rotate-[-8deg] transition duration-500 group-hover:-translate-y-1">
+              <BookCover book={primaryBook} className="rounded-[1.2rem]" />
             </div>
           )
         }
         {
           secondaryBook && (
-            <div class="w-24 rotate-[7deg] transition duration-500 group-hover:-translate-y-2">
-              <BookCover book={secondaryBook} className="rounded-[1.3rem]" />
+            <div class="w-20 rotate-[7deg] transition duration-500 group-hover:-translate-y-2">
+              <BookCover book={secondaryBook} className="rounded-[1.2rem]" />
             </div>
           )
         }
       </div>
     </div>
 
-    <div class="flex flex-1 flex-col gap-4 p-6">
-      <p class="text-sm leading-7 text-[#5d4b52]">
+    <div class="flex flex-1 flex-col gap-3 p-5">
+      <p class="text-sm leading-6 text-[#5d4b52]">
         {series.description}
       </p>
       <p class="text-sm font-semibold text-[#241920]">
