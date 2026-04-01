@@ -1,7 +1,8 @@
 ---
-import { badgeLabels, formatLabels, getStoreLink, seriesMap } from '../data/catalog';
+import { seriesMap } from '../data/catalog';
 import type { Book } from '../types/catalog';
 import BookCover from './BookCover.astro';
+import PurchaseActions from './PurchaseActions.astro';
 
 interface Props {
   book: Book;
@@ -34,21 +35,6 @@ const series = seriesMap.get(book.seriesSlug);
           </span>
         )
       }
-      {
-        book.badges.map((badge) => (
-          <span
-            class:list={[
-              'pill',
-              badge === 'new-release' && 'bg-[#241920] text-white',
-              badge === 'signed-copy' && 'bg-[#e8d0bc] text-[#6d4656]',
-              badge === 'audiobook' && 'bg-[#d8ece9] text-[#23404c]',
-              badge === 'sold-out' && 'bg-[#f0ded7] text-[#8a5a58]',
-            ]}
-          >
-            {badgeLabels[badge]}
-          </span>
-        ))
-      }
     </div>
 
     <h3 class="mt-4 font-display text-[2rem] leading-[1.02] text-[#241920]">
@@ -62,20 +48,7 @@ const series = seriesMap.get(book.seriesSlug);
       {book.tropes.slice(0, 3).map((trope) => <span class="tag-chip">{trope}</span>)}
     </div>
 
-    <div class="mt-6 flex flex-wrap gap-2">
-      {
-        book.formats.map((format) => (
-          <a
-            href={getStoreLink(book.slug, format)}
-            target="_blank"
-            rel="noreferrer"
-            class="format-button"
-          >
-            {formatLabels[format]}
-          </a>
-        ))
-      }
-    </div>
+    <PurchaseActions book={book} compact />
 
     <div class="mt-auto pt-6 text-sm text-[#6e5961]">
       {series?.name} • Book {book.seriesOrder}

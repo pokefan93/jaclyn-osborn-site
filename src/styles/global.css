@@ -140,6 +140,42 @@ body::before {
     @apply inline-flex items-center justify-center rounded-full border border-[#d6b7ae] bg-white px-3.5 py-2 text-xs font-semibold text-[#241920] shadow-[0_10px_24px_rgba(36,25,32,0.06)] hover:-translate-y-0.5 hover:bg-[#f4e6e0] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#241920];
   }
 
+  .purchase-direct {
+    @apply border-[#b98b76] bg-[#241920] text-white hover:bg-[#4a2f3d];
+  }
+
+  .purchase-disabled {
+    @apply inline-flex items-center justify-center rounded-full border border-dashed border-[#d6b7ae] bg-[#f6ece6] px-3.5 py-2 text-xs font-semibold text-[#8a5a58];
+  }
+
+  .purchase-note {
+    @apply text-sm leading-6 text-[#5d4b52];
+  }
+
+  .status-pill {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em];
+  }
+
+  .status-pill-stock {
+    @apply bg-[#edf4f1] text-[#30585c];
+  }
+
+  .status-pill-limited {
+    @apply bg-[#f3ead8] text-[#7a5623];
+  }
+
+  .status-pill-soldout {
+    @apply bg-[#f0ded7] text-[#8a5a58];
+  }
+
+  .status-pill-preorder {
+    @apply bg-[#efe3c8] text-[#6f4c1c];
+  }
+
+  .stripe-buy-button-shell {
+    @apply rounded-[1rem] bg-white px-2 py-2 shadow-[0_10px_24px_rgba(36,25,32,0.06)];
+  }
+
   .input-shell {
     @apply h-12 w-full rounded-[1.1rem] border border-[#d9bcb2] bg-white/92 px-4 text-sm text-[#241920] shadow-[0_10px_25px_rgba(36,25,32,0.06)] outline-none placeholder:text-[#92757f] focus:border-[#6f425e] focus:ring-2 focus:ring-[#6f425e]/20;
   }

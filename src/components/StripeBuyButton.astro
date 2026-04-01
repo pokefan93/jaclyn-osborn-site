@@ -1,0 +1,51 @@
+---
+import { siteMeta } from '../data/site';
+
+interface Props {
+  buyButtonId: string;
+  fallbackUrl?: string;
+  fallbackLabel?: string;
+}
+
+const {
+  buyButtonId,
+  fallbackUrl,
+  fallbackLabel = 'Open direct checkout',
+} = Astro.props;
+
+const publishableKey = siteMeta.directSales.stripeBuyButtonPublishableKey;
+const canRenderBuyButton = Boolean(buyButtonId && publishableKey);
+---
+
+{
+  canRenderBuyButton ? (
+    <div class="stripe-buy-button-shell">
+      <stripe-buy-button
+        buy-button-id={buyButtonId}
+        publishable-key={publishableKey}
+      />
+      <script is:inline>
+        if (
+          !document.querySelector('script[data-stripe-buy-button-script]')
+        ) {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://js.stripe.com/v3/buy-button.js';
+          script.dataset.stripeBuyButtonScript = 'true';
+          document.head.appendChild(script);
+        }
+      </script>
+    </div>
+  ) : fallbackUrl ? (
+    <a
+      href={fallbackUrl}
+      target="_blank"
+      rel="noreferrer"
+      class="format-button"
+    >
+      {fallbackLabel}
+    </a>
+  ) : (
+    <span class="purchase-disabled">Buy button unavailable</span>
+  )
+}

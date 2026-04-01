@@ -16,6 +16,18 @@ export const siteMeta = {
   mediaEmail: 'media@jaclynosbornbooks.com',
   rightsEmail: 'rights@jaclynosbornbooks.com',
   arcEmail: 'arc@jaclynosbornbooks.com',
+  directSales: {
+    thankYouPath: '/thank-you/',
+    stripeBuyButtonPublishableKey: '',
+    signedCopyNote:
+      'Signed copies and special direct editions are packed manually from Jaclyn’s stock.',
+    shippingNote:
+      'Shipping placeholder: add destinations, packaging details, and any exclusions before launch.',
+    fulfillmentNote:
+      'Fulfillment placeholder: add the current packing window so readers know when direct-sale orders ship.',
+    whereToBuyNote:
+      'Direct editions use Stripe-hosted checkout. Standard editions and audio can also be bought from the retailers listed here.',
+  },
 };
 
 export const navItems = [
@@ -120,7 +132,7 @@ export const faqItems = [
   {
     question: 'Can signed copies live here without a backend?',
     answer:
-      'Yes. The UI already supports signed-copy badges and direct-buy buttons. Replace the placeholder product links with a static storefront, Shopify product URL, Gumroad page, or another hosted checkout.',
+      'Yes. This version is designed around Stripe Payment Links for direct sales, which keeps checkout hosted by Stripe and avoids shipping any secret keys or custom cart logic to GitHub Pages.',
   },
   {
     question: 'How should the newsletter be wired up later?',
@@ -130,7 +142,7 @@ export const faqItems = [
   {
     question: 'Is the book metadata real?',
     answer:
-      'The structure is production-minded, but the current titles, hooks, badges, and links are representative seed content built around the named series. Replace anything placeholder before launch.',
+      'The structure is production-minded, but the current titles, hooks, purchase links, and availability labels are representative seed content built around the named series. Replace anything placeholder before launch.',
   },
 ];
 

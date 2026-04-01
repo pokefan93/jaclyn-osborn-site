@@ -1,4 +1,11 @@
-import type { Book, CatalogFilterTag, FormatKey, Series } from '../types/catalog';
+import type {
+  Book,
+  CatalogFilterTag,
+  DirectSaleFormat,
+  FormatKey,
+  RetailerLink,
+  Series,
+} from '../types/catalog';
 
 export const formatLabels: Record<FormatKey, string> = {
   ebook: 'eBook',
@@ -6,13 +13,6 @@ export const formatLabels: Record<FormatKey, string> = {
   hardcover: 'Hardcover',
   audiobook: 'Audiobook',
 };
-
-export const badgeLabels = {
-  'new-release': 'New release',
-  'signed-copy': 'Signed copy',
-  audiobook: 'Audiobook',
-  'sold-out': 'Sold out',
-} as const;
 
 export const genreVibeTags: CatalogFilterTag[] = [
   { slug: 'contemporary', label: 'Contemporary', kind: 'genre' },
@@ -30,6 +30,45 @@ export const genreVibeTags: CatalogFilterTag[] = [
   { slug: 'found-family', label: 'Found family', kind: 'vibe' },
   { slug: 'protective-devotion', label: 'Protective devotion', kind: 'vibe' },
 ];
+
+const retailerLink = (
+  id: string,
+  retailer: string,
+  label: string,
+  format: FormatKey,
+  purchaseUrl: string,
+): RetailerLink => ({
+  id,
+  retailer,
+  label,
+  format,
+  purchaseMode: 'external_retailer',
+  purchaseUrl,
+});
+
+const stripePaymentLink = (
+  id: string,
+  label: string,
+  format: FormatKey,
+  purchaseUrl: string,
+): DirectSaleFormat => ({
+  id,
+  label,
+  format,
+  purchaseMode: 'stripe_payment_link',
+  purchaseUrl,
+});
+
+const unavailableDirectSale = (
+  id: string,
+  label: string,
+  format: FormatKey,
+): DirectSaleFormat => ({
+  id,
+  label,
+  format,
+  purchaseMode: 'unavailable',
+});
 
 export const series: Series[] = [
   {
@@ -140,10 +179,52 @@ export const books: Book[] = [
     genres: ['paranormal', 'fantasy'],
     vibes: ['darkly-devoted', 'protective-devotion'],
     tropes: ['enemies to lovers', 'fallen angel', 'protective hero'],
-    formats: ['ebook', 'paperback', 'audiobook'],
-    badges: ['new-release', 'audiobook'],
+    formats: ['ebook', 'paperback', 'hardcover', 'audiobook'],
     featured: true,
     coverPalette: 'plum',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: ['new_release', 'signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      retailerLinks: [
+        retailerLink(
+          'fallen-heir-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/the-fallen-heir/kindle',
+        ),
+        retailerLink(
+          'fallen-heir-kobo',
+          'Kobo',
+          'Kobo',
+          'ebook',
+          'https://example.com/retail/the-fallen-heir/kobo',
+        ),
+        retailerLink(
+          'fallen-heir-libro',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/the-fallen-heir/libro-fm',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'fallen-heir-signed-paperback',
+          'Signed',
+          'paperback',
+          'https://buy.stripe.com/test_fallen_heir_signed_paperback',
+        ),
+        stripePaymentLink(
+          'fallen-heir-annotated-hardcover',
+          'Annotated',
+          'hardcover',
+          'https://buy.stripe.com/test_fallen_heir_annotated_hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'ashes-after-midnight',
@@ -160,9 +241,46 @@ export const books: Book[] = [
     vibes: ['darkly-devoted', 'spooky-sweet'],
     tropes: ['forced proximity', 'grief healing', 'deal with a demon'],
     formats: ['ebook', 'paperback', 'hardcover'],
-    badges: ['signed-copy'],
     featured: false,
     coverPalette: 'ember',
+    purchase: {
+      availabilityStatus: 'limited',
+      availabilityLabel: 'Limited signed stock',
+      merchandisingFlags: ['signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      fulfillmentNote: 'Current fulfillment mock: signed orders pack within 7 to 10 business days.',
+      retailerLinks: [
+        retailerLink(
+          'ashes-after-midnight-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/ashes-after-midnight/kindle',
+        ),
+        retailerLink(
+          'ashes-after-midnight-bookshop',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/ashes-after-midnight/bookshop',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'ashes-after-midnight-signed-paperback',
+          'Signed',
+          'paperback',
+          'https://buy.stripe.com/test_ashes_after_midnight_signed_paperback',
+        ),
+        stripePaymentLink(
+          'ashes-after-midnight-foiled-hardcover',
+          'Foiled',
+          'hardcover',
+          'https://buy.stripe.com/test_ashes_after_midnight_foiled_hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'wanted-by-the-wyvern-king',
@@ -179,9 +297,38 @@ export const books: Book[] = [
     vibes: ['portal-fantasy-chaos', 'soft-and-swoony'],
     tropes: ['fish out of water', 'monster king', 'chaotic yearning'],
     formats: ['ebook', 'paperback'],
-    badges: ['new-release'],
     featured: true,
     coverPalette: 'cobalt',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: ['new_release', 'direct_from_author'],
+      signedCopy: false,
+      directFromAuthor: true,
+      retailerLinks: [
+        retailerLink(
+          'wyvern-king-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/wanted-by-the-wyvern-king/kindle',
+        ),
+        retailerLink(
+          'wyvern-king-apple',
+          'Apple Books',
+          'Apple Books',
+          'ebook',
+          'https://example.com/retail/wanted-by-the-wyvern-king/apple-books',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'wyvern-king-paperback',
+          'Direct',
+          'paperback',
+          'https://buy.stripe.com/test_wyvern_king_direct_paperback',
+        ),
+      ],
+    },
   },
   {
     id: 'questing-for-three-husbands',
@@ -198,9 +345,38 @@ export const books: Book[] = [
     vibes: ['portal-fantasy-chaos', 'found-family'],
     tropes: ['bodyguards', 'prophecy trouble', 'chosen one chaos'],
     formats: ['ebook', 'paperback', 'audiobook'],
-    badges: ['audiobook'],
     featured: false,
     coverPalette: 'gold',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: [],
+      signedCopy: false,
+      directFromAuthor: false,
+      retailerLinks: [
+        retailerLink(
+          'three-husbands-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/questing-for-three-husbands/kindle',
+        ),
+        retailerLink(
+          'three-husbands-bn',
+          'Barnes & Noble',
+          'Nook',
+          'ebook',
+          'https://example.com/retail/questing-for-three-husbands/nook',
+        ),
+        retailerLink(
+          'three-husbands-audio',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/questing-for-three-husbands/libro-fm',
+        ),
+      ],
+      directSaleFormats: [],
+    },
   },
   {
     id: 'moonlight-at-ivy-grove-inn',
@@ -217,9 +393,38 @@ export const books: Book[] = [
     vibes: ['cozy-small-town', 'spooky-sweet'],
     tropes: ['second chance', 'haunted house', 'forced proximity'],
     formats: ['ebook', 'paperback', 'audiobook'],
-    badges: ['audiobook'],
     featured: false,
     coverPalette: 'sage',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: [],
+      signedCopy: false,
+      directFromAuthor: false,
+      retailerLinks: [
+        retailerLink(
+          'ivy-grove-inn-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/moonlight-at-ivy-grove-inn/kindle',
+        ),
+        retailerLink(
+          'ivy-grove-inn-paperback',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/moonlight-at-ivy-grove-inn/bookshop',
+        ),
+        retailerLink(
+          'ivy-grove-inn-audio',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/moonlight-at-ivy-grove-inn/libro-fm',
+        ),
+      ],
+      directSaleFormats: [],
+    },
   },
   {
     id: 'hexes-and-honey-cakes',
@@ -227,7 +432,7 @@ export const books: Book[] = [
     title: 'Hexes & Honey Cakes',
     seriesSlug: 'ivy-grove',
     seriesOrder: 2,
-    releaseDate: '2025-10-01',
+    releaseDate: '2026-10-01',
     shortHook:
       'A witch bakery owner falls for the ghost whisperer renting the room above the shop.',
     description:
@@ -236,9 +441,48 @@ export const books: Book[] = [
     vibes: ['cozy-small-town', 'spooky-sweet'],
     tropes: ['neighbors to lovers', 'witchy bakery', 'found family'],
     formats: ['ebook', 'paperback', 'hardcover'],
-    badges: ['signed-copy'],
     featured: true,
     coverPalette: 'rose',
+    purchase: {
+      availabilityStatus: 'preorder',
+      availabilityLabel: 'Preorder signed copies',
+      merchandisingFlags: ['preorder', 'signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      shippingNote: 'Shipping placeholder: update domestic and international preorder shipping rules before launch.',
+      whereToBuyNote:
+        'Signed preorder editions use Stripe-hosted checkout, while the standard digital edition can still point readers to retailers.',
+      retailerLinks: [
+        retailerLink(
+          'hexes-honey-cakes-kindle',
+          'Amazon Kindle',
+          'Kindle preorder',
+          'ebook',
+          'https://example.com/retail/hexes-and-honey-cakes/kindle',
+        ),
+        retailerLink(
+          'hexes-honey-cakes-kobo',
+          'Kobo',
+          'Kobo preorder',
+          'ebook',
+          'https://example.com/retail/hexes-and-honey-cakes/kobo',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'hexes-honey-cakes-signed-paperback',
+          'Signed preorder',
+          'paperback',
+          'https://buy.stripe.com/test_hexes_honey_cakes_signed_paperback',
+        ),
+        stripePaymentLink(
+          'hexes-honey-cakes-signed-hardcover',
+          'Signed preorder',
+          'hardcover',
+          'https://buy.stripe.com/test_hexes_honey_cakes_signed_hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'only-for-the-weekend',
@@ -255,9 +499,31 @@ export const books: Book[] = [
     vibes: ['soft-and-swoony', 'cozy-small-town'],
     tropes: ['fake dating', 'weekend escape', 'caretaking'],
     formats: ['ebook', 'paperback'],
-    badges: [],
     featured: false,
     coverPalette: 'rose',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: [],
+      signedCopy: false,
+      directFromAuthor: false,
+      retailerLinks: [
+        retailerLink(
+          'only-weekend-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/only-for-the-weekend/kindle',
+        ),
+        retailerLink(
+          'only-weekend-bookshop',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/only-for-the-weekend/bookshop',
+        ),
+      ],
+      directSaleFormats: [],
+    },
   },
   {
     id: 'coffee-before-confessions',
@@ -274,9 +540,31 @@ export const books: Book[] = [
     vibes: ['soft-and-swoony', 'found-family'],
     tropes: ['secret crush', 'coffee shop', 'friends to lovers'],
     formats: ['ebook', 'audiobook'],
-    badges: ['audiobook'],
     featured: false,
     coverPalette: 'gold',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: [],
+      signedCopy: false,
+      directFromAuthor: false,
+      retailerLinks: [
+        retailerLink(
+          'coffee-confessions-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/coffee-before-confessions/kindle',
+        ),
+        retailerLink(
+          'coffee-confessions-audio',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/coffee-before-confessions/libro-fm',
+        ),
+      ],
+      directSaleFormats: [],
+    },
   },
   {
     id: 'harboring-you',
@@ -293,9 +581,46 @@ export const books: Book[] = [
     vibes: ['coastal-comfort', 'soft-and-swoony'],
     tropes: ['starting over', 'grumpy/sunshine', 'small-town harbor'],
     formats: ['ebook', 'paperback', 'hardcover', 'audiobook'],
-    badges: ['audiobook'],
     featured: false,
     coverPalette: 'teal',
+    purchase: {
+      availabilityStatus: 'limited',
+      availabilityLabel: 'Limited signed hardcovers',
+      merchandisingFlags: ['signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      retailerLinks: [
+        retailerLink(
+          'harboring-you-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/harboring-you/kindle',
+        ),
+        retailerLink(
+          'harboring-you-paperback',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/harboring-you/bookshop',
+        ),
+        retailerLink(
+          'harboring-you-audio',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/harboring-you/libro-fm',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'harboring-you-signed-hardcover',
+          'Signed',
+          'hardcover',
+          'https://buy.stripe.com/test_harboring_you_signed_hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'the-lighthouse-between-us',
@@ -311,10 +636,39 @@ export const books: Book[] = [
     genres: ['contemporary'],
     vibes: ['coastal-comfort', 'protective-devotion'],
     tropes: ['second chance', 'shared inheritance', 'one summer'],
-    formats: ['ebook', 'paperback'],
-    badges: ['sold-out'],
+    formats: ['ebook', 'paperback', 'hardcover'],
     featured: false,
     coverPalette: 'cobalt',
+    purchase: {
+      availabilityStatus: 'sold_out',
+      availabilityLabel: 'Signed hardcovers sold out',
+      merchandisingFlags: ['signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      retailerLinks: [
+        retailerLink(
+          'lighthouse-between-us-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/the-lighthouse-between-us/kindle',
+        ),
+        retailerLink(
+          'lighthouse-between-us-bookshop',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/the-lighthouse-between-us/bookshop',
+        ),
+      ],
+      directSaleFormats: [
+        unavailableDirectSale(
+          'lighthouse-between-us-hardcover',
+          'Signed sold out',
+          'hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'threaded-in-gold',
@@ -331,9 +685,39 @@ export const books: Book[] = [
     vibes: ['court-intrigue', 'protective-devotion'],
     tropes: ['royal intrigue', 'forbidden romance', 'fated mates'],
     formats: ['ebook', 'paperback', 'hardcover'],
-    badges: [],
     featured: false,
     coverPalette: 'gold',
+    purchase: {
+      availabilityStatus: 'limited',
+      availabilityLabel: 'Limited foil hardcovers',
+      merchandisingFlags: ['signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      retailerLinks: [
+        retailerLink(
+          'threaded-gold-kobo',
+          'Kobo',
+          'Kobo',
+          'ebook',
+          'https://example.com/retail/threaded-in-gold/kobo',
+        ),
+        retailerLink(
+          'threaded-gold-bookshop',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/threaded-in-gold/bookshop',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'threaded-gold-hardcover',
+          'Foil signed',
+          'hardcover',
+          'https://buy.stripe.com/test_threaded_in_gold_foil_hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'the-foxglove-prince',
@@ -350,9 +734,31 @@ export const books: Book[] = [
     vibes: ['court-intrigue', 'darkly-devoted'],
     tropes: ['prophecy', 'betrothal', 'fate versus choice'],
     formats: ['ebook', 'audiobook'],
-    badges: ['audiobook'],
     featured: false,
     coverPalette: 'plum',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: [],
+      signedCopy: false,
+      directFromAuthor: false,
+      retailerLinks: [
+        retailerLink(
+          'foxglove-prince-kobo',
+          'Kobo',
+          'Kobo',
+          'ebook',
+          'https://example.com/retail/the-foxglove-prince/kobo',
+        ),
+        retailerLink(
+          'foxglove-prince-audio',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/the-foxglove-prince/libro-fm',
+        ),
+      ],
+      directSaleFormats: [],
+    },
   },
   {
     id: 'ghost-circuit-hearts',
@@ -368,10 +774,39 @@ export const books: Book[] = [
     genres: ['fantasy', 'paranormal', 'spooky'],
     vibes: ['darkly-devoted', 'protective-devotion'],
     tropes: ['forced alliance', 'haunted city', 'slow burn'],
-    formats: ['ebook', 'paperback'],
-    badges: ['sold-out'],
+    formats: ['ebook', 'paperback', 'hardcover'],
     featured: false,
     coverPalette: 'cobalt',
+    purchase: {
+      availabilityStatus: 'sold_out',
+      availabilityLabel: 'Signed direct edition sold out',
+      merchandisingFlags: ['signed_copy', 'direct_from_author'],
+      signedCopy: true,
+      directFromAuthor: true,
+      retailerLinks: [
+        retailerLink(
+          'ghost-circuit-hearts-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/ghost-circuit-hearts/kindle',
+        ),
+        retailerLink(
+          'ghost-circuit-hearts-paperback',
+          'Bookshop',
+          'Bookshop paperback',
+          'paperback',
+          'https://example.com/retail/ghost-circuit-hearts/bookshop',
+        ),
+      ],
+      directSaleFormats: [
+        unavailableDirectSale(
+          'ghost-circuit-hearts-hardcover',
+          'Signed sold out',
+          'hardcover',
+        ),
+      ],
+    },
   },
   {
     id: 'steelheart-oath',
@@ -388,9 +823,40 @@ export const books: Book[] = [
     vibes: ['protective-devotion', 'darkly-devoted'],
     tropes: ['second chance', 'rebellion', 'bodyguard energy'],
     formats: ['ebook', 'paperback', 'audiobook'],
-    badges: ['audiobook'],
     featured: false,
     coverPalette: 'ember',
+    purchase: {
+      availabilityStatus: 'in_stock',
+      merchandisingFlags: ['direct_from_author'],
+      signedCopy: false,
+      directFromAuthor: true,
+      whereToBuyNote:
+        'Direct paperback checkout stays on Stripe, while ebook and audio can route to your preferred retailers.',
+      retailerLinks: [
+        retailerLink(
+          'steelheart-oath-kindle',
+          'Amazon Kindle',
+          'Kindle',
+          'ebook',
+          'https://example.com/retail/steelheart-oath/kindle',
+        ),
+        retailerLink(
+          'steelheart-oath-audio',
+          'Libro.fm',
+          'Libro.fm audio',
+          'audiobook',
+          'https://example.com/retail/steelheart-oath/libro-fm',
+        ),
+      ],
+      directSaleFormats: [
+        stripePaymentLink(
+          'steelheart-oath-paperback',
+          'Direct',
+          'paperback',
+          'https://buy.stripe.com/test_steelheart_oath_direct_paperback',
+        ),
+      ],
+    },
   },
 ];
 
@@ -415,7 +881,3 @@ export const catalogStats = {
   seriesCount: series.length,
   formatCount: Object.keys(formatLabels).length,
 };
-
-export function getStoreLink(slug: string, format: FormatKey) {
-  return `https://example.com/jaclyn-osborn/${slug}/${format}/`;
-}

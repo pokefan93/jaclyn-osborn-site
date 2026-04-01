@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsletterPanel from '../components/NewsletterPanel.astro';
+import PageHero from '../components/PageHero.astro';
+import { siteMeta } from '../data/site';
+import { withBase } from '../utils/withBase';
+---
+
+<BaseLayout
+  title="Thank You"
+  description="Post-purchase thank-you page for direct-sale readers, with fulfillment guidance and ways to stay connected."
+>
+  <PageHero
+    eyebrow="Thank you"
+    title="Your direct-sale order is in the queue."
+    description="Stripe handles the hosted checkout. This page is the static post-purchase landing spot for readers who bought directly from Jaclyn, with the next steps kept clear and honest."
+    actions={[
+      { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
+      { href: siteMeta.instagramUrl, label: 'Follow on Instagram', variant: 'secondary', external: true },
+    ]}
+    centered
+  />
+
+  <section class="px-4 pt-10 sm:px-6 lg:px-8">
+    <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1fr_1fr]">
+      <article class="card-shell rounded-[2.35rem] p-6 sm:p-8">
+        <p class="eyebrow text-[#7c5a63]">What happens next</p>
+        <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
+          Direct-sale fulfillment is manual, not instant.
+        </h2>
+        <div class="mt-6 space-y-3">
+          <p class="purchase-note">
+            Check the fulfillment note on the product you purchased for the current packing window.
+          </p>
+          <p class="purchase-note">
+            Shipping timelines, preorder timing, and signed-copy availability are editorial labels on this site, not live inventory feeds.
+          </p>
+          <p class="purchase-note">
+            If you need help with a direct order, reply to your Stripe receipt or email <a href={`mailto:${siteMeta.email}`} class="font-semibold text-[#241920] underline decoration-[#cdaea5] underline-offset-4">{siteMeta.email}</a>.
+          </p>
+        </div>
+      </article>
+
+      <article class="card-shell rounded-[2.35rem] p-6 sm:p-8">
+        <p class="eyebrow text-[#7c5a63]">Stay close to the releases</p>
+        <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
+          Keep the reader relationship going after checkout.
+        </h2>
+        <div class="mt-6 space-y-4">
+          <a href={withBase('newsletter/')} class="button-secondary">
+            Newsletter for release alerts
+          </a>
+          <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="button-secondary">
+            Instagram for cover teases
+          </a>
+          <p class="purchase-note">
+            The newsletter and Instagram are the best places to hear about signed-copy restocks, preorder extras, and when sold-out direct editions come back.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="px-4 pb-6 pt-16 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <NewsletterPanel compact />
+    </div>
+  </section>
+</BaseLayout>

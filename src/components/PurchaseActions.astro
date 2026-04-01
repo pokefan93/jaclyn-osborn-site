@@ -1,0 +1,153 @@
+---
+import { formatLabels } from '../data/catalog';
+import { siteMeta } from '../data/site';
+import type { Book } from '../types/catalog';
+import {
+  getAvailabilityLabel,
+  getMerchandisingFlags,
+  getPurchaseSupportNotes,
+  hasRetailerLinks,
+  merchandisingFlagLabels,
+} from '../utils/purchase';
+import StripeBuyButton from './StripeBuyButton.astro';
+
+interface Props {
+  book: Book;
+  compact?: boolean;
+}
+
+const { book, compact = false } = Astro.props;
+const merchandisingFlags = getMerchandisingFlags(book);
+const availabilityLabel = getAvailabilityLabel(book.purchase);
+const supportNotes = getPurchaseSupportNotes(book, siteMeta.directSales);
+const showAvailability =
+  book.purchase.directFromAuthor ||
+  book.purchase.directSaleFormats.length > 0 ||
+  book.purchase.availabilityStatus !== 'in_stock';
+const showWhereToBuyLabel =
+  book.purchase.directSaleFormats.length > 0 && hasRetailerLinks(book);
+
+const availabilityTone =
+  book.purchase.availabilityStatus === 'preorder'
+    ? 'status-pill status-pill-preorder'
+    : book.purchase.availabilityStatus === 'limited'
+      ? 'status-pill status-pill-limited'
+      : book.purchase.availabilityStatus === 'sold_out'
+        ? 'status-pill status-pill-soldout'
+        : 'status-pill status-pill-stock';
+---
+
+<div class="mt-6 space-y-4">
+  <div class="flex flex-wrap gap-2">
+    {
+      merchandisingFlags.map((flag) => (
+        <span
+          class:list={[
+            'pill',
+            flag === 'new_release' && 'bg-[#241920] text-white',
+            flag === 'signed_copy' && 'bg-[#e8d0bc] text-[#6d4656]',
+            flag === 'audiobook_available' && 'bg-[#d8ece9] text-[#23404c]',
+            flag === 'direct_from_author' && 'bg-[#ede2ea] text-[#6d4656]',
+            flag === 'preorder' && 'bg-[#efe3c8] text-[#6f4c1c]',
+          ]}
+        >
+          {merchandisingFlagLabels[flag]}
+        </span>
+      ))
+    }
+    {
+      showAvailability && (
+        <span class={availabilityTone}>
+          {availabilityLabel}
+        </span>
+      )
+    }
+  </div>
+
+  {
+    book.purchase.directSaleFormats.length > 0 && (
+      <div class="space-y-2">
+        <div class="flex items-center justify-between gap-3">
+          <p class="eyebrow text-[#7c5a63]">
+            {book.purchase.directFromAuthor ? 'Direct from Jaclyn' : 'Direct checkout'}
+          </p>
+          {
+            book.purchase.availabilityStatus === 'sold_out' && (
+              <span class="text-xs font-semibold uppercase tracking-[0.24em] text-[#8a5a58]">
+                Editorial status
+              </span>
+            )
+          }
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          {
+            book.purchase.directSaleFormats.map((format) => {
+              const label = `${format.label} • ${formatLabels[format.format]}`;
+
+              if (format.purchaseMode === 'stripe_buy_button' && format.stripeBuyButtonId) {
+                return (
+                  <StripeBuyButton
+                    buyButtonId={format.stripeBuyButtonId}
+                    fallbackUrl={format.purchaseUrl}
+                    fallbackLabel={label}
+                  />
+                );
+              }
+
+              if (format.purchaseMode === 'unavailable' || !format.purchaseUrl) {
+                return <span class="purchase-disabled">{label}</span>;
+              }
+
+              return (
+                <a
+                  href={format.purchaseUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  class:list={[
+                    'format-button',
+                    format.purchaseMode === 'stripe_payment_link' && 'purchase-direct',
+                  ]}
+                >
+                  {label}
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+    )
+  }
+
+  {
+    book.purchase.retailerLinks.length > 0 && (
+      <div class="space-y-2">
+        <p class="eyebrow text-[#7c5a63]">
+          {showWhereToBuyLabel ? 'Retailers & standard editions' : 'Where to buy'}
+        </p>
+        <div class="flex flex-wrap gap-2">
+          {
+            book.purchase.retailerLinks.map((retailer) => (
+              <a
+                href={retailer.purchaseUrl}
+                target="_blank"
+                rel="noreferrer"
+                class="format-button"
+              >
+                {retailer.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    )
+  }
+
+  {
+    supportNotes.length > 0 && (
+      <div class:list={['space-y-2 rounded-[1.4rem] bg-[#fcf7f3] px-4 py-4 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.22)]', compact && 'text-xs']}>
+        {supportNotes.map((note) => <p class="purchase-note">{note}</p>)}
+      </div>
+    )
+  }
+</div>
