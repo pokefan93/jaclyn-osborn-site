@@ -2,16 +2,15 @@ export const siteMeta = {
   name: 'Jaclyn Osborn',
   title: 'Jaclyn Osborn | M/M Romance',
   description:
-    'M/M romance by Jaclyn Osborn across contemporary, fantasy, paranormal, and historical worlds.',
+    'M/M romance by Jaclyn Osborn across contemporary, fantasy, paranormal, and historical stories.',
   shortTagline: 'Author, coffee addict, & anime lover.',
-  heroTitle: 'Romance with soft hearts, supernatural teeth, and a second cup of coffee.',
+  heroTitle: 'M/M romance with heart, hope, and happy endings.',
   heroCopy:
-    'M/M romance across contemporary, fantasy, paranormal, and historical worlds. Find a series you love and settle in.',
+    'Jaclyn Osborn writes contemporary, fantasy, paranormal, and historical romance with emotional connection, redemption, and happily-ever-afters.',
   longBio:
-    'Jaclyn Osborn writes M/M romance - contemporary, fantasy, paranormal, historical, and everything in between. She believes in happy endings, emotional connection, and the kind of story you stay up too late to finish. When she\'s not writing, she\'s probably drinking coffee and rewatching her favorite anime.',
+    'Jaclyn Osborn writes M/M romance across contemporary, fantasy, paranormal, and historical stories. Her books center emotional connection, redemption, and happy endings. When she is not writing, she is usually drinking coffee or watching anime.',
   instagramUrl: 'https://instagram.com/jaclynosbornauthor',
-  newsletterUrl: 'https://example.com/jaclyn-osborn-newsletter',
-  newsletterFormAction: 'https://example.com/jaclyn-osborn-newsletter/signup',
+  newsletterUrl: 'mailto:hello@jaclynosbornbooks.com?subject=Newsletter%20Signup',
   email: 'hello@jaclynosbornbooks.com',
   mediaEmail: 'media@jaclynosbornbooks.com',
   rightsEmail: 'rights@jaclynosbornbooks.com',
@@ -20,13 +19,10 @@ export const siteMeta = {
     thankYouPath: '/thank-you/',
     stripeBuyButtonPublishableKey: '',
     signedCopyNote:
-      'Signed copies are packed manually from Jaclyn\'s personal stock.',
-    shippingNote:
-      'Shipping details coming soon.',
-    fulfillmentNote:
-      'Signed orders ship from Jaclyn\'s personal stock. Check the listing for current packing windows.',
-    whereToBuyNote:
-      'Signed and direct editions use Stripe-hosted checkout. Standard editions and audio are also available from the retailers listed below.',
+      'Signed copy updates will be shared on the site and in the newsletter.',
+    shippingNote: '',
+    fulfillmentNote: '',
+    whereToBuyNote: '',
   },
 };
 
@@ -41,82 +37,74 @@ export const navItems = [
 ];
 
 export const newsletterBenefits = [
-  'Release alerts and preorder news',
-  'Reading-order guides and backlist spotlights',
-  'Bonus epilogues, cover reveals, and seasonal mood boards',
+  'Release news and preorder announcements',
+  'Cover reveals and signed copy updates',
+  'Occasional notes from Jaclyn',
 ];
 
 export const socialPreviewCards = [
   {
-    title: 'Desk Rituals',
-    copy: 'Coffee, annotations, late-night drafting, and the quiet chaos behind every release week.',
+    title: 'Writing Updates',
+    copy: 'Writing progress, desk moments, and plenty of coffee.',
     accent: 'from-[#e9cbb6] via-[#f5e4d8] to-[#d5b4b2]',
   },
   {
-    title: 'Anime Energy',
-    copy: 'Character playlists, emotional damage rankings, and the scenes that absolutely deserved a dramatic soundtrack.',
+    title: 'Cover Reveals',
+    copy: 'New release graphics, early peeks, and bookish updates.',
     accent: 'from-[#b0d7d6] via-[#dfeeed] to-[#f7f2ed]',
   },
   {
-    title: 'Cover Teases',
-    copy: 'Fresh release graphics, trope stacks, signed-copy drops, and a steady stream of reader bait.',
+    title: 'Everyday Favorites',
+    copy: 'Anime, reading life, and the little things in between.',
     accent: 'from-[#6d4456] via-[#b97e79] to-[#f0d7c4]',
   },
 ];
-
-export const newsletterArchive: { title: string; copy: string }[] = [];
 
 export const faqItems = [
   {
     question: 'Where should a new reader start?',
     answer:
-      'Check the series page for entry-point recommendations. Blue Harbor and Unexpected Love are great starting places for contemporary romance. Ivy Grove is a warm entry into paranormal. Sons of the Fallen is the place to start for high-stakes paranormal fantasy.',
+      'If you want contemporary romance, Blue Harbor and Unexpected Love are great places to begin. If you want paranormal romance, start with Ivy Grove or Sons of the Fallen. If you want historical fantasy, try Tales of Fate.',
   },
   {
     question: 'Do I need to read the series in order?',
     answer:
-      'Most series follow different main characters per book and can be enjoyed on their own, but reading in order gives you the richest experience. Each series page shows the recommended reading order.',
+      'The books are easiest to follow in series order. The series page lists each series in reading order and points you to the best place to start.',
   },
   {
     question: 'Are signed copies available?',
     answer:
-      'Signed copies are available directly from Jaclyn for select titles. Check the individual book listing for current availability - stock is limited and ships manually from Jaclyn\'s personal supply.',
+      'Signed copy and direct shop updates will be shared here on the site and in the newsletter.',
   },
   {
     question: 'How do I sign up for the newsletter?',
     answer:
-      'Head to the newsletter page and add your email. You\'ll hear about new releases, cover reveals, signed copy restocks, and the occasional personal note from Jaclyn.',
+      'Visit the newsletter page and add your email to get release news, cover reveals, and signed copy updates.',
   },
   {
     question: 'Where can I buy the books?',
     answer:
-      'All titles are available from major retailers including Amazon, Kobo, Bookshop.org, and Apple Books. Select titles also have audiobook editions on Libro.fm. Signed and direct copies are available here when in stock.',
+      'Retailer links and direct shop updates will be added here as they are ready. The newsletter is also a good place to hear about new links.',
   },
 ];
 
 export const contactCards = [
   {
     title: 'Reader mail',
-    copy: 'Questions, event invites, and general hello messages.',
+    copy: 'Questions, kind notes, and general hello messages.',
     label: 'Email Jaclyn',
     href: `mailto:${siteMeta.email}`,
   },
   {
-    title: 'Media & podcast',
-    copy: 'Interviews, guest posts, conventions, and branded collaboration requests.',
+    title: 'Media & events',
+    copy: 'Interviews, guest spots, event invitations, and appearance requests.',
     label: 'Media contact',
     href: `mailto:${siteMeta.mediaEmail}`,
   },
   {
-    title: 'Rights & translation',
-    copy: 'Foreign rights, audio inquiries, and format expansion conversations.',
-    label: 'Rights contact',
+    title: 'Rights & business',
+    copy: 'Rights, translation, audio, and other business inquiries.',
+    label: 'Business contact',
     href: `mailto:${siteMeta.rightsEmail}`,
-  },
-  {
-    title: 'ARC & promo',
-    copy: 'Street team, early review coordination, and launch support questions.',
-    label: 'ARC contact',
-    href: `mailto:${siteMeta.arcEmail}`,
   },
 ];

@@ -6,7 +6,6 @@ import {
   getAvailabilityLabel,
   getMerchandisingFlags,
   getPurchaseSupportNotes,
-  hasRetailerLinks,
   merchandisingFlagLabels,
 } from '../utils/purchase';
 import StripeBuyButton from './StripeBuyButton.astro';
@@ -17,15 +16,62 @@ interface Props {
 }
 
 const { book, compact = false } = Astro.props;
-const merchandisingFlags = getMerchandisingFlags(book);
+
+const isPlaceholderUrl = (url?: string) =>
+  !url ||
+  url.includes('example.com') ||
+  url.includes('buy.stripe.com/test_');
+
+const liveDirectFormats = book.purchase.directSaleFormats.filter((format) => {
+  if (format.purchaseMode === 'unavailable') {
+    return false;
+  }
+
+  if (format.purchaseMode === 'stripe_buy_button') {
+    return Boolean(format.stripeBuyButtonId) || !isPlaceholderUrl(format.purchaseUrl);
+  }
+
+  return !isPlaceholderUrl(format.purchaseUrl);
+});
+
+const liveRetailerLinks = book.purchase.retailerLinks.filter(
+  (retailer) => !isPlaceholderUrl(retailer.purchaseUrl),
+);
+
+const hasLivePurchaseOptions =
+  liveDirectFormats.length > 0 || liveRetailerLinks.length > 0;
+
+const merchandisingFlags = hasLivePurchaseOptions ? getMerchandisingFlags(book) : [];
 const availabilityLabel = getAvailabilityLabel(book.purchase);
-const supportNotes = getPurchaseSupportNotes(book, siteMeta.directSales);
+const supportNotes = hasLivePurchaseOptions
+  ? getPurchaseSupportNotes(book, siteMeta.directSales)
+  : [];
+
 const showAvailability =
-  book.purchase.directFromAuthor ||
-  book.purchase.directSaleFormats.length > 0 ||
-  book.purchase.availabilityStatus !== 'in_stock';
+  hasLivePurchaseOptions &&
+  (book.purchase.directFromAuthor ||
+    liveDirectFormats.length > 0 ||
+    book.purchase.availabilityStatus !== 'in_stock');
+
 const showWhereToBuyLabel =
-  book.purchase.directSaleFormats.length > 0 && hasRetailerLinks(book);
+  liveDirectFormats.length > 0 && liveRetailerLinks.length > 0;
+
+const showStatusRow = merchandisingFlags.length > 0 || showAvailability;
+const showDirectComingSoon =
+  liveDirectFormats.length === 0 &&
+  (book.purchase.directSaleFormats.length > 0 ||
+    book.purchase.directFromAuthor ||
+    book.purchase.signedCopy);
+const showRetailComingSoon =
+  liveRetailerLinks.length === 0 && book.purchase.retailerLinks.length > 0;
+
+const showPurchaseContent =
+  showStatusRow ||
+  liveDirectFormats.length > 0 ||
+  liveRetailerLinks.length > 0 ||
+  showDirectComingSoon ||
+  showRetailComingSoon ||
+  supportNotes.length > 0;
 
 const availabilityTone =
   book.purchase.availabilityStatus === 'preorder'
@@ -37,110 +83,138 @@ const availabilityTone =
         : 'status-pill status-pill-stock';
 ---
 
-<div class="mt-6 space-y-4">
-  <div class="flex flex-wrap gap-2">
-    {
-      merchandisingFlags.map((flag) => (
-        <span
-          class:list={[
-            'pill',
-            flag === 'new_release' && 'bg-[#241920] text-white',
-            flag === 'signed_copy' && 'bg-[#e8d0bc] text-[#6d4656]',
-            flag === 'audiobook_available' && 'bg-[#d8ece9] text-[#23404c]',
-            flag === 'direct_from_author' && 'bg-[#ede2ea] text-[#6d4656]',
-            flag === 'preorder' && 'bg-[#efe3c8] text-[#6f4c1c]',
-          ]}
-        >
-          {merchandisingFlagLabels[flag]}
-        </span>
-      ))
-    }
-    {
-      showAvailability && (
-        <span class={availabilityTone}>
-          {availabilityLabel}
-        </span>
-      )
-    }
-  </div>
-
-  {
-    book.purchase.directSaleFormats.length > 0 && (
-      <div class="space-y-2">
-        <div class="flex items-center justify-between gap-3">
-          <p class="eyebrow text-[#7c5a63]">
-            {book.purchase.directFromAuthor ? 'Direct from Jaclyn' : 'Direct checkout'}
-          </p>
-          </div>
-
-        <div class="flex flex-wrap gap-2">
-          {
-            book.purchase.directSaleFormats.map((format) => {
-              const label = `${format.label} • ${formatLabels[format.format]}`;
-
-              if (format.purchaseMode === 'stripe_buy_button' && format.stripeBuyButtonId) {
-                return (
-                  <StripeBuyButton
-                    buyButtonId={format.stripeBuyButtonId}
-                    fallbackUrl={format.purchaseUrl}
-                    fallbackLabel={label}
-                  />
-                );
-              }
-
-              if (format.purchaseMode === 'unavailable' || !format.purchaseUrl) {
-                return <span class="purchase-disabled">{label}</span>;
-              }
-
-              return (
-                <a
-                  href={format.purchaseUrl}
-                  target="_blank"
-                  rel="noreferrer"
+{
+  showPurchaseContent && (
+    <div class="mt-6 space-y-4">
+      {
+        showStatusRow && (
+          <div class="flex flex-wrap gap-2">
+            {
+              merchandisingFlags.map((flag) => (
+                <span
                   class:list={[
-                    'format-button',
-                    format.purchaseMode === 'stripe_payment_link' && 'purchase-direct',
+                    'pill',
+                    flag === 'new_release' && 'bg-[#241920] text-white',
+                    flag === 'signed_copy' && 'bg-[#e8d0bc] text-[#6d4656]',
+                    flag === 'audiobook_available' && 'bg-[#d8ece9] text-[#23404c]',
+                    flag === 'direct_from_author' && 'bg-[#ede2ea] text-[#6d4656]',
+                    flag === 'preorder' && 'bg-[#efe3c8] text-[#6f4c1c]',
                   ]}
                 >
-                  {label}
-                </a>
-              );
-            })
-          }
-        </div>
-      </div>
-    )
-  }
+                  {merchandisingFlagLabels[flag]}
+                </span>
+              ))
+            }
+            {
+              showAvailability && (
+                <span class={availabilityTone}>
+                  {availabilityLabel}
+                </span>
+              )
+            }
+          </div>
+        )
+      }
 
-  {
-    book.purchase.retailerLinks.length > 0 && (
-      <div class="space-y-2">
-        <p class="eyebrow text-[#7c5a63]">
-          {showWhereToBuyLabel ? 'Retailers & standard editions' : 'Where to buy'}
-        </p>
-        <div class="flex flex-wrap gap-2">
-          {
-            book.purchase.retailerLinks.map((retailer) => (
-              <a
-                href={retailer.purchaseUrl}
-                target="_blank"
-                rel="noreferrer"
-                class="format-button"
-              >
-                {retailer.label}
-              </a>
-            ))
-          }
-        </div>
-      </div>
-    )
-  }
+      {
+        liveDirectFormats.length > 0 && (
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-3">
+              <p class="eyebrow text-[#7c5a63]">
+                {book.purchase.directFromAuthor ? 'Direct from Jaclyn' : 'Direct shop'}
+              </p>
+            </div>
 
-  {
-    supportNotes.length > 0 && (
-      <div class:list={['space-y-2 rounded-[1.4rem] bg-[#fcf7f3] px-4 py-4 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.22)]', compact && 'text-xs']}>
-        {supportNotes.map((note) => <p class="purchase-note">{note}</p>)}
-      </div>
-    )
-  }
-</div>
+            <div class="flex flex-wrap gap-2">
+              {
+                liveDirectFormats.map((format) => {
+                  const label = `${format.label} - ${formatLabels[format.format]}`;
+
+                  if (format.purchaseMode === 'stripe_buy_button' && format.stripeBuyButtonId) {
+                    return (
+                      <StripeBuyButton
+                        buyButtonId={format.stripeBuyButtonId}
+                        fallbackUrl={format.purchaseUrl ?? undefined}
+                        fallbackLabel={label}
+                      />
+                    );
+                  }
+
+                  return (
+                    <a
+                      href={format.purchaseUrl ?? '#'}
+                      target="_blank"
+                      rel="noreferrer"
+                      class:list={[
+                        'format-button',
+                        format.purchaseMode === 'stripe_payment_link' && 'purchase-direct',
+                      ]}
+                    >
+                      {label}
+                    </a>
+                  );
+                })
+              }
+            </div>
+          </div>
+        )
+      }
+
+      {
+        showDirectComingSoon && (
+          <div class="space-y-2">
+            <p class="eyebrow text-[#7c5a63]">
+              {book.purchase.signedCopy ? 'Signed copies' : 'Direct shop'}
+            </p>
+            <span class="purchase-disabled">
+              {book.purchase.signedCopy
+                ? 'Signed copies coming soon'
+                : 'Direct shop updates coming soon'}
+            </span>
+          </div>
+        )
+      }
+
+      {
+        liveRetailerLinks.length > 0 && (
+          <div class="space-y-2">
+            <p class="eyebrow text-[#7c5a63]">
+              {showWhereToBuyLabel ? 'Retailers' : 'Where to buy'}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {
+                liveRetailerLinks.map((retailer) => (
+                  <a
+                    href={retailer.purchaseUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="format-button"
+                  >
+                    {retailer.label}
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        )
+      }
+
+      {
+        showRetailComingSoon && (
+          <div class="space-y-2">
+            <p class="eyebrow text-[#7c5a63]">Retailers</p>
+            <span class="purchase-disabled">Retailer links coming soon</span>
+          </div>
+        )
+      }
+
+      {
+        supportNotes.length > 0 && (
+          <div class:list={['space-y-2 rounded-[1.4rem] bg-[#fcf7f3] px-4 py-4 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.22)]', compact && 'text-xs']}>
+            {supportNotes.map((note) => <p class="purchase-note">{note}</p>)}
+          </div>
+        )
+      }
+    </div>
+  )
+}

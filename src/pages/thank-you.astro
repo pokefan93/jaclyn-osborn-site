@@ -8,12 +8,12 @@ import { withBase } from '../utils/withBase';
 
 <BaseLayout
   title="Thank You"
-  description="Post-purchase thank-you page for direct-sale readers, with fulfillment guidance and ways to stay connected."
+  description="Thank you for your order."
 >
   <PageHero
     eyebrow="Thank you"
-    title="Your direct-sale order is in the queue."
-    description="Stripe handles the hosted checkout. This page is the static post-purchase landing spot for readers who bought directly from Jaclyn, with the next steps kept clear and honest."
+    title="Thank you for your order."
+    description="A receipt should be on its way to your email. If you need help with your order, Jaclyn can be reached any time."
     actions={[
       { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
       { href: siteMeta.instagramUrl, label: 'Follow on Instagram', variant: 'secondary', external: true },
@@ -26,35 +26,41 @@ import { withBase } from '../utils/withBase';
       <article class="card-shell rounded-[2.35rem] p-6 sm:p-8">
         <p class="eyebrow text-[#7c5a63]">What happens next</p>
         <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          Direct-sale fulfillment is manual, not instant.
+          Watch your email for order details.
         </h2>
         <div class="mt-6 space-y-3">
           <p class="purchase-note">
-            Check the fulfillment note on the product you purchased for the current packing window.
+            Your receipt should arrive by email shortly after checkout.
           </p>
           <p class="purchase-note">
-            Shipping timelines, preorder timing, and signed-copy availability are editorial labels on this site, not live inventory feeds.
+            If your order includes a preorder or signed copy, any updates will be
+            shared by email.
           </p>
           <p class="purchase-note">
-            If you need help with a direct order, reply to your Stripe receipt or email <a href={`mailto:${siteMeta.email}`} class="font-semibold text-[#241920] underline decoration-[#cdaea5] underline-offset-4">{siteMeta.email}</a>.
+            If you need help, reply to your receipt or email{' '}
+            <a href={`mailto:${siteMeta.email}`} class="font-semibold text-[#241920] underline decoration-[#cdaea5] underline-offset-4">
+              {siteMeta.email}
+            </a>
+            .
           </p>
         </div>
       </article>
 
       <article class="card-shell rounded-[2.35rem] p-6 sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">Stay close to the releases</p>
+        <p class="eyebrow text-[#7c5a63]">Stay connected</p>
         <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          Keep the reader relationship going after checkout.
+          Keep up with new books and shop updates.
         </h2>
         <div class="mt-6 space-y-4">
           <a href={withBase('newsletter/')} class="button-secondary">
-            Newsletter for release alerts
+            Join the newsletter
           </a>
           <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="button-secondary">
-            Instagram for cover teases
+            Follow on Instagram
           </a>
           <p class="purchase-note">
-            The newsletter and Instagram are the best places to hear about signed-copy restocks, preorder extras, and when sold-out direct editions come back.
+            The newsletter and Instagram are the best places to hear about release
+            news, cover reveals, and signed copy updates.
           </p>
         </div>
       </article>

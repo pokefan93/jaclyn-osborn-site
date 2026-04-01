@@ -5,24 +5,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { books, booksBySeries, formatLabels, genreVibeTags, seriesMap } from '../data/catalog';
 import { withBase } from '../utils/withBase';
 
-const sortedBooks = [...books].sort(
-  (a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime(),
-);
+const sortedBooks = [...books].sort((a, b) => {
+  const seriesCompare = (seriesMap.get(a.seriesSlug)?.name ?? '').localeCompare(
+    seriesMap.get(b.seriesSlug)?.name ?? '',
+  );
 
-const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.label));
+  if (seriesCompare !== 0) {
+    return seriesCompare;
+  }
+
+  return a.seriesOrder - b.seriesOrder;
+});
+
+const categoryOptions = [...genreVibeTags]
+  .filter((tag) => tag.kind === 'genre')
+  .sort((a, b) => a.label.localeCompare(b.label));
 ---
 
 <BaseLayout
   title="Books"
-  description="Search, sort, and filter the sample Jaclyn Osborn catalog by series, mood, genre, and format."
+  description="Browse Jaclyn Osborn books by series, category, and format."
 >
   <PageHero
     eyebrow="Books"
-    title="A searchable catalog built for readers who know their mood."
-    description="This page is intentionally storefront-first: fast scanning, lightweight filtering, and clean paths to series, tropes, and formats without any server-side runtime."
+    title="Books"
+    description="Browse the catalog, filter by series, and find your next read."
     actions={[
       { href: withBase('series/'), label: 'See all series', variant: 'secondary' },
-      { href: withBase('newsletter/'), label: 'Get release alerts', variant: 'primary' },
+      { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
     ]}
   />
 
@@ -31,9 +41,9 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
       <div class="card-shell rounded-[2.3rem] p-5 sm:p-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p class="eyebrow text-[#7c5a63]">Catalog tools</p>
+            <p class="eyebrow text-[#7c5a63]">Browse the books</p>
             <p class="mt-2 text-sm leading-7 text-[#5d4b52]">
-              Use search plus a few filters instead of a bloated sidebar.
+              Search by title or series, or filter the list below.
             </p>
           </div>
           <p class="text-sm font-semibold text-[#241920]" aria-live="polite" data-results-count>
@@ -41,13 +51,13 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
           </p>
         </div>
 
-        <form class="mt-6 grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_auto]" data-catalog-form>
+        <form class="mt-6 grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]" data-catalog-form>
           <label class="space-y-2">
             <span class="text-sm font-semibold text-[#241920]">Search</span>
             <input
               type="search"
               name="q"
-              placeholder="Search titles, tropes, hooks..."
+              placeholder="Search titles and series"
               class="input-shell"
             />
           </label>
@@ -61,16 +71,10 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
           </label>
 
           <label class="space-y-2">
-            <span class="text-sm font-semibold text-[#241920]">Vibe / genre</span>
-            <select name="mood" class="input-shell">
-              <option value="all">All vibes & genres</option>
-              {
-                genreOptions.map((option) => (
-                  <option value={option.slug}>
-                    {option.label} ({option.kind})
-                  </option>
-                ))
-              }
+            <span class="text-sm font-semibold text-[#241920]">Category</span>
+            <select name="category" class="input-shell">
+              <option value="all">All categories</option>
+              {categoryOptions.map((option) => <option value={option.slug}>{option.label}</option>)}
             </select>
           </label>
 
@@ -85,13 +89,12 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
           <label class="space-y-2">
             <span class="text-sm font-semibold text-[#241920]">Sort</span>
             <select name="sort" class="input-shell">
-              <option value="newest">Newest</option>
-              <option value="title">Title</option>
               <option value="series-order">Series order</option>
+              <option value="title">Title</option>
             </select>
           </label>
 
-          <div class="flex items-end">
+          <div class="flex items-end lg:col-span-5 lg:justify-end">
             <button type="button" class="button-secondary w-full justify-center lg:w-auto" data-clear-filters>
               Clear
             </button>
@@ -109,7 +112,6 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
                 series?.name,
                 book.shortHook,
                 book.description,
-                ...book.tropes,
               ]
                 .filter(Boolean)
                 .join(' ')
@@ -121,9 +123,8 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
                   data-title={book.title}
                   data-series={book.seriesSlug}
                   data-series-name={series?.name ?? ''}
-                  data-moods={[...book.genres, ...book.vibes].join(',')}
+                  data-categories={book.genres.join(',')}
                   data-formats={book.formats.join(',')}
-                  data-date={book.releaseDate}
                   data-series-order={book.seriesOrder}
                   data-search={searchText}
                 >
@@ -137,7 +138,7 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
         <div class="card-shell mt-6 hidden rounded-[2rem] p-8 text-center" data-empty-state>
           <p class="font-display text-3xl text-[#241920]">No titles match those filters.</p>
           <p class="mt-3 text-sm leading-7 text-[#5d4b52]">
-            Try a broader mood or clear the current search.
+            Try another search or clear the filters.
           </p>
         </div>
       </div>
@@ -155,14 +156,14 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
     if (form instanceof HTMLFormElement && grid instanceof HTMLElement && resultCount instanceof HTMLElement && clearButton instanceof HTMLButtonElement && emptyState instanceof HTMLElement) {
       const qField = form.elements.namedItem('q');
       const seriesField = form.elements.namedItem('series');
-      const moodField = form.elements.namedItem('mood');
+      const categoryField = form.elements.namedItem('category');
       const formatField = form.elements.namedItem('format');
       const sortField = form.elements.namedItem('sort');
 
       if (
         !(qField instanceof HTMLInputElement) ||
         !(seriesField instanceof HTMLSelectElement) ||
-        !(moodField instanceof HTMLSelectElement) ||
+        !(categoryField instanceof HTMLSelectElement) ||
         !(formatField instanceof HTMLSelectElement) ||
         !(sortField instanceof HTMLSelectElement)
       ) {
@@ -172,7 +173,7 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
       const fields = {
         q: qField,
         series: seriesField,
-        mood: moodField,
+        category: categoryField,
         format: formatField,
         sort: sortField,
       };
@@ -180,14 +181,14 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
       const params = new URLSearchParams(window.location.search);
       fields.q.value = params.get('q') ?? '';
       fields.series.value = params.get('series') ?? 'all';
-      fields.mood.value = params.get('mood') ?? 'all';
+      fields.category.value = params.get('category') ?? params.get('mood') ?? 'all';
       fields.format.value = params.get('format') ?? 'all';
-      fields.sort.value = params.get('sort') ?? 'newest';
+      fields.sort.value = params.get('sort') ?? 'series-order';
 
       const applyFilters = () => {
         const query = fields.q.value.trim().toLowerCase();
         const selectedSeries = fields.series.value;
-        const selectedMood = fields.mood.value;
+        const selectedCategory = fields.category.value;
         const selectedFormat = fields.format.value;
         const selectedSort = fields.sort.value;
 
@@ -196,15 +197,17 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
 
           const search = card.dataset.search ?? '';
           const series = card.dataset.series ?? '';
-          const moods = (card.dataset.moods ?? '').split(',').filter(Boolean);
+          const categories = (card.dataset.categories ?? '').split(',').filter(Boolean);
           const formats = (card.dataset.formats ?? '').split(',').filter(Boolean);
 
           const matchesQuery = query.length === 0 || search.includes(query);
           const matchesSeries = selectedSeries === 'all' || series === selectedSeries;
-          const matchesMood = selectedMood === 'all' || moods.includes(selectedMood);
+          const matchesCategory =
+            selectedCategory === 'all' || categories.includes(selectedCategory);
           const matchesFormat = selectedFormat === 'all' || formats.includes(selectedFormat);
 
-          const visible = matchesQuery && matchesSeries && matchesMood && matchesFormat;
+          const visible =
+            matchesQuery && matchesSeries && matchesCategory && matchesFormat;
           card.hidden = !visible;
 
           return visible;
@@ -219,22 +222,15 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
             return (left.dataset.title ?? '').localeCompare(right.dataset.title ?? '');
           }
 
-          if (selectedSort === 'series-order') {
-            const seriesCompare = (left.dataset.seriesName ?? '').localeCompare(
-              right.dataset.seriesName ?? '',
-            );
+          const seriesCompare = (left.dataset.seriesName ?? '').localeCompare(
+            right.dataset.seriesName ?? '',
+          );
 
-            if (seriesCompare !== 0) {
-              return seriesCompare;
-            }
-
-            return Number(left.dataset.seriesOrder ?? 0) - Number(right.dataset.seriesOrder ?? 0);
+          if (seriesCompare !== 0) {
+            return seriesCompare;
           }
 
-          return (
-            new Date(right.dataset.date ?? '').getTime() -
-            new Date(left.dataset.date ?? '').getTime()
-          );
+          return Number(left.dataset.seriesOrder ?? 0) - Number(right.dataset.seriesOrder ?? 0);
         });
 
         sortedVisible.forEach((card) => grid.appendChild(card));
@@ -245,9 +241,9 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
 
         if (query) nextParams.set('q', query);
         if (selectedSeries !== 'all') nextParams.set('series', selectedSeries);
-        if (selectedMood !== 'all') nextParams.set('mood', selectedMood);
+        if (selectedCategory !== 'all') nextParams.set('category', selectedCategory);
         if (selectedFormat !== 'all') nextParams.set('format', selectedFormat);
-        if (selectedSort !== 'newest') nextParams.set('sort', selectedSort);
+        if (selectedSort !== 'series-order') nextParams.set('sort', selectedSort);
 
         const nextQuery = nextParams.toString();
         const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
@@ -259,9 +255,9 @@ const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.l
       clearButton.addEventListener('click', () => {
         fields.q.value = '';
         fields.series.value = 'all';
-        fields.mood.value = 'all';
+        fields.category.value = 'all';
         fields.format.value = 'all';
-        fields.sort.value = 'newest';
+        fields.sort.value = 'series-order';
         applyFilters();
       });
 

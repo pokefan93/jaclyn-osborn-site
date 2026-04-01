@@ -44,14 +44,10 @@ const series = seriesMap.get(book.seriesSlug);
       {book.shortHook}
     </p>
 
-    <div class="mt-5 flex flex-wrap gap-2">
-      {book.tropes.slice(0, 3).map((trope) => <span class="tag-chip">{trope}</span>)}
-    </div>
-
     <PurchaseActions book={book} compact />
 
     <div class="mt-auto pt-6 text-sm text-[#6e5961]">
-      {series?.name} • Book {book.seriesOrder}
+      {series?.name} - Book {book.seriesOrder}
     </div>
   </div>
 </article>

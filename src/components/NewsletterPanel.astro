@@ -13,10 +13,10 @@ const { compact = false } = Astro.props;
     <div class="space-y-5">
       <p class="eyebrow text-[#e7cec6]">Newsletter</p>
       <h2 class="font-display text-4xl leading-tight sm:text-5xl">
-        Get the reader letter.
+        Join Jaclyn's newsletter.
       </h2>
       <p class="max-w-2xl text-base leading-8 text-white/76">
-        Release alerts, cover reveals, signed copy updates, and the occasional personal note from Jaclyn.
+        Release news, cover reveals, signed copy updates, and occasional notes from Jaclyn.
       </p>
       <div class="flex flex-wrap gap-2">
         {newsletterBenefits.map((benefit) => <span class="pill border border-white/12 bg-white/8 text-white/84">{benefit}</span>)}
@@ -27,44 +27,30 @@ const { compact = false } = Astro.props;
       compact ? (
         <div class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
           <p class="text-sm leading-7 text-white/76">
-            New releases, cover reveals, and signed copy drops — delivered straight to your inbox.
+            New releases, cover reveals, and signed copy updates sent straight to your inbox.
           </p>
           <a
             href={siteMeta.newsletterUrl}
-            target="_blank"
-            rel="noreferrer"
             class="button-primary mt-6"
           >
-            Join the reader letter
+            Join the newsletter
           </a>
         </div>
       ) : (
-        <form
-          action={siteMeta.newsletterFormAction}
-          method="post"
-          class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm"
-        >
+        <div class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
           <div class="space-y-5">
-            <div>
-              <label for="newsletter-name" class="mb-2 block text-sm font-semibold text-white/82">
-                First name
-              </label>
-              <input id="newsletter-name" name="first_name" type="text" class="input-shell" placeholder="Reader name" />
-            </div>
-            <div>
-              <label for="newsletter-email" class="mb-2 block text-sm font-semibold text-white/82">
-                Email address
-              </label>
-              <input id="newsletter-email" name="email" type="email" required class="input-shell" placeholder="you@example.com" />
-            </div>
-            <button type="submit" class="button-primary w-full justify-center">
-              Subscribe to the reader letter
-            </button>
+            <p class="text-sm leading-7 text-white/76">
+              Want to be added to the newsletter? Use the button below and Jaclyn's
+              email will open with the subject line ready to go.
+            </p>
+            <a href={siteMeta.newsletterUrl} class="button-primary w-full justify-center">
+              Join by email
+            </a>
             <p class="text-sm leading-6 text-white/56">
-              No spam. Unsubscribe any time.
+              Release news, cover reveals, and signed copy updates.
             </p>
           </div>
-        </form>
+        </div>
       )
     }
   </div>

@@ -9,23 +9,17 @@ import { withBase } from '../utils/withBase';
 
 <BaseLayout
   title="Series"
-  description="A series-first view of the Jaclyn Osborn catalog with dedicated lane descriptions and clear reading orders."
+  description="Browse Jaclyn Osborn series in reading order."
 >
   <PageHero
-    eyebrow="Series hub"
-    title="Treat the catalog like a shelf of distinct worlds, not a flat list."
-    description="Readers often choose by atmosphere first. This page turns each series into its own discovery lane with a clear premise, tone signal, and reading order."
+    eyebrow="Series"
+    title="Find a series and start at book one."
+    description="Each series is listed in reading order, with a clear place to begin."
     actions={[
-      { href: withBase('books/'), label: 'Open the catalog', variant: 'primary' },
-      { href: withBase('about/'), label: 'Meet Jaclyn', variant: 'secondary' },
+      { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
+      { href: withBase('about/'), label: 'About Jaclyn', variant: 'secondary' },
     ]}
-  >
-    <div class="flex flex-wrap gap-3 text-sm text-white/82">
-      <span class="rounded-full border border-white/14 px-3 py-2">Reading-order first</span>
-      <span class="rounded-full border border-white/14 px-3 py-2">Large-backlist friendly</span>
-      <span class="rounded-full border border-white/14 px-3 py-2">Mood-led navigation</span>
-    </div>
-  </PageHero>
+  />
 
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
     <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-2 xl:grid-cols-3">
@@ -62,22 +56,14 @@ import { withBase } from '../utils/withBase';
 
                 <div class="mt-8 grid gap-4 sm:grid-cols-2">
                   <div class="rounded-[1.6rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
-                    <p class="eyebrow text-white/70">Status</p>
-                    <p class="mt-2 text-lg font-semibold">{item.status}</p>
-                  </div>
-                  <div class="rounded-[1.6rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
                     <p class="eyebrow text-white/70">Start here</p>
                     <p class="mt-2 text-lg font-semibold">{item.entryPoint}</p>
                   </div>
+                  <div class="rounded-[1.6rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
+                    <p class="eyebrow text-white/70">Books</p>
+                    <p class="mt-2 text-lg font-semibold">{item.books.length} titles</p>
+                  </div>
                 </div>
-
-                {
-                  item.highlight.length > 0 && (
-                    <div class="mt-6 flex flex-wrap gap-2">
-                      {item.highlight.map((tag) => <span class="pill border border-white/12 bg-white/8 text-white/86">{tag}</span>)}
-                    </div>
-                  )
-                }
               </div>
 
               <div class="space-y-5">
@@ -85,11 +71,11 @@ import { withBase } from '../utils/withBase';
                   <div>
                     <p class="eyebrow text-[#7c5a63]">Reading order</p>
                     <h3 class="mt-2 font-display text-3xl text-[#241920]">
-                      Follow the books in sequence.
+                      Read the series in order.
                     </h3>
                   </div>
                   <a href={withBase(`books/?series=${item.slug}&sort=series-order`)} class="button-secondary">
-                    Filter catalog
+                    Browse books
                   </a>
                 </div>
 

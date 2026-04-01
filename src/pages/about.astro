@@ -5,36 +5,23 @@ import { booksBySeries } from '../data/catalog';
 import { siteMeta } from '../data/site';
 import { withBase } from '../utils/withBase';
 
-const laneCards = [
-  {
-    title: 'Contemporary softness',
-    copy: 'Comfort-driven romance with caretaking, emotional honesty, and strong reread energy.',
-  },
-  {
-    title: 'Paranormal atmosphere',
-    copy: 'Ghosts, witches, cursed bargains, and creature-adjacent devotion without cluttered gothic styling.',
-  },
-  {
-    title: 'Fantasy scale',
-    copy: 'Portal chaos, court stakes, magical pressure, and expansive worldbuilding anchored by clear chemistry.',
-  },
-  {
-    title: 'Historical ache',
-    copy: 'Fate, formality, and dramatic yearning for readers who want the emotional stakes dressed up.',
-  },
-];
+const startHereSeries = [
+  booksBySeries.find((item) => item.slug === 'blue-harbor'),
+  booksBySeries.find((item) => item.slug === 'ivy-grove'),
+  booksBySeries.find((item) => item.slug === 'sons-of-the-fallen'),
+].filter((item): item is NonNullable<typeof item> => Boolean(item));
 ---
 
 <BaseLayout
   title="About"
-  description="About Jaclyn Osborn and the brand decisions shaping this storefront-style author site."
+  description="About Jaclyn Osborn, author of M/M romance."
 >
   <PageHero
-    eyebrow="About Jaclyn"
-    title="An author brand that can hold coffee-shop comfort and magical danger at the same time."
+    eyebrow="About"
+    title="About Jaclyn Osborn"
     description={siteMeta.longBio}
     actions={[
-      { href: withBase('series/'), label: 'Find your starting series', variant: 'primary' },
+      { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
       { href: withBase('contact/'), label: 'Get in touch', variant: 'secondary' },
     ]}
   />
@@ -42,40 +29,44 @@ const laneCards = [
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
     <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.05fr_0.95fr]">
       <article class="card-shell rounded-[2.4rem] p-6 sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">Brand cues</p>
+        <p class="eyebrow text-[#7c5a63]">About Jaclyn</p>
         <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
           Author, coffee addict, & anime lover.
         </h2>
-        <p class="mt-5 text-base leading-8 text-[#5d4b52] sm:text-lg">
-          The site leans into that mix instead of flattening it. Romance readers get polish and clear discovery paths, while the visuals keep a little softness, whimsy, and mood in the bloodstream.
-        </p>
-        <div class="mt-8 grid gap-4 sm:grid-cols-2">
-          <div class="rounded-[1.75rem] bg-[#f4e6e0] p-5">
-            <p class="eyebrow text-[#7c5a63]">Reader promise</p>
-            <p class="mt-2 text-sm leading-7 text-[#5d4b52]">
-              Emotion-first M/M romance across contemporary, fantasy, paranormal, historical, and spooky lanes.
-            </p>
-          </div>
-          <div class="rounded-[1.75rem] bg-[#e1eeec] p-5">
-            <p class="eyebrow text-[#2a5a62]">Site strategy</p>
-            <p class="mt-2 text-sm leading-7 text-[#41565c]">
-              Treat the catalog as a discovery hub with multiple “start here” options instead of a single chronological feed.
-            </p>
-          </div>
+        <div class="mt-6 space-y-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
+          <p>
+            Jaclyn Osborn writes M/M romance across contemporary, fantasy, paranormal,
+            and historical stories.
+          </p>
+          <p>
+            Her books are grounded in emotional connection, redemption, and the kind
+            of happy ending that feels earned.
+          </p>
+          <p>
+            If you love romance with heart, a little ache, and characters worth
+            rooting for, you are in the right place.
+          </p>
         </div>
       </article>
 
       <article class="card-shell rounded-[2.4rem] p-6 sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">Writing lanes</p>
-        <div class="mt-5 grid gap-4">
-          {
-            laneCards.map((card) => (
-              <div class="rounded-[1.75rem] border border-white/60 bg-white/70 p-5">
-                <h3 class="font-display text-2xl text-[#241920]">{card.title}</h3>
-                <p class="mt-2 text-sm leading-7 text-[#5d4b52]">{card.copy}</p>
-              </div>
-            ))
-          }
+        <p class="eyebrow text-[#7c5a63]">What she writes</p>
+        <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
+          Stories across several shelves.
+        </h2>
+        <div class="mt-6 space-y-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
+          <p>
+            You will find contemporary, fantasy, paranormal, and historical romance
+            throughout the catalog.
+          </p>
+          <p>
+            Some series lean tender, some lean darker, and some bring in ghosts,
+            magic, or larger fantasy worlds, but the focus stays on the romance.
+          </p>
+          <p>
+            If you would rather start with a series than a single title, the series
+            page lists everything in reading order.
+          </p>
         </div>
       </article>
     </div>
@@ -86,24 +77,25 @@ const laneCards = [
       <div class="card-shell rounded-[2.5rem] p-6 sm:p-8">
         <div class="flex flex-wrap items-start justify-between gap-6">
           <div class="max-w-2xl">
-            <p class="eyebrow text-[#7c5a63]">Where to begin</p>
+            <p class="eyebrow text-[#7c5a63]">Where to start</p>
             <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-              Different readers should get different doors into the catalog.
+              A few easy places to begin.
             </h2>
             <p class="mt-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
-              The series below function like curated shelves. Each one has a clear lane, a distinctive visual palette, and a single best entry point for new readers.
+              Start with the series that sounds most like your kind of read, then
+              follow it in order from there.
             </p>
           </div>
           <a href={withBase('series/')} class="button-secondary">
-            View series hub
+            View all series
           </a>
         </div>
 
         <div class="mt-8 grid gap-5 lg:grid-cols-3">
           {
-            booksBySeries.slice(0, 3).map((item) => (
+            startHereSeries.map((item) => (
               <div class="rounded-[1.85rem] bg-[#fcf7f3] p-5 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.28)]">
-                <p class="eyebrow text-[#7c5a63]">{item.lane}</p>
+                <p class="eyebrow text-[#7c5a63]">Series</p>
                 <h3 class="mt-2 font-display text-3xl text-[#241920]">{item.name}</h3>
                 <p class="mt-3 text-sm leading-7 text-[#5d4b52]">{item.description}</p>
                 <p class="mt-5 text-sm font-semibold text-[#241920]">

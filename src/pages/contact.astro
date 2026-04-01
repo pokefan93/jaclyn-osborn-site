@@ -8,12 +8,12 @@ import { withBase } from '../utils/withBase';
 
 <BaseLayout
   title="Contact"
-  description="Contact pathways for readers, media, rights, and ARC requests without any backend dependency."
+  description="Contact Jaclyn Osborn."
 >
   <PageHero
     eyebrow="Contact"
-    title="Keep contact pathways clear, specific, and static-friendly."
-    description="This page avoids a fake server-backed form. Instead, it gives each kind of inquiry its own route so the site stays deployable to GitHub Pages without sacrificing professionalism."
+    title="Get in touch"
+    description="Questions, event inquiries, and business messages are always welcome. If you are not sure where to start, use the main inbox."
     actions={[
       { href: `mailto:${siteMeta.email}`, label: 'Email Jaclyn', variant: 'primary' },
       { href: withBase('faq/'), label: 'Read FAQ', variant: 'secondary' },
@@ -21,11 +21,11 @@ import { withBase } from '../utils/withBase';
   />
 
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-2 xl:grid-cols-4">
+    <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-3">
       {
         contactCards.map((card) => (
           <article class="card-shell rounded-[2rem] p-6">
-            <p class="eyebrow text-[#7c5a63]">Contact lane</p>
+            <p class="eyebrow text-[#7c5a63]">Contact</p>
             <h2 class="mt-4 font-display text-3xl text-[#241920]">{card.title}</h2>
             <p class="mt-3 text-sm leading-7 text-[#5d4b52]">{card.copy}</p>
             <a href={card.href} class="button-secondary mt-6">
@@ -40,16 +40,21 @@ import { withBase } from '../utils/withBase';
   <section class="px-4 pb-6 pt-16 sm:px-6 lg:px-8">
     <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr]">
       <article class="card-shell rounded-[2.4rem] p-6 sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">Static-site note</p>
+        <p class="eyebrow text-[#7c5a63]">A quick note</p>
         <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          No secrets, no backend, no pretending otherwise.
+          The main inbox is always a good place to start.
         </h2>
-        <p class="mt-5 text-base leading-8 text-[#5d4b52] sm:text-lg">
-          GitHub Pages is enough for this build because the site keeps transactional behavior external. Newsletter signups, buy buttons, direct-store links, and email actions can all point to hosted services without shipping secrets to the frontend.
-        </p>
-        <div class="mt-8 rounded-[1.85rem] bg-[#fcf7f3] p-5 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.28)]">
-          <p class="text-sm leading-7 text-[#5d4b52]">
-            Recommended next step: swap the placeholder addresses in `src/data/site.ts`, then connect newsletter and retail URLs to real hosted endpoints.
+        <div class="mt-6 space-y-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
+          <p>
+            For reader mail, event questions, or business inquiries, choose the
+            address above that fits best.
+          </p>
+          <p>
+            If you are not sure which one to use, send your note to{' '}
+            <a href={`mailto:${siteMeta.email}`} class="font-semibold text-[#241920] underline decoration-[#cdaea5] underline-offset-4">
+              {siteMeta.email}
+            </a>
+            .
           </p>
         </div>
       </article>
