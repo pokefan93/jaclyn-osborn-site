@@ -1,0 +1,52 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { siteMeta } from '../data/site';
+import { withBase } from '../utils/withBase';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = siteMeta.title,
+  description = siteMeta.description,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://example.github.io');
+const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+const socialTitle = title.includes(siteMeta.name)
+  ? title
+  : `${title} | ${siteMeta.name}`;
+---
+
+<!doctype html>
+<html lang="en" class="bg-[#f8f1eb] text-[#241920]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#241920" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <title>{socialTitle}</title>
+    <meta property="og:title" content={socialTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={description} />
+  </head>
+  <body class="min-h-screen">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <SiteHeader />
+    <main id="main-content" class="relative z-10 pb-20">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

@@ -1,0 +1,271 @@
+---
+import BookCard from '../components/BookCard.astro';
+import PageHero from '../components/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { books, booksBySeries, formatLabels, genreVibeTags, seriesMap } from '../data/catalog';
+import { withBase } from '../utils/withBase';
+
+const sortedBooks = [...books].sort(
+  (a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime(),
+);
+
+const genreOptions = [...genreVibeTags].sort((a, b) => a.label.localeCompare(b.label));
+---
+
+<BaseLayout
+  title="Books"
+  description="Search, sort, and filter the sample Jaclyn Osborn catalog by series, mood, genre, and format."
+>
+  <PageHero
+    eyebrow="Books"
+    title="A searchable catalog built for readers who know their mood."
+    description="This page is intentionally storefront-first: fast scanning, lightweight filtering, and clean paths to series, tropes, and formats without any server-side runtime."
+    actions={[
+      { href: withBase('series/'), label: 'See all series', variant: 'secondary' },
+      { href: withBase('newsletter/'), label: 'Get release alerts', variant: 'primary' },
+    ]}
+  />
+
+  <section class="px-4 pt-10 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <div class="card-shell rounded-[2.3rem] p-5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="eyebrow text-[#7c5a63]">Catalog tools</p>
+            <p class="mt-2 text-sm leading-7 text-[#5d4b52]">
+              Use search plus a few filters instead of a bloated sidebar.
+            </p>
+          </div>
+          <p class="text-sm font-semibold text-[#241920]" aria-live="polite" data-results-count>
+            Showing {sortedBooks.length} titles
+          </p>
+        </div>
+
+        <form class="mt-6 grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_auto]" data-catalog-form>
+          <label class="space-y-2">
+            <span class="text-sm font-semibold text-[#241920]">Search</span>
+            <input
+              type="search"
+              name="q"
+              placeholder="Search titles, tropes, hooks..."
+              class="input-shell"
+            />
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-semibold text-[#241920]">Series</span>
+            <select name="series" class="input-shell">
+              <option value="all">All series</option>
+              {booksBySeries.map((item) => <option value={item.slug}>{item.name}</option>)}
+            </select>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-semibold text-[#241920]">Vibe / genre</span>
+            <select name="mood" class="input-shell">
+              <option value="all">All vibes & genres</option>
+              {
+                genreOptions.map((option) => (
+                  <option value={option.slug}>
+                    {option.label} ({option.kind})
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-semibold text-[#241920]">Format</span>
+            <select name="format" class="input-shell">
+              <option value="all">Any format</option>
+              {Object.entries(formatLabels).map(([value, label]) => <option value={value}>{label}</option>)}
+            </select>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-semibold text-[#241920]">Sort</span>
+            <select name="sort" class="input-shell">
+              <option value="newest">Newest</option>
+              <option value="title">Title</option>
+              <option value="series-order">Series order</option>
+            </select>
+          </label>
+
+          <div class="flex items-end">
+            <button type="button" class="button-secondary w-full justify-center lg:w-auto" data-clear-filters>
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="mt-8">
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-books-grid>
+          {
+            sortedBooks.map((book) => {
+              const series = seriesMap.get(book.seriesSlug);
+              const searchText = [
+                book.title,
+                series?.name,
+                book.shortHook,
+                book.description,
+                ...book.tropes,
+              ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+
+              return (
+                <div
+                  data-book-card
+                  data-title={book.title}
+                  data-series={book.seriesSlug}
+                  data-series-name={series?.name ?? ''}
+                  data-moods={[...book.genres, ...book.vibes].join(',')}
+                  data-formats={book.formats.join(',')}
+                  data-date={book.releaseDate}
+                  data-series-order={book.seriesOrder}
+                  data-search={searchText}
+                >
+                  <BookCard book={book} />
+                </div>
+              );
+            })
+          }
+        </div>
+
+        <div class="card-shell mt-6 hidden rounded-[2rem] p-8 text-center" data-empty-state>
+          <p class="font-display text-3xl text-[#241920]">No titles match those filters.</p>
+          <p class="mt-3 text-sm leading-7 text-[#5d4b52]">
+            Try a broader mood or clear the current search.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const form = document.querySelector('[data-catalog-form]');
+    const grid = document.querySelector('[data-books-grid]');
+    const resultCount = document.querySelector('[data-results-count]');
+    const clearButton = document.querySelector('[data-clear-filters]');
+    const emptyState = document.querySelector('[data-empty-state]');
+    const cards = Array.from(document.querySelectorAll('[data-book-card]'));
+
+    if (form instanceof HTMLFormElement && grid instanceof HTMLElement && resultCount instanceof HTMLElement && clearButton instanceof HTMLButtonElement && emptyState instanceof HTMLElement) {
+      const qField = form.elements.namedItem('q');
+      const seriesField = form.elements.namedItem('series');
+      const moodField = form.elements.namedItem('mood');
+      const formatField = form.elements.namedItem('format');
+      const sortField = form.elements.namedItem('sort');
+
+      if (
+        !(qField instanceof HTMLInputElement) ||
+        !(seriesField instanceof HTMLSelectElement) ||
+        !(moodField instanceof HTMLSelectElement) ||
+        !(formatField instanceof HTMLSelectElement) ||
+        !(sortField instanceof HTMLSelectElement)
+      ) {
+        throw new Error('Catalog form fields are missing.');
+      }
+
+      const fields = {
+        q: qField,
+        series: seriesField,
+        mood: moodField,
+        format: formatField,
+        sort: sortField,
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      fields.q.value = params.get('q') ?? '';
+      fields.series.value = params.get('series') ?? 'all';
+      fields.mood.value = params.get('mood') ?? 'all';
+      fields.format.value = params.get('format') ?? 'all';
+      fields.sort.value = params.get('sort') ?? 'newest';
+
+      const applyFilters = () => {
+        const query = fields.q.value.trim().toLowerCase();
+        const selectedSeries = fields.series.value;
+        const selectedMood = fields.mood.value;
+        const selectedFormat = fields.format.value;
+        const selectedSort = fields.sort.value;
+
+        const visibleCards = cards.filter((card) => {
+          if (!(card instanceof HTMLElement)) return false;
+
+          const search = card.dataset.search ?? '';
+          const series = card.dataset.series ?? '';
+          const moods = (card.dataset.moods ?? '').split(',').filter(Boolean);
+          const formats = (card.dataset.formats ?? '').split(',').filter(Boolean);
+
+          const matchesQuery = query.length === 0 || search.includes(query);
+          const matchesSeries = selectedSeries === 'all' || series === selectedSeries;
+          const matchesMood = selectedMood === 'all' || moods.includes(selectedMood);
+          const matchesFormat = selectedFormat === 'all' || formats.includes(selectedFormat);
+
+          const visible = matchesQuery && matchesSeries && matchesMood && matchesFormat;
+          card.hidden = !visible;
+
+          return visible;
+        });
+
+        const sortedVisible = [...visibleCards].sort((left, right) => {
+          if (!(left instanceof HTMLElement) || !(right instanceof HTMLElement)) {
+            return 0;
+          }
+
+          if (selectedSort === 'title') {
+            return (left.dataset.title ?? '').localeCompare(right.dataset.title ?? '');
+          }
+
+          if (selectedSort === 'series-order') {
+            const seriesCompare = (left.dataset.seriesName ?? '').localeCompare(
+              right.dataset.seriesName ?? '',
+            );
+
+            if (seriesCompare !== 0) {
+              return seriesCompare;
+            }
+
+            return Number(left.dataset.seriesOrder ?? 0) - Number(right.dataset.seriesOrder ?? 0);
+          }
+
+          return (
+            new Date(right.dataset.date ?? '').getTime() -
+            new Date(left.dataset.date ?? '').getTime()
+          );
+        });
+
+        sortedVisible.forEach((card) => grid.appendChild(card));
+        resultCount.textContent = `Showing ${sortedVisible.length} title${sortedVisible.length === 1 ? '' : 's'}`;
+        emptyState.classList.toggle('hidden', sortedVisible.length !== 0);
+
+        const nextParams = new URLSearchParams();
+
+        if (query) nextParams.set('q', query);
+        if (selectedSeries !== 'all') nextParams.set('series', selectedSeries);
+        if (selectedMood !== 'all') nextParams.set('mood', selectedMood);
+        if (selectedFormat !== 'all') nextParams.set('format', selectedFormat);
+        if (selectedSort !== 'newest') nextParams.set('sort', selectedSort);
+
+        const nextQuery = nextParams.toString();
+        const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+        window.history.replaceState({}, '', nextUrl);
+      };
+
+      form.addEventListener('input', applyFilters);
+      form.addEventListener('change', applyFilters);
+      clearButton.addEventListener('click', () => {
+        fields.q.value = '';
+        fields.series.value = 'all';
+        fields.mood.value = 'all';
+        fields.format.value = 'all';
+        fields.sort.value = 'newest';
+        applyFilters();
+      });
+
+      applyFilters();
+    }
+  </script>
+</BaseLayout>

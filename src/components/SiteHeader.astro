@@ -1,0 +1,117 @@
+---
+import { navItems, siteMeta } from '../data/site';
+import { withBase } from '../utils/withBase';
+
+const normalizedPath = (() => {
+  const withoutBase = Astro.url.pathname.replace(import.meta.env.BASE_URL, '/');
+  const path = withoutBase.startsWith('/') ? withoutBase : `/${withoutBase}`;
+
+  return path.endsWith('/') ? path : `${path}/`;
+})();
+
+const isActive = (href: string) => normalizedPath === href;
+---
+
+<header class="sticky top-0 z-50 px-4 pt-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl">
+    <div class="glass-panel flex items-center justify-between gap-4 rounded-[2rem] px-4 py-3 sm:px-5">
+      <a
+        href={withBase('')}
+        class="group inline-flex min-w-0 items-center gap-3 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#241920]"
+      >
+        <span
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#6f425e_0%,#c48073_55%,#efd8bc_100%)] text-lg font-semibold text-white shadow-[0_16px_30px_rgba(111,66,94,0.25)]"
+        >
+          JO
+        </span>
+        <span class="min-w-0">
+          <span class="block truncate font-display text-xl leading-none text-[#241920]">
+            {siteMeta.name}
+          </span>
+          <span class="mt-1 block truncate text-xs uppercase tracking-[0.28em] text-[#6a565f]">
+            M/M romance worlds
+          </span>
+        </span>
+      </a>
+
+      <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+        {
+          navItems.map((item) => (
+            <a
+              href={withBase(item.href)}
+              class:list={[
+                'rounded-full px-4 py-2 text-sm font-semibold transition',
+                isActive(item.href)
+                  ? 'bg-[#241920] text-white shadow-[0_14px_30px_rgba(36,25,32,0.16)]'
+                  : 'text-[#3b2b33] hover:bg-white/70 hover:text-[#241920]',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#cdaea5] bg-white/80 text-[#241920] shadow-[0_12px_24px_rgba(36,25,32,0.08)] md:hidden"
+        data-nav-toggle
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <span class="sr-only">Toggle navigation</span>
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h16" />
+        </svg>
+      </button>
+    </div>
+
+    <div
+      id="mobile-nav"
+      class="glass-panel mt-3 hidden rounded-[2rem] px-4 py-4 md:hidden"
+      data-nav-panel
+    >
+      <nav class="grid gap-2" aria-label="Mobile primary">
+        {
+          navItems.map((item) => (
+            <a
+              href={withBase(item.href)}
+              class:list={[
+                'rounded-[1.25rem] px-4 py-3 text-sm font-semibold transition',
+                isActive(item.href)
+                  ? 'bg-[#241920] text-white'
+                  : 'bg-white/70 text-[#241920] hover:bg-white',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-nav-panel]');
+
+  if (button && panel) {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      panel.classList.toggle('hidden', expanded);
+    });
+
+    panel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        button.setAttribute('aria-expanded', 'false');
+        panel.classList.add('hidden');
+      });
+    });
+  }
+</script>

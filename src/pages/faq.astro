@@ -1,0 +1,29 @@
+---
+import FaqList from '../components/FaqList.astro';
+import PageHero from '../components/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { faqItems } from '../data/site';
+import { withBase } from '../utils/withBase';
+---
+
+<BaseLayout
+  title="FAQ"
+  description="Frequently asked questions for readers and for the production readiness of the static author site."
+>
+  <PageHero
+    eyebrow="FAQ"
+    title="Answer the repeat questions before they become friction."
+    description="An FAQ page does double duty here: it helps readers and also clarifies how the storefront-style experience works once the mock content is swapped for real metadata."
+    actions={[
+      { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
+      { href: withBase('contact/'), label: 'Still need help?', variant: 'secondary' },
+    ]}
+    centered
+  />
+
+  <section class="px-4 pb-6 pt-10 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <FaqList items={faqItems} />
+    </div>
+  </section>
+</BaseLayout>

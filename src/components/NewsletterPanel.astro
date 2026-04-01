@@ -1,0 +1,71 @@
+---
+import { newsletterBenefits, siteMeta } from '../data/site';
+
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<section class:list={['overflow-hidden rounded-[2.5rem] bg-[#241920] text-white shadow-[0_30px_80px_rgba(36,25,32,0.28)]', compact ? 'px-6 py-8 sm:px-8' : 'px-6 py-10 sm:px-10 sm:py-12']}>
+  <div class:list={['grid gap-8', compact ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-[1fr_0.95fr] lg:items-center']}>
+    <div class="space-y-5">
+      <p class="eyebrow text-[#e7cec6]">Newsletter</p>
+      <h2 class="font-display text-4xl leading-tight sm:text-5xl">
+        Keep the storefront energy, but add a personal reader letter.
+      </h2>
+      <p class="max-w-2xl text-base leading-8 text-white/76">
+        Use this page as the home for release alerts, signed-copy drops, cover reveals, and backlist curation. The current signup action is placeholder-only and ready to swap for a hosted newsletter provider.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        {newsletterBenefits.map((benefit) => <span class="pill border border-white/12 bg-white/8 text-white/84">{benefit}</span>)}
+      </div>
+    </div>
+
+    {
+      compact ? (
+        <div class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
+          <p class="text-sm leading-7 text-white/76">
+            Build anticipation with trope stacks, what-to-read-next paths, and launch-week urgency that feels personal instead of spammy.
+          </p>
+          <a
+            href={siteMeta.newsletterUrl}
+            target="_blank"
+            rel="noreferrer"
+            class="button-primary mt-6"
+          >
+            Join the reader letter
+          </a>
+        </div>
+      ) : (
+        <form
+          action={siteMeta.newsletterFormAction}
+          method="post"
+          class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm"
+        >
+          <div class="space-y-5">
+            <div>
+              <label for="newsletter-name" class="mb-2 block text-sm font-semibold text-white/82">
+                First name
+              </label>
+              <input id="newsletter-name" name="first_name" type="text" class="input-shell" placeholder="Reader name" />
+            </div>
+            <div>
+              <label for="newsletter-email" class="mb-2 block text-sm font-semibold text-white/82">
+                Email address
+              </label>
+              <input id="newsletter-email" name="email" type="email" required class="input-shell" placeholder="you@example.com" />
+            </div>
+            <button type="submit" class="button-primary w-full justify-center">
+              Subscribe to the reader letter
+            </button>
+            <p class="text-sm leading-6 text-white/56">
+              Mock external form action. Replace `newsletterFormAction` in the seed content before launch.
+            </p>
+          </div>
+        </form>
+      )
+    }
+  </div>
+</section>

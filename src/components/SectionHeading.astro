@@ -1,0 +1,29 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description?: string;
+  centered?: boolean;
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  centered = false,
+} = Astro.props;
+---
+
+<div class:list={['space-y-4', centered && 'mx-auto max-w-3xl text-center']}>
+  <p class="eyebrow text-[#7c5a63]">{eyebrow}</p>
+  <h2 class="font-display text-4xl leading-tight text-[#241920] sm:text-5xl">
+    {title}
+  </h2>
+  {
+    description && (
+      <p class="text-base leading-8 text-[#5f4d54] sm:text-lg">
+        {description}
+      </p>
+    )
+  }
+</div>

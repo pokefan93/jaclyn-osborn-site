@@ -1,0 +1,60 @@
+---
+interface Action {
+  href: string;
+  label: string;
+  variant?: 'primary' | 'secondary';
+  external?: boolean;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  actions?: Action[];
+  centered?: boolean;
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  actions = [],
+  centered = false,
+} = Astro.props;
+---
+
+<section class="px-4 pt-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl">
+    <div class="hero-shell overflow-hidden rounded-[2.75rem] px-6 py-12 sm:px-10 sm:py-16">
+      <div class:list={[
+        'relative z-10 flex flex-col gap-6',
+        centered ? 'items-center text-center' : 'max-w-3xl',
+      ]}>
+        <p class="eyebrow text-[#e6d2c5]">{eyebrow}</p>
+        <h1 class="font-display text-[2.85rem] leading-[0.95] text-white sm:text-6xl">
+          {title}
+        </h1>
+        <p class="max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
+          {description}
+        </p>
+        {
+          actions.length > 0 && (
+            <div class:list={['flex flex-wrap gap-3', centered && 'justify-center']}>
+              {actions.map((action) => (
+                <a
+                  href={action.href}
+                  class={action.variant === 'secondary' ? 'button-secondary' : 'button-primary'}
+                  target={action.external ? '_blank' : undefined}
+                  rel={action.external ? 'noreferrer' : undefined}
+                >
+                  {action.label}
+                </a>
+              ))}
+            </div>
+          )
+        }
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

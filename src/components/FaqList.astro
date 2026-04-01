@@ -1,0 +1,27 @@
+---
+interface Item {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="grid gap-4">
+  {
+    items.map((item) => (
+      <details class="faq-item rounded-[1.8rem] border border-white/60 bg-white/70 px-5 py-5 shadow-[0_18px_50px_rgba(36,25,32,0.08)] backdrop-blur-md">
+        <summary class="cursor-pointer list-none pr-10 text-lg font-semibold text-[#241920]">
+          {item.question}
+        </summary>
+        <p class="mt-4 text-sm leading-7 text-[#5d4b52] sm:text-base">
+          {item.answer}
+        </p>
+      </details>
+    ))
+  }
+</div>
