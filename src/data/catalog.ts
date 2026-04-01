@@ -24,7 +24,6 @@ export const genreVibeTags: CatalogFilterTag[] = [
   { slug: 'cozy-small-town', label: 'Cozy small-town', kind: 'vibe' },
   { slug: 'spooky-sweet', label: 'Spooky sweet', kind: 'vibe' },
   { slug: 'portal-fantasy-chaos', label: 'Portal fantasy chaos', kind: 'vibe' },
-  { slug: 'court-intrigue', label: 'Court intrigue', kind: 'vibe' },
   { slug: 'coastal-comfort', label: 'Coastal comfort', kind: 'vibe' },
   { slug: 'soft-and-swoony', label: 'Soft and swoony', kind: 'vibe' },
   { slug: 'found-family', label: 'Found family', kind: 'vibe' },
@@ -147,20 +146,20 @@ export const series: Series[] = [
     entryPoint: 'Found at Sea',
     gradient: ['#2a2435', '#7f5f5d', '#caa56c'],
     textColor: '#fff7ea',
-    highlight: ['fated mates', 'court intrigue', 'historical fantasy'],
+    highlight: ['historical fantasy'],
   },
   {
     slug: 'axios',
     name: 'Axios',
     lane: 'Action-forward fantasy romance',
-    tagline: 'Rebellion, haunted cities, and a love story built under pressure.',
+    tagline: 'Battle-forged loyalty and a love story built under pressure.',
     description:
       'Action-forward M/M fantasy romance with battle stakes, fierce protective bonds, and an emotional core that holds under pressure.',
     status: 'Ongoing',
     entryPoint: 'Axios: A Spartan Tale',
     gradient: ['#172433', '#3d5f73', '#b98b76'],
     textColor: '#f6f7fb',
-    highlight: ['rebellion', 'haunted cities', 'second chance tension'],
+    highlight: [],
   },
 ];
 
@@ -678,8 +677,8 @@ export const books: Book[] = [
     description:
       'M/M historical fantasy romance. Book 1 in the Tales of Fate series.',
     genres: ['fantasy', 'historical'],
-    vibes: ['court-intrigue', 'protective-devotion'],
-    tropes: ['historical romance', 'forbidden romance', 'fated mates'],
+    vibes: ['protective-devotion'],
+    tropes: ['historical romance', 'forbidden romance'],
     formats: ['ebook', 'paperback', 'hardcover'],
     featured: false,
     coverPalette: 'gold',
@@ -727,8 +726,8 @@ export const books: Book[] = [
     description:
       'M/M historical fantasy romance. Book 2 in the Tales of Fate series.',
     genres: ['fantasy', 'historical'],
-    vibes: ['court-intrigue', 'darkly-devoted'],
-    tropes: ['historical romance', 'court intrigue'],
+    vibes: ['darkly-devoted'],
+    tropes: ['historical romance'],
     formats: ['ebook', 'audiobook'],
     featured: false,
     coverPalette: 'plum',

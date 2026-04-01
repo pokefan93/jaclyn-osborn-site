@@ -8,7 +8,7 @@ export const siteMeta = {
   heroCopy:
     'M/M romance across contemporary, fantasy, paranormal, and historical worlds. Find a series you love and settle in.',
   longBio:
-    'Jaclyn Osborn writes M/M romance — contemporary, fantasy, paranormal, historical, and everything in between. She believes in happy endings, emotional connection, and the kind of story you stay up too late to finish. When she\'s not writing, she\'s probably drinking coffee and rewatching her favorite anime.',
+    'Jaclyn Osborn writes M/M romance - contemporary, fantasy, paranormal, historical, and everything in between. She believes in happy endings, emotional connection, and the kind of story you stay up too late to finish. When she\'s not writing, she\'s probably drinking coffee and rewatching her favorite anime.',
   instagramUrl: 'https://instagram.com/jaclynosbornauthor',
   newsletterUrl: 'https://example.com/jaclyn-osborn-newsletter',
   newsletterFormAction: 'https://example.com/jaclyn-osborn-newsletter/signup',
@@ -38,45 +38,6 @@ export const navItems = [
   { href: '/newsletter/', label: 'Newsletter' },
   { href: '/contact/', label: 'Contact' },
   { href: '/faq/', label: 'FAQ' },
-];
-
-export const vibeCards = [
-  {
-    slug: 'darkly-devoted',
-    title: 'Darkly devoted',
-    description:
-      'Protective monsters, fallen angels, haunted bargains, and obsession handled with a soft center.',
-  },
-  {
-    slug: 'cozy-small-town',
-    title: 'Cozy small-town',
-    description:
-      'Bake sales, harbors, inns, and everyday tenderness with enough longing to power a weekend binge.',
-  },
-  {
-    slug: 'spooky-sweet',
-    title: 'Spooky sweet',
-    description:
-      'Ghosts, witches, storm-lit mansions, and warmth-forward romance that still lets the shadows flirt.',
-  },
-  {
-    slug: 'portal-fantasy-chaos',
-    title: 'Portal fantasy chaos',
-    description:
-      'Fish-out-of-water leads, magical politics, and irreverent humor braided into high-romance fantasy.',
-  },
-  {
-    slug: 'court-intrigue',
-    title: 'Court intrigue',
-    description:
-      'Royal pressure, prophetic threads, and historical fantasy yearning built for readers who want scale.',
-  },
-  {
-    slug: 'coastal-comfort',
-    title: 'Coastal comfort',
-    description:
-      'Salt air, second chances, healing arcs, and modern love stories with a slow, luminous pulse.',
-  },
 ];
 
 export const newsletterBenefits = [
@@ -119,7 +80,7 @@ export const faqItems = [
   {
     question: 'Are signed copies available?',
     answer:
-      'Signed copies are available directly from Jaclyn for select titles. Check the individual book listing for current availability — stock is limited and ships manually from Jaclyn\'s personal supply.',
+      'Signed copies are available directly from Jaclyn for select titles. Check the individual book listing for current availability - stock is limited and ships manually from Jaclyn\'s personal supply.',
   },
   {
     question: 'How do I sign up for the newsletter?',

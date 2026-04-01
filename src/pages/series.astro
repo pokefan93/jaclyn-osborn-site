@@ -71,9 +71,13 @@ import { withBase } from '../utils/withBase';
                   </div>
                 </div>
 
-                <div class="mt-6 flex flex-wrap gap-2">
-                  {item.highlight.map((tag) => <span class="pill border border-white/12 bg-white/8 text-white/86">{tag}</span>)}
-                </div>
+                {
+                  item.highlight.length > 0 && (
+                    <div class="mt-6 flex flex-wrap gap-2">
+                      {item.highlight.map((tag) => <span class="pill border border-white/12 bg-white/8 text-white/86">{tag}</span>)}
+                    </div>
+                  )
+                }
               </div>
 
               <div class="space-y-5">

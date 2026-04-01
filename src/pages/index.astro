@@ -6,8 +6,8 @@ import SectionHeading from '../components/SectionHeading.astro';
 import SeriesCard from '../components/SeriesCard.astro';
 import SocialShowcase from '../components/SocialShowcase.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { booksBySeries, catalogStats, featuredBooks } from '../data/catalog';
-import { siteMeta, vibeCards } from '../data/site';
+import { booksBySeries, featuredBooks } from '../data/catalog';
+import { siteMeta } from '../data/site';
 import { withBase } from '../utils/withBase';
 
 const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0]].filter(Boolean);
@@ -37,7 +37,6 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
               Join the newsletter
             </a>
           </div>
-
         </div>
       </div>
 
@@ -49,7 +48,7 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
           <div class="card-shell animate-card-delay-2 rounded-[2.25rem] p-5">
             <p class="eyebrow text-[#7c5a63]">Find your next read</p>
             <p class="mt-3 text-base leading-8 text-[#5d4b52]">
-              Browse by series, mood, or format. There's always a good place to start.
+              Browse by series or format. There's always a good place to start.
             </p>
           </div>
         </div>
@@ -82,7 +81,7 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
       <SectionHeading
         eyebrow="Browse by series"
         title="Each series has its own world."
-        description="Find a series and start from the beginning — every one has a recommended entry point."
+        description="Find a series and start from the beginning - every one has a recommended entry point."
       />
       <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {
@@ -92,32 +91,6 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
               books={item.books}
               href={withBase(`series/#${item.slug}`)}
             />
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="px-4 pt-18 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl space-y-10">
-      <SectionHeading
-        eyebrow="Browse by mood"
-        title="Not sure which series? Start with a feeling."
-      />
-      <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {
-          vibeCards.map((item, index) => (
-            <a
-              href={withBase(`books/?mood=${item.slug}`)}
-              class:list={['card-shell rounded-[2rem] p-6 transition hover:-translate-y-1', `animate-card-delay-${(index % 3) + 1}`]}
-            >
-              <p class="eyebrow text-[#7c5a63]">Mood</p>
-              <h3 class="mt-4 font-display text-3xl text-[#241920]">{item.title}</h3>
-              <p class="mt-3 text-sm leading-7 text-[#5d4b52]">{item.description}</p>
-              <span class="mt-6 inline-flex text-sm font-semibold text-[#241920]">
-                Browse this lane →
-              </span>
-            </a>
           ))
         }
       </div>

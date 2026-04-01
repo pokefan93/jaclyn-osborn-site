@@ -53,9 +53,13 @@ const [primaryBook, secondaryBook] = books;
       <p class="text-sm leading-7 text-[#5d4b52]">
         {series.description}
       </p>
-      <div class="flex flex-wrap gap-2">
-        {series.highlight.map((item) => <span class="tag-chip">{item}</span>)}
-      </div>
+      {
+        series.highlight.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {series.highlight.map((item) => <span class="tag-chip">{item}</span>)}
+          </div>
+        )
+      }
       <div class="mt-auto flex items-center justify-between gap-4 pt-2 text-sm">
         <span class="text-[#6e5961]">{books.length} books in sample</span>
         <span class="font-semibold text-[#241920] transition group-hover:translate-x-1">
