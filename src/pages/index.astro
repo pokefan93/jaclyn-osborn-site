@@ -11,6 +11,7 @@ import { siteMeta } from '../data/site';
 import { withBase } from '../utils/withBase';
 
 const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0]].filter(Boolean);
+const homeBooks = booksBySeries.flatMap((item) => item.books);
 ---
 
 <BaseLayout>
@@ -67,11 +68,11 @@ const heroBooks = [featuredBooks[0], featuredBooks[1], booksBySeries[2]?.books[0
   <section class="px-4 pt-18 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-7xl space-y-10">
       <SectionHeading
-        eyebrow="Featured books"
-        title="Start with a few favorites."
+        eyebrow="Books"
+        title="Browse the books."
       />
-      <div class="grid gap-6 lg:grid-cols-3">
-        {featuredBooks.map((book) => <BookCard book={book} />)}
+      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {homeBooks.map((book) => <BookCard book={book} />)}
       </div>
     </div>
   </section>
