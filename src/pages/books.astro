@@ -27,13 +27,14 @@ const categoryOptions = [...genreVibeTags]
   description="Browse Jaclyn Osborn books by series, category, and format."
 >
   <PageHero
-    eyebrow="Books"
-    title="Books"
-    description="Browse the catalog, filter by series, and find your next read."
+    eyebrow="Catalog"
+    title="Browse the catalog"
+    description="Browse by series, filter the list, and find your next read."
     actions={[
       { href: withBase('series/'), label: 'See all series', variant: 'secondary' },
       { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
     ]}
+    compact
   />
 
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
@@ -41,7 +42,7 @@ const categoryOptions = [...genreVibeTags]
       <div class="card-shell rounded-[2.3rem] p-5 sm:p-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p class="eyebrow text-[#7c5a63]">Browse the books</p>
+            <p class="eyebrow text-[#7c5a63]">Filter the list</p>
             <p class="mt-2 text-sm leading-7 text-[#5d4b52]">
               Search by title or series, or filter the list below.
             </p>

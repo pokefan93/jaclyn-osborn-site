@@ -12,6 +12,7 @@ interface Props {
   description: string;
   actions?: Action[];
   centered?: boolean;
+  compact?: boolean;
 }
 
 const {
@@ -20,18 +21,25 @@ const {
   description,
   actions = [],
   centered = false,
+  compact = false,
 } = Astro.props;
 ---
 
 <section class="px-4 pt-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="hero-shell overflow-hidden rounded-[2.75rem] px-6 py-12 sm:px-10 sm:py-16">
+    <div class:list={[
+      'hero-shell overflow-hidden rounded-[2.75rem] px-6 sm:px-10',
+      compact ? 'py-10 sm:py-12' : 'py-12 sm:py-16',
+    ]}>
       <div class:list={[
         'relative z-10 flex flex-col gap-6',
         centered ? 'items-center text-center' : 'max-w-3xl',
       ]}>
         <p class="eyebrow text-[#e6d2c5]">{eyebrow}</p>
-        <h1 class="font-display text-[2.85rem] leading-[0.95] text-white sm:text-6xl">
+        <h1 class:list={[
+          'font-display leading-[0.95] text-white',
+          compact ? 'text-[2.35rem] sm:text-[3.7rem]' : 'text-[2.85rem] sm:text-6xl',
+        ]}>
           {title}
         </h1>
         <p class="max-w-2xl text-base leading-8 text-white/78 sm:text-lg">

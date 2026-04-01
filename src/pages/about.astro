@@ -10,6 +10,8 @@ const startHereSeries = [
   booksBySeries.find((item) => item.slug === 'ivy-grove'),
   booksBySeries.find((item) => item.slug === 'sons-of-the-fallen'),
 ].filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+const authorPhoto = withBase('photos/jaclynosbornpicture.jpg');
 ---
 
 <BaseLayout
@@ -50,22 +52,16 @@ const startHereSeries = [
       </article>
 
       <article class="card-shell rounded-[2.4rem] p-6 sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">What she writes</p>
-        <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          Stories across several shelves.
-        </h2>
-        <div class="mt-6 space-y-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
-          <p>
-            You will find contemporary, fantasy, paranormal, and historical romance
-            throughout the catalog.
-          </p>
-          <p>
-            Some series lean tender, some lean darker, and some bring in ghosts,
-            magic, or larger fantasy worlds, but the focus stays on the romance.
-          </p>
-          <p>
-            If you would rather start with a series than a single title, the series
-            page lists everything in reading order.
+        <img
+          src={authorPhoto}
+          alt="Jaclyn Osborn"
+          class="h-[24rem] w-full rounded-[1.9rem] object-cover object-center shadow-[0_24px_54px_rgba(36,25,32,0.14)] sm:h-[30rem]"
+        />
+        <div class="mt-6 space-y-4">
+          <p class="eyebrow text-[#7c5a63]">Jaclyn Osborn</p>
+          <p class="text-base leading-8 text-[#5d4b52] sm:text-lg">
+            Contemporary, fantasy, paranormal, and historical romance with heart,
+            hope, and happy endings.
           </p>
         </div>
       </article>
