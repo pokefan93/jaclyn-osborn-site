@@ -20,16 +20,22 @@ const isActive = (href: string) => normalizedPath === href;
         class="group inline-flex min-w-0 items-center gap-3 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#241920]"
       >
         <span
-          class="flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#6f425e_0%,#c48073_55%,#efd8bc_100%)] text-lg font-semibold text-white shadow-[0_16px_30px_rgba(111,66,94,0.25)]"
+          class="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-white/55 bg-[#f4e6e0] shadow-[0_16px_30px_rgba(111,66,94,0.22)]"
         >
-          JO
+          <img
+            src={withBase('photos/jaclynosbornpicture.jpg')}
+            alt="Portrait of Jaclyn Osborn"
+            class="h-full w-full scale-115 object-cover object-center"
+            loading="eager"
+            decoding="async"
+          />
         </span>
         <span class="min-w-0">
           <span class="block truncate font-display text-xl leading-none text-[#241920]">
             {siteMeta.name}
           </span>
           <span class="mt-1 block truncate text-xs uppercase tracking-[0.28em] text-[#6a565f]">
-            M/M romance worlds
+            M/M ROMANCE BESTSELLING AUTHOR
           </span>
         </span>
       </a>

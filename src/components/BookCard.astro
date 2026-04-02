@@ -18,7 +18,7 @@ const releaseYear = /^\d{4}/.test(book.releaseDate)
 const hasSeriesOrder = book.seriesOrder > 0 && Boolean(book.seriesSlug || book.seriesLabel);
 ---
 
-<article class="card-shell group flex h-full flex-col rounded-[2rem] p-4">
+<article class="card-shell group flex h-full flex-col rounded-[1.2rem] p-4">
   <div class="relative">
     {
       showOrder && hasSeriesOrder && (

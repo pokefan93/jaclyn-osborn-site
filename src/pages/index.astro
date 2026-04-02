@@ -66,7 +66,7 @@ const tertiaryHeroBook = booksBySeries.find((series) => series.slug === 'axios')
         title="Find the right series for you."
         description="Each series page lists the books in reading order and points you to the best place to begin."
       />
-      <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+      <div class="grid gap-6 lg:grid-cols-2">
         {
           booksBySeries.map((item) => (
             <SeriesCard

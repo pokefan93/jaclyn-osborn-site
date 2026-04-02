@@ -25,6 +25,8 @@ const {
   compact = false,
   backgroundStyle,
 } = Astro.props;
+
+const hasAside = Astro.slots.has('aside');
 ---
 
 <section class="px-4 pt-8 sm:px-6 lg:px-8">
@@ -34,36 +36,51 @@ const {
       compact ? 'py-10 sm:py-12' : 'py-12 sm:py-16',
     ]} style={backgroundStyle}>
       <div class:list={[
-        'relative z-10 flex flex-col gap-6',
-        centered ? 'items-center text-center' : 'max-w-3xl',
+        'relative z-10',
+        hasAside && !centered
+          ? 'grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center'
+          : '',
       ]}>
-        <p class="eyebrow text-[#e6d2c5]">{eyebrow}</p>
-        <h1 class:list={[
-          'font-display leading-[0.95] text-white',
-          compact ? 'text-[2.35rem] sm:text-[3.7rem]' : 'text-[2.85rem] sm:text-6xl',
+        <div class:list={[
+          'flex flex-col gap-6',
+          centered ? 'items-center text-center' : 'max-w-3xl',
         ]}>
-          {title}
-        </h1>
-        <p class="max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
-          {description}
-        </p>
+          <p class="eyebrow text-[#e6d2c5]">{eyebrow}</p>
+          <h1 class:list={[
+            'font-display leading-[0.95] text-white',
+            compact ? 'text-[2.35rem] sm:text-[3.7rem]' : 'text-[2.85rem] sm:text-6xl',
+          ]}>
+            {title}
+          </h1>
+          <p class="max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
+            {description}
+          </p>
+          {
+            actions.length > 0 && (
+              <div class:list={['flex flex-wrap gap-3', centered && 'justify-center']}>
+                {actions.map((action) => (
+                  <a
+                    href={action.href}
+                    class={action.variant === 'secondary' ? 'button-secondary' : 'button-primary'}
+                    target={action.external ? '_blank' : undefined}
+                    rel={action.external ? 'noreferrer' : undefined}
+                  >
+                    {action.label}
+                  </a>
+                ))}
+              </div>
+            )
+          }
+          <slot />
+        </div>
+
         {
-          actions.length > 0 && (
-            <div class:list={['flex flex-wrap gap-3', centered && 'justify-center']}>
-              {actions.map((action) => (
-                <a
-                  href={action.href}
-                  class={action.variant === 'secondary' ? 'button-secondary' : 'button-primary'}
-                  target={action.external ? '_blank' : undefined}
-                  rel={action.external ? 'noreferrer' : undefined}
-                >
-                  {action.label}
-                </a>
-              ))}
+          hasAside && !centered && (
+            <div class="relative">
+              <slot name="aside" />
             </div>
           )
         }
-        <slot />
       </div>
     </div>
   </div>
