@@ -9,7 +9,7 @@ interface Action {
 interface Props {
   eyebrow: string;
   title: string;
-  description: string;
+  description?: string;
   actions?: Action[];
   centered?: boolean;
   compact?: boolean;
@@ -27,13 +27,18 @@ const {
 } = Astro.props;
 
 const hasAside = Astro.slots.has('aside');
+const hasDescription = Boolean(description?.trim());
 ---
 
 <section class="px-4 pt-6 sm:px-6 sm:pt-8 lg:px-8">
   <div class="mx-auto max-w-7xl">
     <div class:list={[
       'hero-shell overflow-hidden rounded-[2rem] px-5 sm:rounded-[2.75rem] sm:px-10',
-      compact ? 'py-8 sm:py-12' : 'py-9 sm:py-16',
+      compact
+        ? hasDescription
+          ? 'py-8 sm:py-12'
+          : 'py-6 sm:py-9'
+        : 'py-9 sm:py-16',
     ]} style={backgroundStyle}>
       <div class:list={[
         'relative z-10',
@@ -42,7 +47,8 @@ const hasAside = Astro.slots.has('aside');
           : '',
       ]}>
         <div class:list={[
-          'flex flex-col gap-5 sm:gap-6',
+          'flex flex-col sm:gap-6',
+          hasDescription ? 'gap-5' : 'gap-4',
           centered ? 'items-center text-center' : 'max-w-3xl',
         ]}>
           <p class="eyebrow text-[#e6d2c5]">{eyebrow}</p>
@@ -52,9 +58,13 @@ const hasAside = Astro.slots.has('aside');
           ]}>
             {title}
           </h1>
-          <p class="max-w-2xl text-[0.98rem] leading-7 text-white/78 sm:text-lg sm:leading-8">
-            {description}
-          </p>
+          {
+            hasDescription && (
+              <p class="max-w-2xl text-[0.98rem] leading-7 text-white/78 sm:text-lg sm:leading-8">
+                {description}
+              </p>
+            )
+          }
           {
             actions.length > 0 && (
               <div class:list={['flex flex-col gap-3 sm:flex-row sm:flex-wrap', centered && 'justify-center']}>
