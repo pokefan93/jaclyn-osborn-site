@@ -142,6 +142,45 @@ This keeps the site compatible with GitHub Pages because checkout stays hosted b
 - Payment Links: `https://docs.stripe.com/payment-links`
 - Buy Button: `https://docs.stripe.com/payment-links/buy-button`
 - Post-payment redirect: `https://docs.stripe.com/payment-links/post-payment`
+- Products API: `https://docs.stripe.com/api/products`
+- Prices API: `https://docs.stripe.com/api/prices`
+- Payment Links API: `https://docs.stripe.com/api/payment_links`
+- Keys: `https://docs.stripe.com/keys`
+
+### Google-Sheets-ready workbook
+
+Use the generated workbook as the admin source for bulk Stripe setup:
+
+- `Admin_Docs`
+- `Series`
+- `Books`
+- `Purchase`
+- `Direct_Sale_Formats`
+- `Retailer_Links`
+
+`Books` is the source for Stripe product creation.
+
+`Direct_Sale_Formats` is the source for Stripe price and Payment Link creation.
+
+Important fields in `Books`:
+
+- `sync_product_to_stripe`
+- `stripe_product_id`
+- `stripe_product_active`
+
+Important fields in `Direct_Sale_Formats`:
+
+- `sync_to_stripe`
+- `unit_amount`
+- `currency`
+- `collect_shipping_address`
+- `shipping_countries`
+- `allow_promotion_codes`
+- `after_completion_redirect_url`
+- `stripe_product_id`
+- `stripe_price_id`
+- `stripe_payment_link_id`
+- `stripe_payment_link_url`
 
 ### How to create a Stripe product and Payment Link
 
@@ -197,6 +236,50 @@ If you want an embedded Stripe buy button:
 
 Do not place any Stripe secret key in this repo.
 
+### Bulk Stripe sync from the workbook
+
+The repo includes an admin script that syncs Stripe from the workbook in bulk:
+
+- workbook export: `python3 scripts/export_google_sheets_catalog.py`
+- Stripe sync: `python3 scripts/sync_stripe_from_workbook.py --workbook /path/to/workbook.xlsx`
+
+Install the Python workbook dependency first:
+
+```sh
+python3 -m pip install --user openpyxl
+```
+
+Dry run first:
+
+```sh
+python3 scripts/sync_stripe_from_workbook.py \
+  --workbook /path/to/jaclyn_osborn_catalog_google_sheets_ready.xlsx \
+  --dry-run
+```
+
+Live sync:
+
+```sh
+export STRIPE_SECRET_KEY=sk_live_or_test_key_here
+
+python3 scripts/sync_stripe_from_workbook.py \
+  --workbook /path/to/jaclyn_osborn_catalog_google_sheets_ready.xlsx
+```
+
+What the sync script does:
+
+- creates or updates Stripe products for rows in `Books` where `sync_product_to_stripe` is true
+- creates Stripe prices for rows in `Direct_Sale_Formats` where `sync_to_stripe` is true
+- creates Stripe Payment Links for those direct-sale rows
+- writes Stripe IDs and Payment Link URLs back into a new workbook file
+
+Important behavior:
+
+- Stripe secret keys are local/admin only and must never be used in the frontend
+- the script does not create a custom checkout flow
+- prices are treated as immutable; if the amount changes, the script creates a new price and archives the old one
+- product sync can cover the whole catalog, while Payment Link sync only covers the direct-sale rows you enable
+
 ### How to paste links into the content layer
 
 Example direct-sale row:
@@ -249,6 +332,6 @@ The visual system aims for romantic and slightly moody rather than gothic:
 
 - warm parchment backgrounds instead of flat white
 - dark fig and teal contrast panels for atmosphere
-- Fraunces for expressive display type and Manrope for clean scanning
+- Newsreader for expressive display type and Manrope for clean scanning
 - storefront-style product cards with series discovery built into the IA
 - enough motion and glow to feel intentional without overwhelming the content

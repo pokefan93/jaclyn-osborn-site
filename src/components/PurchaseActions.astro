@@ -22,7 +22,7 @@ const isPlaceholderUrl = (url?: string) =>
   url.includes('example.com') ||
   url.includes('buy.stripe.com/test_');
 
-const liveDirectFormats = book.purchase.directSaleFormats.filter((format) => {
+const isLiveDirectFormat = (format: Book['purchase']['directSaleFormats'][number]) => {
   if (format.purchaseMode === 'unavailable') {
     return false;
   }
@@ -32,7 +32,13 @@ const liveDirectFormats = book.purchase.directSaleFormats.filter((format) => {
   }
 
   return !isPlaceholderUrl(format.purchaseUrl);
-});
+};
+
+const liveDirectFormats = book.purchase.directSaleFormats.filter(isLiveDirectFormat);
+const placeholderDirectFormats = book.purchase.directSaleFormats.filter(
+  (format) =>
+    format.purchaseMode !== 'unavailable' && !isLiveDirectFormat(format),
+);
 
 const liveRetailerLinks = book.purchase.retailerLinks.filter(
   (retailer) => !isPlaceholderUrl(retailer.purchaseUrl),
@@ -59,6 +65,7 @@ const showWhereToBuyLabel =
 const showStatusRow = merchandisingFlags.length > 0 || showAvailability;
 const showDirectComingSoon =
   liveDirectFormats.length === 0 &&
+  placeholderDirectFormats.length === 0 &&
   (book.purchase.directSaleFormats.length > 0 ||
     book.purchase.directFromAuthor ||
     book.purchase.signedCopy);
@@ -130,7 +137,7 @@ const availabilityTone =
       }
 
       {
-        liveDirectFormats.length > 0 && (
+        (liveDirectFormats.length > 0 || placeholderDirectFormats.length > 0) && (
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-3">
               <p class="eyebrow text-[#7c5a63]">
@@ -168,6 +175,13 @@ const availabilityTone =
                     </a>
                   );
                 })
+              }
+              {
+                placeholderDirectFormats.map((format) => (
+                  <span class:list={['purchase-disabled', compact && 'w-full']}>
+                    {format.label} - {formatLabels[format.format]} soon
+                  </span>
+                ))
               }
             </div>
           </div>
