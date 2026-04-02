@@ -16,21 +16,41 @@ const releaseYear = /^\d{4}/.test(book.releaseDate)
   ? new Date(book.releaseDate).getFullYear()
   : null;
 const hasSeriesOrder = book.seriesOrder > 0 && Boolean(book.seriesSlug || book.seriesLabel);
+const readingOrderCard = showOrder;
 ---
 
-<article class="card-shell group flex h-full flex-col rounded-[1.2rem] p-3.5 sm:p-4">
-  <div class="relative">
+<article
+  class:list={[
+    'card-shell group h-full rounded-[1.2rem]',
+    readingOrderCard
+      ? 'grid grid-cols-[6.9rem_minmax(0,1fr)] items-start gap-3 p-3.5 sm:grid-cols-[7.2rem_minmax(0,1fr)] sm:gap-4 sm:p-4'
+      : 'flex flex-col p-3.5 sm:p-4',
+  ]}
+>
+  <div class:list={['relative', readingOrderCard && 'w-full']}>
     {
       showOrder && hasSeriesOrder && (
-        <span class="absolute left-4 top-4 z-10 rounded-full bg-white/88 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#241920] shadow-[0_12px_24px_rgba(36,25,32,0.16)]">
+        <span
+          class:list={[
+            'absolute z-10 rounded-full bg-white/88 font-semibold uppercase text-[#241920] shadow-[0_12px_24px_rgba(36,25,32,0.16)]',
+            readingOrderCard
+              ? 'left-2 top-2 px-2 py-0.5 text-[0.58rem] tracking-[0.18em]'
+              : 'left-4 top-4 px-3 py-1 text-xs tracking-[0.24em]',
+          ]}
+        >
           Book {book.seriesOrder}
         </span>
       )
     }
-    <BookCover book={book} />
+    <BookCover book={book} className={readingOrderCard ? 'rounded-[0.85rem]' : ''} />
   </div>
 
-  <div class="flex flex-1 flex-col px-0.5 pb-1 pt-4 sm:px-1 sm:pt-5">
+  <div
+    class:list={[
+      'flex flex-1 flex-col',
+      readingOrderCard ? 'min-w-0 px-0 pt-0.5' : 'px-0.5 pb-1 pt-4 sm:px-1 sm:pt-5',
+    ]}
+  >
     <div class="flex flex-wrap gap-2">
       {
         showSeries && collectionLabel && (
@@ -41,23 +61,37 @@ const hasSeriesOrder = book.seriesOrder > 0 && Boolean(book.seriesSlug || book.s
       }
     </div>
 
-    <h3 class="mt-4 font-display text-[1.72rem] leading-[1.02] text-[#241920] sm:text-[2rem]">
+    <h3
+      class:list={[
+        'font-display text-[#241920]',
+        readingOrderCard
+          ? 'mt-2 text-[1.32rem] leading-[0.98] sm:text-[1.48rem]'
+          : 'mt-4 text-[1.72rem] leading-[1.02] sm:text-[2rem]',
+      ]}
+    >
       {book.title}
     </h3>
     {
       releaseYear && (
-        <p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-[#7c5a63]">
+        <p class:list={['text-xs font-semibold uppercase tracking-[0.24em] text-[#7c5a63]', readingOrderCard ? 'mt-2' : 'mt-3']}>
           Published {releaseYear}
         </p>
       )
     }
-    <p class="mt-3 text-sm leading-6 text-[#5d4b52] sm:text-[0.96rem] sm:leading-7">
+    <p
+      class:list={[
+        'text-sm text-[#5d4b52]',
+        readingOrderCard
+          ? 'mt-2 line-clamp-4 leading-[1.35] sm:text-[0.92rem]'
+          : 'mt-3 leading-6 sm:text-[0.96rem] sm:leading-7',
+      ]}
+    >
       {book.shortHook}
     </p>
 
     <PurchaseActions book={book} compact />
 
-    <div class="mt-auto pt-6 text-sm text-[#6e5961]">
+    <div class:list={[readingOrderCard ? 'mt-auto pt-4 text-xs text-[#6e5961] sm:text-sm' : 'mt-auto pt-6 text-sm text-[#6e5961]']}>
       {
         hasSeriesOrder
           ? `${collectionLabel} - Book ${book.seriesOrder}`

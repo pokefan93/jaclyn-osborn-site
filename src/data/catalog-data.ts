@@ -101,8 +101,8 @@ export const generatedSeries = [
   {
     "slug": "axios",
     "name": "Axios",
-    "lane": "Fantasy romance",
-    "tagline": "Fantasy M/M romance.",
+    "lane": "Historical romance",
+    "tagline": "Historical M/M romance.",
     "description": "Start with Axios: A Spartan Tale, followed by Eryx: A Spartan Tale.",
     "status": "Series",
     "entryPoint": "Axios: A Spartan Tale",
