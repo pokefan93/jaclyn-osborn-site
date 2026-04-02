@@ -138,7 +138,7 @@ const availabilityTone =
               </p>
             </div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class:list={[compact ? 'grid gap-2' : 'flex flex-wrap gap-2']}>
               {
                 liveDirectFormats.map((format) => {
                   const label = `${format.label} - ${formatLabels[format.format]}`;
@@ -160,6 +160,7 @@ const availabilityTone =
                       rel="noreferrer"
                       class:list={[
                         'format-button',
+                        compact && 'w-full justify-center',
                         format.purchaseMode === 'stripe_payment_link' && 'purchase-direct',
                       ]}
                     >
@@ -194,14 +195,14 @@ const availabilityTone =
             <p class="eyebrow text-[#7c5a63]">
               {showWhereToBuyLabel ? 'Retailers' : 'Where to buy'}
             </p>
-            <div class="flex flex-wrap gap-2">
+            <div class:list={[compact ? 'grid gap-2' : 'flex flex-wrap gap-2']}>
               {
                 liveRetailerLinks.map((retailer) => (
                   <a
                     href={retailer.purchaseUrl}
                     target="_blank"
                     rel="noreferrer"
-                    class="format-button"
+                    class:list={['format-button', compact && 'w-full justify-center']}
                   >
                     {retailer.label}
                   </a>

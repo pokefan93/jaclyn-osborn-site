@@ -1,5 +1,6 @@
 ---
 import { newsletterBenefits, siteMeta } from '../data/site';
+import { withBase } from '../utils/withBase';
 
 interface Props {
   compact?: boolean;
@@ -8,11 +9,11 @@ interface Props {
 const { compact = false } = Astro.props;
 ---
 
-<section class:list={['overflow-hidden rounded-[2.5rem] bg-[#241920] text-white shadow-[0_30px_80px_rgba(36,25,32,0.28)]', compact ? 'px-6 py-8 sm:px-8' : 'px-6 py-10 sm:px-10 sm:py-12']}>
-    <div class:list={['grid gap-8', compact ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-[1fr_0.95fr] lg:items-center']}>
+<section class:list={['overflow-hidden rounded-[2rem] bg-[#241920] text-white shadow-[0_30px_80px_rgba(36,25,32,0.28)] sm:rounded-[2.5rem]', compact ? 'px-5 py-7 sm:px-8 sm:py-8' : 'px-5 py-8 sm:px-10 sm:py-12']}>
+    <div class:list={['grid gap-6 sm:gap-8', compact ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-[1fr_0.95fr] lg:items-center']}>
       <div class="space-y-5">
         <p class="eyebrow text-[#e7cec6]">Newsletter</p>
-        <h2 class="font-display text-4xl leading-tight sm:text-5xl">
+        <h2 class="font-display text-[2.15rem] leading-tight sm:text-5xl">
           Join Jaclyn's newsletter.
         </h2>
         <div class="flex flex-wrap gap-2">
@@ -22,19 +23,19 @@ const { compact = false } = Astro.props;
 
     {
       compact ? (
-        <div class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
+        <div class="rounded-[1.6rem] border border-white/10 bg-white/6 p-5 backdrop-blur-sm sm:rounded-[2rem] sm:p-6">
           <p class="text-sm leading-7 text-white/76">
             New releases, cover reveals, and signed copy updates sent straight to your inbox.
           </p>
           <a
-            href={siteMeta.newsletterUrl}
-            class="button-primary mt-6"
+            href={withBase('about/#about-newsletter')}
+            class="button-primary mt-6 w-full justify-center sm:w-auto"
           >
             Join the newsletter
           </a>
         </div>
       ) : (
-        <div class="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
+        <div class="rounded-[1.6rem] border border-white/10 bg-white/6 p-5 backdrop-blur-sm sm:rounded-[2rem] sm:p-6">
           <div class="space-y-5">
             <div>
               <label
@@ -47,7 +48,7 @@ const { compact = false } = Astro.props;
                 id="newsletter-email-input"
                 type="email"
                 name="newsletter_email"
-                placeholder="you@example.com"
+                placeholder="Subscribe to Jaclyn's newsletter"
                 class="input-shell"
                 data-newsletter-email-input
               />

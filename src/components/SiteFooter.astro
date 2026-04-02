@@ -5,10 +5,10 @@ import { withBase } from '../utils/withBase';
 
 <footer class="relative z-10 px-4 pb-6 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="overflow-hidden rounded-[2.5rem] bg-[#241920] px-6 py-10 text-white shadow-[0_30px_80px_rgba(36,25,32,0.28)] sm:px-8">
-      <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+    <div class="overflow-hidden rounded-[2rem] bg-[#241920] px-5 py-8 text-white shadow-[0_30px_80px_rgba(36,25,32,0.28)] sm:rounded-[2.5rem] sm:px-8 sm:py-10">
+      <div class="grid gap-8 sm:gap-10 lg:grid-cols-[1.2fr_0.8fr]">
         <div class="space-y-5">
-          <h2 class="font-display text-3xl sm:text-4xl">
+          <h2 class="font-display text-[2.15rem] sm:text-4xl">
             M/M romance by Jaclyn Osborn.
           </h2>
           <div class="flex flex-wrap gap-3 text-sm text-white/80">
@@ -46,7 +46,7 @@ import { withBase } from '../utils/withBase';
               <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="transition hover:text-white">
                 Instagram
               </a>
-              <a href={siteMeta.newsletterUrl} class="transition hover:text-white">
+              <a href={withBase('about/#about-newsletter')} class="transition hover:text-white">
                 Newsletter
               </a>
               <a href={`mailto:${siteMeta.email}`} class="transition hover:text-white">

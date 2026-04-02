@@ -38,15 +38,15 @@ const categoryOptions = [...genreVibeTags]
     description="Browse by series, filter the list, and find your next read."
     actions={[
       { href: withBase('series/'), label: 'See all series', variant: 'secondary' },
-      { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
+      { href: withBase('about/#about-newsletter'), label: 'Join the newsletter', variant: 'primary' },
     ]}
     compact
   />
 
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-7xl">
-      <div class="card-shell rounded-[2.3rem] p-5 sm:p-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="card-shell rounded-[1.9rem] p-5 sm:rounded-[2.3rem] sm:p-6">
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <div>
             <p class="eyebrow text-[#7c5a63]">Filter the list</p>
             <p class="mt-2 text-sm leading-7 text-[#5d4b52]">
@@ -110,7 +110,7 @@ const categoryOptions = [...genreVibeTags]
       </div>
 
       <div class="mt-8">
-        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3" data-books-grid>
+        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3" data-books-grid>
           {
             sortedBooks.map((book) => {
               const collectionLabel = getBookCollectionLabel(book);

@@ -235,7 +235,8 @@ body::before {
 .animate-reveal,
 .animate-card-delay-1,
 .animate-card-delay-2,
-.animate-card-delay-3 {
+.animate-card-delay-3,
+.animate-card-delay-4 {
   animation: reveal-up 700ms ease both;
 }
 
@@ -249,6 +250,10 @@ body::before {
 
 .animate-card-delay-3 {
   animation-delay: 250ms;
+}
+
+.animate-card-delay-4 {
+  animation-delay: 330ms;
 }
 
 @media (prefers-reduced-motion: reduce) {

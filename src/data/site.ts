@@ -9,7 +9,7 @@ export const siteMeta = {
     'Explore contemporary, fantasy, paranormal, and historical stories, along with series reading order, book details, and updates.',
   longBio:
     'Jaclyn Osborn is a bestselling M/M romance author writing across contemporary, fantasy, paranormal, and historical stories. When she is not writing, she is usually drinking coffee or watching anime.',
-  instagramUrl: 'https://instagram.com/jaclynosbornauthor',
+  instagramUrl: 'https://instagram.com/jaclynosborn',
   newsletterUrl: 'mailto:hello@jaclynosbornbooks.com?subject=Newsletter%20Signup',
   email: 'hello@jaclynosbornbooks.com',
   mediaEmail: 'media@jaclynosbornbooks.com',
@@ -31,7 +31,6 @@ export const navItems = [
   { href: '/books/', label: 'Books' },
   { href: '/series/', label: 'Series' },
   { href: '/about/', label: 'About' },
-  { href: '/newsletter/', label: 'Newsletter' },
 ];
 
 export const newsletterBenefits = [

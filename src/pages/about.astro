@@ -25,7 +25,7 @@ const authorPhoto = withBase('photos/jaclynosbornpicture.jpg');
       slot="aside"
       src={authorPhoto}
       alt="Jaclyn Osborn"
-      class="mx-auto h-[20rem] w-full max-w-[24rem] rounded-[2rem] object-cover object-center shadow-[0_24px_54px_rgba(36,25,32,0.22)] sm:h-[24rem] lg:mx-0 lg:h-[28rem]"
+      class="mx-auto h-[16rem] w-full max-w-[22rem] rounded-[1.6rem] object-cover object-center shadow-[0_24px_54px_rgba(36,25,32,0.22)] sm:h-[24rem] sm:max-w-[24rem] sm:rounded-[2rem] lg:mx-0 lg:h-[28rem]"
     />
   </PageHero>
 
@@ -36,21 +36,22 @@ const authorPhoto = withBase('photos/jaclynosbornpicture.jpg');
   </section>
 
   <section id="about-contact" class="px-4 pb-6 pt-10 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-3xl">
+    <div class="mx-auto max-w-7xl">
       <article class="card-shell rounded-[1.2rem] p-6 sm:p-7">
         <p class="eyebrow text-[#7c5a63]">Contact</p>
         <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-[2.8rem]">
-          Get in touch.
+          Business inquiries.
         </h2>
         <p class="mt-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
-          Reader mail, event invitations, and business questions are all welcome. If
-          you are not sure where to send your note, start with Jaclyn&apos;s main inbox.
+          For business questions, event invites, podcast requests, or anything else
+          work-related, send a note here. If you are not totally sure which inbox
+          makes the most sense, Jaclyn&apos;s main email is always a good place to start.
         </p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a href={`mailto:${siteMeta.email}`} class="button-secondary">
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <a href={`mailto:${siteMeta.email}`} class="button-secondary w-full justify-center sm:w-auto">
             {siteMeta.email}
           </a>
-          <a href={`mailto:${siteMeta.mediaEmail}`} class="button-secondary">
+          <a href={`mailto:${siteMeta.mediaEmail}`} class="button-secondary w-full justify-center sm:w-auto">
             Media & events
           </a>
         </div>
