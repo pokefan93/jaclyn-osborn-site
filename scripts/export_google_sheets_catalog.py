@@ -196,6 +196,23 @@ def make_admin_docs_sheet(wb: Workbook) -> None:
             ),
         ),
         (
+            "How to mark sold out",
+            (
+                "In the Purchase tab, set availability_status to sold_out. If only the direct "
+                "edition is sold out but retailer editions should remain available, keep the "
+                "Retailer_Links rows and change the matching Direct_Sale_Formats row to "
+                "purchase_mode = unavailable or leave sync_to_stripe off."
+            ),
+        ),
+        (
+            "Audiobook rows",
+            (
+                "Audiobook can appear in Books.formats and can also have a Direct_Sale_Formats "
+                "row if you ever want direct audio delivery. If you only want retailer audio, "
+                "leave the audiobook direct-sale row disabled and use Retailer_Links."
+            ),
+        ),
+        (
             "When to mark sold out",
             (
                 "Mark sold_out when a direct signed or special edition should no longer be "
@@ -504,13 +521,12 @@ def make_direct_sale_sheet(wb: Workbook, books: list[dict[str, Any]]) -> None:
             continue
 
         for fmt in book.get("formats", []):
-            if fmt == "audiobook":
-                continue
             is_physical = fmt in {"paperback", "hardcover"}
             label = {
                 "ebook": "eBook",
                 "paperback": "Paperback",
                 "hardcover": "Hardcover",
+                "audiobook": "Audiobook",
             }.get(fmt, fmt.title())
             ws.append(
                 [

@@ -22,6 +22,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install workbook tooling
+        run: python -m pip install openpyxl
+
+      - name: Sync workbook into Stripe and site data
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+
+          WORKBOOK_PATH="admin-data/jaclyn-catalog.xlsx"
+          if [ ! -f "$WORKBOOK_PATH" ]; then
+            echo "No committed workbook found at $WORKBOOK_PATH. Using existing generated catalog data."
+            exit 0
+          fi
+
+          if [ "$REPOSITORY_NAME" = "${REPOSITORY_OWNER}.github.io" ]; then
+            COVER_BASE_URL="https://${REPOSITORY_OWNER}.github.io/covers"
+          else
+            COVER_BASE_URL="https://${REPOSITORY_OWNER}.github.io/${REPOSITORY_NAME}/covers"
+          fi
+
+          TEMP_WORKBOOK="$RUNNER_TEMP/jaclyn-catalog-synced.xlsx"
+
+          python scripts/sync_stripe_from_workbook.py \
+            --workbook "$WORKBOOK_PATH" \
+            --output "$TEMP_WORKBOOK" \
+            --cover-base-url "$COVER_BASE_URL"
+
+          python scripts/build_catalog_from_workbook.py \
+            --workbook "$TEMP_WORKBOOK" \
+            --output src/data/catalog-data.ts
+
       - name: Install, build, and upload site
         uses: withastro/action@v5
         with:

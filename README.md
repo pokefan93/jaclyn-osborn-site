@@ -124,6 +124,99 @@ If you later use a custom domain:
 - Optional Stripe Buy Button support is isolated to a dedicated component and should only be enabled when you actually want an embedded button.
 - All internal navigation is base-aware for GitHub Pages compatibility.
 
+## One-click Google Sheets publishing
+
+This repo now supports a one-click publishing flow:
+
+1. Jaclyn edits the Google Sheet.
+2. Jaclyn clicks `Publish website now` in the Google Sheets sidebar.
+3. The sheet exports an `.xlsx` workbook into this repo at `admin-data/jaclyn-catalog.xlsx`.
+4. The normal GitHub Pages workflow runs automatically.
+5. That workflow:
+   - syncs Stripe from the workbook
+   - regenerates `src/data/catalog-data.ts`
+   - builds Astro
+   - deploys GitHub Pages
+
+There is no manual approval step in this setup.
+
+### Files involved
+
+- Google Sheets Apps Script template: `google-apps-script/`
+- committed workbook path: `admin-data/jaclyn-catalog.xlsx`
+- workbook-to-site generator: `scripts/build_catalog_from_workbook.py`
+- Stripe sync: `scripts/sync_stripe_from_workbook.py`
+- deploy pipeline: `.github/workflows/deploy.yml`
+
+### GitHub setup
+
+In GitHub repo settings, add:
+
+- `STRIPE_SECRET_KEY` as a GitHub Actions secret
+
+The deploy workflow uses that secret during publish.
+
+### Google Sheets Apps Script setup
+
+Create a Google Apps Script project attached to the spreadsheet and paste in:
+
+- `google-apps-script/Code.gs`
+- `google-apps-script/Sidebar.html`
+- `google-apps-script/appsscript.json`
+
+Then set these Apps Script script properties:
+
+- `GITHUB_OWNER`
+- `GITHUB_REPO`
+- `GITHUB_BRANCH`
+- `GITHUB_FILE_PATH`
+- `GITHUB_TOKEN`
+
+Recommended values for this repo:
+
+- `GITHUB_OWNER = pokefan93`
+- `GITHUB_REPO = jaclyn-osborn-site`
+- `GITHUB_BRANCH = main`
+- `GITHUB_FILE_PATH = admin-data/jaclyn-catalog.xlsx`
+
+`GITHUB_TOKEN` should be a fine-grained personal access token with repo contents write access to this repository.
+
+### Jaclyn editing view
+
+The Apps Script sidebar is designed so Jaclyn mostly uses plain-English tabs:
+
+- `Start Here`
+- `Books`
+- `Availability & Notes`
+- `Direct Sales`
+- `Store Links`
+
+The sidebar also hides the Stripe housekeeping columns and summary/reference tabs so she does not have to look at IDs or internal sync fields while editing.
+
+The easy editing view adds:
+
+- friendly tab names
+- checkboxes for yes/no fields
+- dropdowns for common choices like `In stock`, `Sold out`, and `Preorder`
+- plain-English notes on the header cells for the fields she is most likely to change
+
+### Day-to-day workflow for Jaclyn
+
+1. Update book copy in `Books`
+2. Mark `In stock`, `Sold out`, `Limited stock`, or `Preorder` in `Availability & Notes`
+3. Update direct-sale prices in `Direct Sales`
+4. Update retailer links in `Store Links`
+5. Click `Publish website now`
+
+### Important note about Stripe IDs
+
+The workflow is designed to be resilient even if the sheet does not carry every Stripe ID back yet:
+
+- products are matched by `book_slug`
+- direct-sale rows are matched by `direct_sale_id`
+
+That keeps repeat publishes from creating unnecessary duplicate Stripe data in the common cases.
+
 ## Direct sales admin guide
 
 ### Architecture choice
@@ -161,6 +254,12 @@ Use the generated workbook as the admin source for bulk Stripe setup:
 `Books` is the source for Stripe product creation.
 
 `Direct_Sale_Formats` is the source for Stripe price and Payment Link creation.
+
+For the plain-English Google Sheet version, those tabs may appear as:
+
+- `Availability & Notes` instead of `Purchase`
+- `Direct Sales` instead of `Direct_Sale_Formats`
+- `Store Links` instead of `Retailer_Links`
 
 Important fields in `Books`:
 
@@ -279,6 +378,18 @@ Important behavior:
 - the script does not create a custom checkout flow
 - prices are treated as immutable; if the amount changes, the script creates a new price and archives the old one
 - product sync can cover the whole catalog, while Payment Link sync only covers the direct-sale rows you enable
+
+### Workbook-to-site build
+
+This repo can now regenerate the site catalog directly from the workbook:
+
+```sh
+python3 -m pip install --user openpyxl
+python3 scripts/build_catalog_from_workbook.py \
+  --workbook /path/to/jaclyn-catalog.xlsx
+```
+
+That script rebuilds `src/data/catalog-data.ts` from the sheet/workbook data.
 
 ### How to paste links into the content layer
 

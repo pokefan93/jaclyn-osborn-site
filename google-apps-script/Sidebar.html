@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font: 14px/1.5 Arial, sans-serif;
+        color: #241920;
+        background: #fbf5f1;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 22px;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid #ead8d1;
+        border-radius: 16px;
+        padding: 14px;
+        margin-bottom: 12px;
+        box-shadow: 0 10px 22px rgba(36, 25, 32, 0.08);
+      }
+
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #7c5a63;
+        margin-bottom: 6px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        margin-top: 8px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .button-primary {
+        background: #241920;
+        color: #ffffff;
+      }
+
+      .button-secondary {
+        background: #efe1da;
+        color: #241920;
+      }
+
+      .status {
+        margin-top: 10px;
+        color: #5d4b52;
+        min-height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Jaclyn Site Publisher</h1>
+    <p>Use this panel instead of digging through the technical tabs. The editing view hides the Stripe housekeeping and keeps the sheet focused on what Jaclyn actually needs to change.</p>
+
+    <div class="card">
+      <div class="eyebrow">Editing view</div>
+      <p>Shows the main tabs, adds checkboxes and dropdowns, and hides the Stripe housekeeping columns.</p>
+      <button class="button button-secondary" onclick="runAction('showEditorTabs', 'Easy editing view is ready.')">
+        Set up easy editing view
+      </button>
+      <button class="button button-secondary" onclick="runAction('showAllTabs', 'All tabs and columns are visible again.')">
+        Show all tabs and columns
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Quick jumps</div>
+      <button class="button button-secondary" onclick="openTab('Books')">Open Books</button>
+      <button class="button button-secondary" onclick="openTab('Availability & Notes')">Open Availability & Notes</button>
+      <button class="button button-secondary" onclick="openTab('Direct Sales')">Open Direct Sales</button>
+      <button class="button button-secondary" onclick="openTab('Store Links')">Open Store Links</button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">How to update</div>
+      <p><strong>Book details:</strong> use the <em>Books</em> tab.</p>
+      <p><strong>Sold out / preorder / signed copy notes:</strong> use the <em>Availability &amp; Notes</em> tab.</p>
+      <p><strong>Direct sale price:</strong> use the <em>Direct Sales</em> tab. Type the price in cents, so 1999 means $19.99.</p>
+      <p><strong>Retailer links:</strong> use the <em>Store Links</em> tab.</p>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Publish</div>
+      <p>When you click publish, the sheet is sent to GitHub. GitHub then updates Stripe, rebuilds the site, and deploys it.</p>
+      <button class="button button-primary" onclick="publishNow()">Publish website now</button>
+      <div id="status" class="status"></div>
+    </div>
+
+    <script>
+      function setStatus(message) {
+        document.getElementById('status').textContent = message || '';
+      }
+
+      function runAction(name, successMessage) {
+        setStatus('Working...');
+        google.script.run
+          .withSuccessHandler(function () {
+            setStatus(successMessage);
+          })
+          .withFailureHandler(function (error) {
+            setStatus(error.message || String(error));
+          })[name]();
+      }
+
+      function openTab(name) {
+        setStatus('Opening tab...');
+        google.script.run
+          .withSuccessHandler(function () {
+            setStatus('');
+          })
+          .withFailureHandler(function (error) {
+            setStatus(error.message || String(error));
+          })
+          .goToSheet(name);
+      }
+
+      function publishNow() {
+        setStatus('Sending the workbook to GitHub...');
+        google.script.run
+          .withSuccessHandler(function (result) {
+            setStatus(result.message || 'Publish started.');
+          })
+          .withFailureHandler(function (error) {
+            setStatus(error.message || String(error));
+          })
+          .publishSite();
+      }
+    </script>
+  </body>
+</html>

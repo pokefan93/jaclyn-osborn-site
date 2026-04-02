@@ -321,6 +321,16 @@ body::before {
     color: var(--input-text);
   }
 
+  select.input-shell {
+    color-scheme: light;
+  }
+
+  select.input-shell option,
+  select.input-shell optgroup {
+    background: #ffffff;
+    color: #241920;
+  }
+
   .input-shell::placeholder {
     color: var(--input-placeholder);
   }

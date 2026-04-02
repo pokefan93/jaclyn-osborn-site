@@ -16,6 +16,10 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 
 STRIPE_API_BASE = "https://api.stripe.com/v1"
+SHEET_ALIASES = {
+    "Books": ["Books"],
+    "Direct_Sale_Formats": ["Direct_Sale_Formats", "Direct Sales"],
+}
 
 
 class StripeApiError(RuntimeError):
@@ -31,13 +35,38 @@ def normalize_bool(value: Any) -> bool:
         return value
     if value is None:
         return False
-    return str(value).strip().lower() in {"1", "true", "yes", "y"}
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "on", "checked"}
+
+
+def bool_with_default(value: Any, default: bool) -> bool:
+    if value is None or str(value).strip() == "":
+        return default
+    return normalize_bool(value)
 
 
 def normalize_text(value: Any) -> str:
     if value is None:
         return ""
     return str(value).strip()
+
+
+def normalize_purchase_mode(value: Any) -> str:
+    normalized = normalize_text(value).lower().replace("-", " ").replace("_", " ")
+    mapping = {
+        "stripe payment link": "stripe_payment_link",
+        "payment link": "stripe_payment_link",
+        "direct checkout": "stripe_payment_link",
+        "direct checkout stripe": "stripe_payment_link",
+        "direct checkout (stripe)": "stripe_payment_link",
+        "stripe buy button": "stripe_buy_button",
+        "buy button": "stripe_buy_button",
+        "embedded buy button": "stripe_buy_button",
+        "unavailable": "unavailable",
+        "not for sale right now": "unavailable",
+        "sold out": "unavailable",
+    }
+    compact = " ".join(normalized.split())
+    return mapping.get(compact, normalize_text(value))
 
 
 def parse_country_list(raw: str) -> list[str]:
@@ -68,6 +97,17 @@ def ensure_required_headers(ws: Worksheet, required: list[str]) -> dict[str, int
     if missing:
         raise RuntimeError(f"Worksheet '{ws.title}' is missing required columns: {', '.join(missing)}")
     return headers
+
+
+def get_sheet(workbook, canonical_name: str) -> Worksheet:
+    aliases = SHEET_ALIASES[canonical_name]
+    for alias in aliases:
+        if alias in workbook.sheetnames:
+            return workbook[alias]
+    raise RuntimeError(
+        f"Workbook is missing required sheet '{canonical_name}'. "
+        f"Accepted names: {', '.join(aliases)}"
+    )
 
 
 @dataclass
@@ -122,6 +162,42 @@ class StripeClient:
                 break
             starting_after = data[-1]["id"]
         return products
+
+    def list_prices(self, product_id: str) -> list[dict[str, Any]]:
+        if self.dry_run:
+            return []
+
+        prices: list[dict[str, Any]] = []
+        starting_after = ""
+        while True:
+            form: list[tuple[str, str]] = [("limit", "100"), ("product", product_id)]
+            if starting_after:
+                form.append(("starting_after", starting_after))
+            page = self.request("GET", f"/prices?{urlencode(form)}")
+            data = page.get("data", [])
+            prices.extend(data)
+            if not page.get("has_more") or not data:
+                break
+            starting_after = data[-1]["id"]
+        return prices
+
+    def list_payment_links(self) -> list[dict[str, Any]]:
+        if self.dry_run:
+            return []
+
+        links: list[dict[str, Any]] = []
+        starting_after = ""
+        while True:
+            form: list[tuple[str, str]] = [("limit", "100")]
+            if starting_after:
+                form.append(("starting_after", starting_after))
+            page = self.request("GET", f"/payment_links?{urlencode(form)}")
+            data = page.get("data", [])
+            links.extend(data)
+            if not page.get("has_more") or not data:
+                break
+            starting_after = data[-1]["id"]
+        return links
 
     def retrieve_price(self, price_id: str) -> dict[str, Any]:
         return self.request("GET", f"/prices/{price_id}")
@@ -270,14 +346,14 @@ def sync_products(
 
     for book in books:
         row_index = book["_row_index"]
-        sync_enabled = normalize_bool(book.get("sync_product_to_stripe"))
+        sync_enabled = bool_with_default(book.get("sync_product_to_stripe"), True)
         if not sync_enabled:
             continue
 
         book_slug = normalize_text(book.get("book_slug"))
         title = normalize_text(book.get("title"))
         product_id = normalize_text(book.get("stripe_product_id"))
-        active = normalize_bool(book.get("stripe_product_active"))
+        active = bool_with_default(book.get("stripe_product_active"), True)
 
         metadata = {
             "source": "jaclyn-site",
@@ -344,6 +420,16 @@ def sync_direct_sale_formats(
     direct_rows: list[dict[str, Any]],
     product_ids_by_slug: dict[str, str],
 ) -> None:
+    existing_payment_links_by_sale_id: dict[str, dict[str, Any]] = {}
+    existing_prices_by_product: dict[str, list[dict[str, Any]]] = {}
+
+    if not client.dry_run:
+        for link in client.list_payment_links():
+            metadata = link.get("metadata") or {}
+            direct_sale_id = metadata.get("direct_sale_id")
+            if direct_sale_id and direct_sale_id not in existing_payment_links_by_sale_id:
+                existing_payment_links_by_sale_id[direct_sale_id] = link
+
     for row in direct_rows:
         row_index = row["_row_index"]
         if not normalize_bool(row.get("sync_to_stripe")):
@@ -354,7 +440,7 @@ def sync_direct_sale_formats(
         label = normalize_text(row.get("label")) or normalize_text(row.get("book_title"))
         currency = normalize_text(row.get("currency") or "usd").lower()
         unit_amount_raw = normalize_text(row.get("unit_amount"))
-        purchase_mode = normalize_text(row.get("purchase_mode") or "stripe_payment_link")
+        purchase_mode = normalize_purchase_mode(row.get("purchase_mode") or "stripe_payment_link")
 
         if purchase_mode not in {"stripe_payment_link", "stripe_buy_button"}:
             raise RuntimeError(
@@ -392,9 +478,30 @@ def sync_direct_sale_formats(
         price_id = existing_price_id
         create_new_price = True
 
+        if not existing_price_id and not client.dry_run:
+            product_prices = existing_prices_by_product.get(product_id)
+            if product_prices is None:
+                product_prices = client.list_prices(product_id)
+                existing_prices_by_product[product_id] = product_prices
+            for existing_price in product_prices:
+                metadata_match = (
+                    normalize_text((existing_price.get("metadata") or {}).get("direct_sale_id"))
+                    == direct_sale_id
+                )
+                if (
+                    metadata_match
+                    and int(existing_price.get("unit_amount") or 0) == unit_amount
+                    and normalize_text(existing_price.get("currency")).lower() == currency
+                    and bool(existing_price.get("active"))
+                ):
+                    existing_price_id = existing_price["id"]
+                    break
+
         if existing_price_id:
             if client.dry_run:
                 print(f"[dry-run] inspect existing price {existing_price_id} for {direct_sale_id}")
+                create_new_price = False
+                price_id = existing_price_id
             else:
                 current_price = client.retrieve_price(existing_price_id)
                 if (
@@ -441,6 +548,14 @@ def sync_direct_sale_formats(
         payment_link_id = existing_payment_link_id
         payment_link_url = existing_payment_link_url or purchase_url
 
+        if not existing_payment_link_id and not client.dry_run:
+            existing_link = existing_payment_links_by_sale_id.get(direct_sale_id)
+            if existing_link and not create_new_price:
+                existing_payment_link_id = existing_link["id"]
+                existing_payment_link_url = existing_link.get("url") or existing_payment_link_url
+                payment_link_id = existing_payment_link_id
+                payment_link_url = existing_payment_link_url or purchase_url
+
         needs_new_payment_link = not existing_payment_link_id or create_new_price
 
         if needs_new_payment_link:
@@ -469,9 +584,14 @@ def sync_direct_sale_formats(
                 set_value(direct_ws, row_index, direct_headers, "stripe_payment_link_id", payment_link_id)
                 set_value(direct_ws, row_index, direct_headers, "stripe_payment_link_url", payment_link_url)
                 set_value(direct_ws, row_index, direct_headers, "purchase_url", payment_link_url)
+        elif existing_payment_link_id:
+            set_value(direct_ws, row_index, direct_headers, "stripe_payment_link_id", existing_payment_link_id)
+            set_value(direct_ws, row_index, direct_headers, "stripe_payment_link_url", existing_payment_link_url)
+            set_value(direct_ws, row_index, direct_headers, "purchase_url", existing_payment_link_url)
 
         if not client.dry_run:
             set_value(direct_ws, row_index, direct_headers, "stripe_product_id", product_id)
+            set_value(direct_ws, row_index, direct_headers, "stripe_price_id", price_id)
             set_value(direct_ws, row_index, direct_headers, "stripe_last_synced_at", now_iso())
             set_value(direct_ws, row_index, direct_headers, "stripe_sync_notes", "")
 
@@ -488,8 +608,8 @@ def main() -> None:
     output_path = args.output or default_output_path(workbook_path)
 
     wb = load_workbook(workbook_path)
-    books_ws = wb["Books"]
-    direct_ws = wb["Direct_Sale_Formats"]
+    books_ws = get_sheet(wb, "Books")
+    direct_ws = get_sheet(wb, "Direct_Sale_Formats")
 
     book_headers = ensure_required_headers(
         books_ws,
