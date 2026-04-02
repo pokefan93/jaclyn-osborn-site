@@ -1,68 +1,32 @@
 ---
-import FaqList from '../components/FaqList.astro';
-import PageHero from '../components/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { contactCards, faqItems, siteMeta } from '../data/site';
 import { withBase } from '../utils/withBase';
+
+const target = withBase('about/#about-contact');
 ---
 
 <BaseLayout
   title="Contact"
-  description="Contact Jaclyn Osborn."
+  description="Contact information has moved to the About page."
 >
-  <PageHero
-    eyebrow="Contact"
-    title="Get in touch"
-    description="Questions, event inquiries, and business messages are always welcome. If you are not sure where to start, use the main inbox."
-    actions={[
-      { href: `mailto:${siteMeta.email}`, label: 'Email Jaclyn', variant: 'primary' },
-      { href: withBase('faq/'), label: 'Read FAQ', variant: 'secondary' },
-    ]}
-  />
-
-  <section class="px-4 pt-10 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-3">
-      {
-        contactCards.map((card) => (
-          <article class="card-shell rounded-[2rem] p-6">
-            <p class="eyebrow text-[#7c5a63]">Contact</p>
-            <h2 class="mt-4 font-display text-3xl text-[#241920]">{card.title}</h2>
-            <p class="mt-3 text-sm leading-7 text-[#5d4b52]">{card.copy}</p>
-            <a href={card.href} class="button-secondary mt-6">
-              {card.label}
-            </a>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="px-4 pb-6 pt-16 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-      <article class="card-shell rounded-[2.4rem] p-6 sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">A quick note</p>
-        <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          The main inbox is always a good place to start.
-        </h2>
-        <div class="mt-6 space-y-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
-          <p>
-            For reader mail, event questions, or business inquiries, choose the
-            address above that fits best.
-          </p>
-          <p>
-            If you are not sure which one to use, send your note to{' '}
-            <a href={`mailto:${siteMeta.email}`} class="font-semibold text-[#241920] underline decoration-[#cdaea5] underline-offset-4">
-              {siteMeta.email}
-            </a>
-            .
-          </p>
-        </div>
-      </article>
-
-      <div class="space-y-5">
-        <p class="eyebrow text-[#7c5a63]">Quick answers</p>
-        <FaqList items={faqItems.slice(0, 3)} />
+  <section class="px-4 pt-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <div class="card-shell rounded-[1.2rem] p-6 text-center sm:p-8">
+        <p class="eyebrow text-[#7c5a63]">Moved</p>
+        <h1 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
+          Contact has moved to About.
+        </h1>
+        <p class="mt-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
+          You will be redirected automatically. If nothing happens, use the button below.
+        </p>
+        <a href={target} class="button-secondary mt-6">
+          Go to About
+        </a>
       </div>
     </div>
   </section>
+
+  <script is:inline define:vars={{ target }}>
+    window.location.replace(target);
+  </script>
 </BaseLayout>

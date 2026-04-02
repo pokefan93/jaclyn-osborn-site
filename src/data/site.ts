@@ -32,8 +32,6 @@ export const navItems = [
   { href: '/series/', label: 'Series' },
   { href: '/about/', label: 'About' },
   { href: '/newsletter/', label: 'Newsletter' },
-  { href: '/contact/', label: 'Contact' },
-  { href: '/faq/', label: 'FAQ' },
 ];
 
 export const newsletterBenefits = [
