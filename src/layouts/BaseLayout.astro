@@ -23,15 +23,40 @@ const socialTitle = title.includes(siteMeta.name)
 ---
 
 <!doctype html>
-<html lang="en" class="bg-[#f8f1eb] text-[#241920]">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#241920" />
+    <meta name="theme-color" content="#241920" data-theme-color />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <script is:inline>
+      (() => {
+        const storageKey = 'jaclyn-theme';
+        let storedTheme = null;
+
+        try {
+          storedTheme = localStorage.getItem(storageKey);
+        } catch {}
+
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
+        const theme = storedTheme === 'dark' || storedTheme === 'light'
+          ? storedTheme
+          : systemTheme;
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.classList.toggle('theme-dark', theme === 'dark');
+
+        const metaTheme = document.querySelector('meta[data-theme-color]');
+        if (metaTheme instanceof HTMLMetaElement) {
+          metaTheme.content = theme === 'dark' ? '#120e15' : '#241920';
+        }
+      })();
+    </script>
     <title>{socialTitle}</title>
     <meta property="og:title" content={socialTitle} />
     <meta property="og:description" content={description} />

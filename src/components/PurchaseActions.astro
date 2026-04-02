@@ -119,7 +119,7 @@ const availabilityTone =
 
       {
         book.purchase.priceNote && (
-          <div class="space-y-2 rounded-[1.4rem] bg-[#fcf7f3] px-4 py-4 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.22)]">
+          <div class="surface-box space-y-2 rounded-[1.4rem] px-4 py-4">
             <p class="eyebrow text-[#7c5a63]">
               Amazon snapshot
               {book.purchase.priceSnapshotDate ? ` (${book.purchase.priceSnapshotDate})` : ''}
@@ -224,7 +224,7 @@ const availabilityTone =
 
       {
         supportNotes.length > 0 && (
-          <div class:list={['space-y-2 rounded-[1.4rem] bg-[#fcf7f3] px-4 py-4 shadow-[inset_0_0_0_1px_rgba(201,170,163,0.22)]', compact && 'text-xs']}>
+          <div class:list={['surface-box space-y-2 rounded-[1.4rem] px-4 py-4', compact && 'text-xs']}>
             {supportNotes.map((note) => <p class="purchase-note">{note}</p>)}
           </div>
         )

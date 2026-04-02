@@ -31,48 +31,98 @@ const isActive = (href: string) => normalizedPath === href;
           />
         </span>
         <span class="min-w-0 pr-1">
-          <span class="block overflow-visible whitespace-nowrap pl-[0.1em] pr-[0.08em] pt-[0.08em] pb-[0.06em] font-display text-[1.22rem] font-semibold italic leading-[1.03] tracking-[-0.03em] text-[#241920] sm:text-[1.62rem] sm:tracking-[-0.035em]">
+          <span class="site-brand-title block overflow-visible whitespace-nowrap pl-[0.1em] pr-[0.08em] pt-[0.08em] pb-[0.06em] font-display text-[1.22rem] font-semibold italic leading-[1.03] tracking-[-0.03em] sm:text-[1.62rem] sm:tracking-[-0.035em]">
             {siteMeta.name}
           </span>
-          <span class="mt-1 block truncate text-[0.62rem] uppercase tracking-[0.18em] text-[#6a565f] sm:text-xs sm:tracking-[0.28em]">
+          <span class="site-brand-subtitle mt-1 block truncate text-[0.62rem] uppercase tracking-[0.18em] sm:text-xs sm:tracking-[0.28em]">
             BESTSELLING M/M ROMANCE AUTHOR
           </span>
         </span>
       </a>
 
-      <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
-        {
-          navItems.map((item) => (
-            <a
-              href={withBase(item.href)}
-              class:list={[
-                'rounded-full px-4 py-2 text-sm font-semibold transition',
-                isActive(item.href)
-                  ? 'bg-[#241920] text-white shadow-[0_14px_30px_rgba(36,25,32,0.16)]'
-                  : 'text-[#3b2b33] hover:bg-white/70 hover:text-[#241920]',
-              ]}
-              aria-current={isActive(item.href) ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
-          ))
-        }
-      </nav>
+      <div class="hidden items-center gap-2 md:flex">
+        <nav class="flex items-center gap-1" aria-label="Primary">
+          {
+            navItems.map((item) => (
+              <a
+                href={withBase(item.href)}
+                class:list={[
+                  'site-nav-link rounded-full px-4 py-2 text-sm font-semibold transition',
+                  isActive(item.href) && 'is-active',
+                ]}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
 
-      <button
-        type="button"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#cdaea5] bg-white/80 text-[#241920] shadow-[0_12px_24px_rgba(36,25,32,0.08)] md:hidden sm:h-11 sm:w-11"
-        data-nav-toggle
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-      >
-        <span class="sr-only">Toggle navigation</span>
-        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-          <path d="M4 7h16" />
-          <path d="M4 12h16" />
-          <path d="M4 17h16" />
-        </svg>
-      </button>
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label="Switch to dark mode"
+          aria-pressed="false"
+        >
+          <span class="sr-only">Toggle dark mode</span>
+          <svg data-theme-icon="sun" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2.5"></path>
+            <path d="M12 19.5V22"></path>
+            <path d="M4.93 4.93l1.77 1.77"></path>
+            <path d="M17.3 17.3l1.77 1.77"></path>
+            <path d="M2 12h2.5"></path>
+            <path d="M19.5 12H22"></path>
+            <path d="M4.93 19.07l1.77-1.77"></path>
+            <path d="M17.3 6.7l1.77-1.77"></path>
+          </svg>
+          <svg data-theme-icon="moon" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.8A8.98 8.98 0 1 1 11.2 3c-.2.64-.3 1.32-.3 2a7.3 7.3 0 0 0 7.3 7.3c.68 0 1.36-.1 2-.3Z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 md:hidden">
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label="Switch to dark mode"
+          aria-pressed="false"
+        >
+          <span class="sr-only">Toggle dark mode</span>
+          <svg data-theme-icon="sun" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2.5"></path>
+            <path d="M12 19.5V22"></path>
+            <path d="M4.93 4.93l1.77 1.77"></path>
+            <path d="M17.3 17.3l1.77 1.77"></path>
+            <path d="M2 12h2.5"></path>
+            <path d="M19.5 12H22"></path>
+            <path d="M4.93 19.07l1.77-1.77"></path>
+            <path d="M17.3 6.7l1.77-1.77"></path>
+          </svg>
+          <svg data-theme-icon="moon" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.8A8.98 8.98 0 1 1 11.2 3c-.2.64-.3 1.32-.3 2a7.3 7.3 0 0 0 7.3 7.3c.68 0 1.36-.1 2-.3Z"></path>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="site-header-button"
+          data-nav-toggle
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+        >
+          <span class="sr-only">Toggle navigation</span>
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M4 7h16" />
+            <path d="M4 12h16" />
+            <path d="M4 17h16" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <div
@@ -86,10 +136,8 @@ const isActive = (href: string) => normalizedPath === href;
             <a
               href={withBase(item.href)}
               class:list={[
-                'rounded-[1.25rem] px-4 py-3 text-sm font-semibold transition',
-                isActive(item.href)
-                  ? 'bg-[#241920] text-white'
-                  : 'bg-white/70 text-[#241920] hover:bg-white',
+                'site-mobile-nav-link rounded-[1.25rem] px-4 py-3 text-sm font-semibold transition',
+                isActive(item.href) && 'is-active',
               ]}
               aria-current={isActive(item.href) ? 'page' : undefined}
             >
@@ -103,8 +151,49 @@ const isActive = (href: string) => normalizedPath === href;
 </header>
 
 <script>
+  const root = document.documentElement;
+  const themeStorageKey = 'jaclyn-theme';
+  const themeButtons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]'),
+  );
+  const themeMeta = document.querySelector<HTMLMetaElement>('meta[data-theme-color]');
   const button = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const panel = document.querySelector<HTMLElement>('[data-nav-panel]');
+
+  const syncThemeUi = () => {
+    const isDark = root.dataset.theme === 'dark';
+
+    themeButtons.forEach((themeButton) => {
+      themeButton.setAttribute('aria-pressed', String(isDark));
+      themeButton.setAttribute(
+        'aria-label',
+        isDark ? 'Switch to light mode' : 'Switch to dark mode',
+      );
+    });
+
+    if (themeMeta) {
+      themeMeta.content = isDark ? '#120e15' : '#241920';
+    }
+  };
+
+  const applyTheme = (theme: 'light' | 'dark') => {
+    root.dataset.theme = theme;
+    root.classList.toggle('theme-dark', theme === 'dark');
+
+    try {
+      localStorage.setItem(themeStorageKey, theme);
+    } catch {}
+
+    syncThemeUi();
+  };
+
+  syncThemeUi();
+
+  themeButtons.forEach((themeButton) => {
+    themeButton.addEventListener('click', () => {
+      applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+  });
 
   if (button && panel) {
     button.addEventListener('click', () => {
