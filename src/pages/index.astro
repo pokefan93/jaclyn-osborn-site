@@ -1,8 +1,6 @@
 ---
 import BookCover from '../components/BookCover.astro';
 import NewsletterPanel from '../components/NewsletterPanel.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import SeriesCard from '../components/SeriesCard.astro';
 import SocialShowcase from '../components/SocialShowcase.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { booksBySeries } from '../data/catalog';
@@ -59,28 +57,7 @@ const quaternaryHeroBook = booksBySeries.find((series) => series.slug === 'ivy-g
     </div>
   </section>
 
-  <section class="px-4 pt-18 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl space-y-10">
-      <SectionHeading
-        eyebrow="Series"
-        title="Find the right series for you."
-        description="Each series page lists the books in reading order and points you to the best place to begin."
-      />
-      <div class="grid items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {
-          booksBySeries.map((item) => (
-            <SeriesCard
-              series={item}
-              books={item.books}
-              href={withBase(`series/#${item.slug}`)}
-            />
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="px-4 pt-18 sm:px-6 lg:px-8">
+  <section class="px-4 pt-14 sm:px-6 sm:pt-18 lg:px-8">
     <div class="mx-auto max-w-7xl">
       <NewsletterPanel compact />
     </div>
