@@ -17,7 +17,7 @@ const isActive = (href: string) => normalizedPath === href;
     <div class="glass-panel flex items-center justify-between gap-3 rounded-[1.7rem] px-3 py-2.5 sm:gap-4 sm:rounded-[2rem] sm:px-5 sm:py-3">
       <a
         href={withBase('')}
-        class="group inline-flex max-w-[calc(100%-3.5rem)] min-w-0 items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#241920] sm:gap-3 md:max-w-none"
+        class="group inline-flex max-w-[calc(100%-3.5rem)] min-w-0 items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#241920] sm:gap-3 md:max-w-[22rem] lg:max-w-[25rem] xl:max-w-none"
       >
         <span
           class="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-white/55 bg-[#f4e6e0] shadow-[0_16px_30px_rgba(111,66,94,0.22)] sm:h-12 sm:w-12"
@@ -40,8 +40,8 @@ const isActive = (href: string) => normalizedPath === href;
         </span>
       </a>
 
-      <div class="hidden items-center gap-2 md:flex">
-        <nav class="flex items-center gap-1" aria-label="Primary">
+      <div class="hidden shrink-0 items-center gap-2 md:flex">
+        <nav class="flex min-w-0 items-center gap-1" aria-label="Primary">
           {
             navItems.map((item) => (
               <a
@@ -60,7 +60,7 @@ const isActive = (href: string) => normalizedPath === href;
 
         <button
           type="button"
-          class="theme-toggle"
+          class="theme-toggle shrink-0"
           data-theme-toggle
           aria-label="Switch to dark mode"
           aria-pressed="false"
@@ -83,10 +83,10 @@ const isActive = (href: string) => normalizedPath === href;
         </button>
       </div>
 
-      <div class="flex items-center gap-2 md:hidden">
+      <div class="flex shrink-0 items-center gap-2 md:hidden">
         <button
           type="button"
-          class="theme-toggle"
+          class="theme-toggle shrink-0"
           data-theme-toggle
           aria-label="Switch to dark mode"
           aria-pressed="false"
@@ -110,7 +110,7 @@ const isActive = (href: string) => normalizedPath === href;
 
         <button
           type="button"
-          class="site-header-button"
+          class="site-header-button shrink-0"
           data-nav-toggle
           aria-expanded="false"
           aria-controls="mobile-nav"

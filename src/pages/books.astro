@@ -45,12 +45,12 @@ const categoryOptions = [...genreVibeTags]
 
   <section class="px-4 pt-10 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-7xl">
-      <div class="card-shell rounded-[1.9rem] p-5 sm:rounded-[2.3rem] sm:p-6">
-        <div class="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <div class="card-shell rounded-[1.6rem] p-4 sm:rounded-[2.3rem] sm:p-6">
+        <div class="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
           <div>
             <p class="eyebrow text-[#7c5a63]">Filter the list</p>
-            <p class="mt-2 text-sm leading-7 text-[#5d4b52]">
-              Search by title or series, or filter the list below.
+            <p class="mt-1 text-sm leading-6 text-[#5d4b52] sm:mt-2 sm:leading-7">
+              Search by title or series, or filter below.
             </p>
           </div>
           <p class="text-sm font-semibold text-[#241920]" aria-live="polite" data-results-count>
@@ -58,51 +58,51 @@ const categoryOptions = [...genreVibeTags]
           </p>
         </div>
 
-        <form class="mt-6 grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]" data-catalog-form>
-          <label class="space-y-2">
-            <span class="text-sm font-semibold text-[#241920]">Search</span>
+        <form class="mt-4 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]" data-catalog-form>
+          <label class="col-span-2 space-y-1.5 lg:col-span-1">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Search</span>
             <input
               type="search"
               name="q"
               placeholder="Search titles and series"
-              class="input-shell"
+              class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]"
             />
           </label>
 
-          <label class="space-y-2">
-            <span class="text-sm font-semibold text-[#241920]">Series</span>
-            <select name="series" class="input-shell">
+          <label class="space-y-1.5">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Series</span>
+            <select name="series" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
               <option value="all">All series</option>
               {booksBySeries.map((item) => <option value={item.slug}>{item.name}</option>)}
             </select>
           </label>
 
-          <label class="space-y-2">
-            <span class="text-sm font-semibold text-[#241920]">Category</span>
-            <select name="category" class="input-shell">
+          <label class="space-y-1.5">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Category</span>
+            <select name="category" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
               <option value="all">All categories</option>
               {categoryOptions.map((option) => <option value={option.slug}>{option.label}</option>)}
             </select>
           </label>
 
-          <label class="space-y-2">
-            <span class="text-sm font-semibold text-[#241920]">Format</span>
-            <select name="format" class="input-shell">
+          <label class="space-y-1.5">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Format</span>
+            <select name="format" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
               <option value="all">Any format</option>
               {Object.entries(formatLabels).map(([value, label]) => <option value={value}>{label}</option>)}
             </select>
           </label>
 
-          <label class="space-y-2">
-            <span class="text-sm font-semibold text-[#241920]">Sort</span>
-            <select name="sort" class="input-shell">
+          <label class="space-y-1.5">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Sort</span>
+            <select name="sort" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
               <option value="series-order">Series order</option>
               <option value="title">Title</option>
             </select>
           </label>
 
-          <div class="flex items-end lg:col-span-5 lg:justify-end">
-            <button type="button" class="button-secondary w-full justify-center lg:w-auto" data-clear-filters>
+          <div class="col-span-2 flex items-end justify-end pt-1 lg:col-span-5 lg:pt-0">
+            <button type="button" class="button-secondary min-h-11 px-4 py-2.5 text-sm" data-clear-filters>
               Clear
             </button>
           </div>
