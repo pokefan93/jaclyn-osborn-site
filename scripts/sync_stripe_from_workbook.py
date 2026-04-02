@@ -126,23 +126,44 @@ class StripeClient:
     def retrieve_price(self, price_id: str) -> dict[str, Any]:
         return self.request("GET", f"/prices/{price_id}")
 
-    def create_product(self, *, name: str, description: str, metadata: dict[str, str], active: bool) -> dict[str, Any]:
+    def create_product(
+        self,
+        *,
+        name: str,
+        description: str,
+        metadata: dict[str, str],
+        active: bool,
+        image_url: str = "",
+    ) -> dict[str, Any]:
         form = [
             ("name", name),
             ("description", description),
             ("active", "true" if active else "false"),
         ]
+        if image_url:
+            form.append(("images[0]", image_url))
         for key, value in metadata.items():
             if value:
                 form.append((f"metadata[{key}]", value))
         return self.request("POST", "/products", form)
 
-    def update_product(self, product_id: str, *, name: str, description: str, metadata: dict[str, str], active: bool) -> dict[str, Any]:
+    def update_product(
+        self,
+        product_id: str,
+        *,
+        name: str,
+        description: str,
+        metadata: dict[str, str],
+        active: bool,
+        image_url: str = "",
+    ) -> dict[str, Any]:
         form = [
             ("name", name),
             ("description", description),
             ("active", "true" if active else "false"),
         ]
+        if image_url:
+            form.append(("images[0]", image_url))
         for key, value in metadata.items():
             if value:
                 form.append((f"metadata[{key}]", value))
@@ -235,6 +256,7 @@ def sync_products(
     books_ws: Worksheet,
     book_headers: dict[str, int],
     books: list[dict[str, Any]],
+    cover_base_url: str = "",
 ) -> dict[str, str]:
     product_ids_by_slug: dict[str, str] = {}
     existing_by_slug: dict[str, dict[str, Any]] = {}
@@ -264,6 +286,9 @@ def sync_products(
             "catalog_status": normalize_text(book.get("catalog_status")),
         }
         description = build_product_description(book)
+        image_url = (
+            f"{cover_base_url.rstrip('/')}/{book_slug}.jpg" if cover_base_url else ""
+        )
 
         existing = existing_by_slug.get(book_slug)
         if existing and not product_id:
@@ -283,6 +308,7 @@ def sync_products(
                     description=description,
                     metadata=metadata,
                     active=active,
+                    image_url=image_url,
                 )
             elif existing:
                 product = client.update_product(
@@ -291,6 +317,7 @@ def sync_products(
                     description=description,
                     metadata=metadata,
                     active=active,
+                    image_url=image_url,
                 )
             else:
                 product = client.create_product(
@@ -298,6 +325,7 @@ def sync_products(
                     description=description,
                     metadata=metadata,
                     active=active,
+                    image_url=image_url,
                 )
             product_id = product["id"]
             set_value(books_ws, row_index, book_headers, "stripe_product_id", product_id)
@@ -453,6 +481,7 @@ def main() -> None:
     parser.add_argument("--workbook", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--cover-base-url", default="")
     args = parser.parse_args()
 
     workbook_path = args.workbook
@@ -513,7 +542,13 @@ def main() -> None:
         dry_run=args.dry_run,
     )
 
-    product_ids_by_slug = sync_products(client, books_ws, book_headers, books)
+    product_ids_by_slug = sync_products(
+        client,
+        books_ws,
+        book_headers,
+        books,
+        cover_base_url=normalize_text(args.cover_base_url),
+    )
     sync_direct_sale_formats(client, direct_ws, direct_headers, direct_rows, product_ids_by_slug)
 
     if args.dry_run:

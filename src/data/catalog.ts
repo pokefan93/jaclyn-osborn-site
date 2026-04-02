@@ -24,28 +24,129 @@ export const genreVibeTags: CatalogFilterTag[] = [
 export const series = generatedSeries as unknown as Series[];
 
 const directSalePlaceholderBase = 'https://example.com/direct-sale-placeholder/';
-const directSaleFormats: FormatKey[] = ['paperback', 'hardcover'];
+const directSalePlaceholderFormats: FormatKey[] = ['paperback', 'hardcover'];
+
+type DirectSaleOverride = Partial<Book['purchase']> & {
+  directSaleFormats: DirectSaleFormat[];
+};
+
+const directSaleLinkOverrides: Record<string, DirectSaleOverride> = {
+  raiden: {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'raiden-direct-ebook',
+        label: 'Direct',
+        format: 'ebook',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_5kQeVd0BSayt2A97KDcs800',
+      },
+    ],
+  },
+  'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-1': {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-1-direct-ebook',
+        label: 'Direct',
+        format: 'ebook',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_5kQ28r4S87mhcaJ1mfcs801',
+      },
+    ],
+  },
+  'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-2': {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-2-direct-ebook',
+        label: 'Direct',
+        format: 'ebook',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_28EcN5acs5e9caJfd5cs802',
+      },
+    ],
+  },
+  'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-3': {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-3-direct-ebook',
+        label: 'Direct',
+        format: 'ebook',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_cNi7sL4S8eOJb6F4yrcs803',
+      },
+    ],
+  },
+  'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-4': {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-4-direct-ebook',
+        label: 'Direct',
+        format: 'ebook',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_6oUcN50BScGB2A9d4Xcs804',
+      },
+    ],
+  },
+  'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-5': {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'sent-to-a-fantasy-world-and-now-all-the-men-want-me-volume-5-direct-ebook',
+        label: 'Direct',
+        format: 'ebook',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_dRm5kD1FW21XgqZ8OHcs805',
+      },
+    ],
+  },
+  'the-ghost-of-ellwood': {
+    directFromAuthor: true,
+    directSaleFormats: [
+      {
+        id: 'the-ghost-of-ellwood-direct-paperback',
+        label: 'Direct',
+        format: 'paperback',
+        purchaseMode: 'stripe_payment_link',
+        purchaseUrl: 'https://buy.stripe.com/test_14AaEXacs21Xa2B0ibcs806',
+      },
+    ],
+  },
+};
 
 function buildPlaceholderDirectSaleFormats(book: Book): DirectSaleFormat[] {
   return book.formats
-    .filter((format): format is FormatKey => directSaleFormats.includes(format))
+    .filter((format): format is FormatKey =>
+      directSalePlaceholderFormats.includes(format),
+    )
     .map((format) => ({
-      id: `${book.slug}-signed-${format}`,
-      label: 'Signed',
+      id: `${book.slug}-direct-${format}`,
+      label: 'Direct',
       format,
       purchaseMode: 'stripe_payment_link',
       purchaseUrl: `${directSalePlaceholderBase}${book.slug}-${format}`,
     }));
 }
 
-function withPlaceholderDirectSales(book: Book): Book {
-  if (book.purchase.directSaleFormats.length > 0) {
-    return book;
-  }
+function withDirectSaleOptions(book: Book): Book {
+  const directSaleOverride = directSaleLinkOverrides[book.slug];
+  const existingDirectSaleFormats =
+    directSaleOverride?.directSaleFormats ?? book.purchase.directSaleFormats;
+  const existingFormats = new Set(
+    existingDirectSaleFormats.map((format) => format.format),
+  );
+  const placeholderFormats = buildPlaceholderDirectSaleFormats(book).filter(
+    (format) => !existingFormats.has(format.format),
+  );
+  const mergedDirectSaleFormats = [
+    ...existingDirectSaleFormats,
+    ...placeholderFormats,
+  ];
 
-  const placeholderFormats = buildPlaceholderDirectSaleFormats(book);
-
-  if (placeholderFormats.length === 0) {
+  if (mergedDirectSaleFormats.length === 0) {
     return book;
   }
 
@@ -53,19 +154,17 @@ function withPlaceholderDirectSales(book: Book): Book {
     ...book,
     purchase: {
       ...book.purchase,
-      signedCopy: true,
-      directSaleFormats: placeholderFormats,
-      signedCopyNote:
-        book.purchase.signedCopyNote ??
-        'Signed-copy checkout links will appear here when direct sales are ready.',
+      ...directSaleOverride,
+      directSaleFormats: mergedDirectSaleFormats,
       whereToBuyNote:
+        directSaleOverride?.whereToBuyNote ??
         book.purchase.whereToBuyNote ??
-        'Retailer links are live now. Direct signed-copy checkout links will be added here when available.',
+        'Retailer links are live now. Direct checkout links will be added here when available.',
     },
   };
 }
 
-export const books = (generatedBooks as unknown as Book[]).map(withPlaceholderDirectSales);
+export const books = (generatedBooks as unknown as Book[]).map(withDirectSaleOptions);
 
 export const seriesMap = new Map(series.map((item) => [item.slug, item]));
 
