@@ -41,7 +41,7 @@ const paletteMap = {
 } as const;
 
 const palette = paletteMap[book.coverPalette];
-const coverSrc = withBase(`covers/${book.slug}.jpg`);
+const coverSrc = withBase(book.coverImageUrl ?? `covers/${book.slug}.jpg`);
 const releaseYear = /^\d{4}/.test(book.releaseDate)
   ? new Date(book.releaseDate).getFullYear()
   : null;

@@ -154,8 +154,10 @@ def make_admin_docs_sheet(wb: Workbook) -> None:
             "Stripe direct sales",
             (
                 "Use Stripe Payment Links as the default direct-sale method. Create the product "
-                "and price in Stripe Dashboard, create a Payment Link, set the redirect to the "
-                "site thank-you page, then paste the Payment Link URL into Direct_Sale_Formats."
+                "and price in Stripe Dashboard, create a Payment Link, and paste the Payment "
+                "Link URL into Direct_Sale_Formats only if you are managing links manually. "
+                "If you use the Stripe sync workflow, leave purchase_url blank and the sync "
+                "script will create the link for you."
             ),
         ),
         (
@@ -171,7 +173,9 @@ def make_admin_docs_sheet(wb: Workbook) -> None:
             (
                 "1. Fill or review Books and Direct_Sale_Formats. 2. Set sync_product_to_stripe "
                 "or sync_to_stripe to TRUE where needed. 3. Run the sync script locally. 4. The "
-                "script writes Stripe product, price, and payment-link IDs back into the workbook."
+                "script writes Stripe product, price, and payment-link IDs back into the workbook. "
+                "Leave after_completion_redirect_url blank to use the site thank-you page by "
+                "default, or fill it only when a row needs a custom redirect."
             ),
         ),
         (

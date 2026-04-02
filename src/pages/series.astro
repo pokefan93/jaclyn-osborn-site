@@ -1,10 +1,14 @@
 ---
+export const prerender = false;
+
 import BookCard from '../components/BookCard.astro';
 import PageHero from '../components/PageHero.astro';
 import SeriesCard from '../components/SeriesCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { booksBySeries } from '../data/catalog';
+import { getPublicCatalogData } from '../lib/catalog/repository';
 import { withBase } from '../utils/withBase';
+
+const { booksBySeries } = await getPublicCatalogData();
 
 const seriesHeroStyle = `background:
   radial-gradient(circle at top left, rgba(255,255,255,0.16), transparent 34%),

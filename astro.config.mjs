@@ -1,28 +1,26 @@
 /// <reference types="node" />
 // @ts-check
 import { defineConfig } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 
 import tailwindcss from '@tailwindcss/vite';
 
-const repositoryOwner = process.env.GITHUB_REPOSITORY_OWNER;
-const repositoryName = process.env.GITHUB_REPOSITORY?.split('/')[1];
-const isUserSiteRepo =
-  Boolean(repositoryOwner) && repositoryName === `${repositoryOwner}.github.io`;
-const site =
-  process.env.SITE ??
-  (repositoryOwner
-    ? `https://${repositoryOwner}.github.io`
-    : 'https://example.github.io');
-const base =
-  process.env.BASE ??
-  (repositoryName && !isUserSiteRepo ? `/${repositoryName}` : '/');
-
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
-  site,
-  base,
+  output: 'server',
+  site:
+    process.env.SITE_URL ??
+    process.env.CF_PAGES_URL ??
+    'https://jaclyn-osborn-site.karnestaylor.workers.dev',
   trailingSlash: 'always',
+  adapter: cloudflare({
+    imageService: 'passthrough',
+    prerenderEnvironment: 'node',
+  }),
+  build: {
+    client: './',
+    server: './_worker.js',
+  },
   vite: {
     plugins: [tailwindcss()],
   },

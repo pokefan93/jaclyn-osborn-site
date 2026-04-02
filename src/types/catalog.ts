@@ -1,5 +1,14 @@
 export type FormatKey = 'ebook' | 'paperback' | 'hardcover' | 'audiobook';
 
+export type CoverPalette =
+  | 'rose'
+  | 'plum'
+  | 'teal'
+  | 'gold'
+  | 'cobalt'
+  | 'sage'
+  | 'ember';
+
 export type AvailabilityStatus =
   | 'in_stock'
   | 'limited'
@@ -19,13 +28,8 @@ export type PurchaseMode =
   | 'stripe_buy_button'
   | 'unavailable';
 
-export interface CatalogFilterTag {
-  slug: string;
-  label: string;
-  kind: 'genre' | 'vibe';
-}
-
 export interface Series {
+  id: number;
   slug: string;
   name: string;
   lane: string;
@@ -36,13 +40,14 @@ export interface Series {
   gradient: [string, string, string];
   textColor: string;
   highlight: string[];
+  visible: boolean;
+  sortPriority: number;
 }
 
 export interface RetailerLink {
   id: string;
   retailer: string;
   label: string;
-  format?: FormatKey;
   purchaseMode: 'external_retailer';
   purchaseUrl: string;
 }
@@ -50,17 +55,17 @@ export interface RetailerLink {
 export interface DirectSaleFormat {
   id: string;
   label: string;
-  format: FormatKey;
   purchaseMode: 'stripe_payment_link' | 'stripe_buy_button' | 'unavailable';
   purchaseUrl?: string;
   stripeBuyButtonId?: string;
+  format?: FormatKey;
+  displayPrice?: string;
 }
 
 export interface BookPurchase {
   availabilityStatus: AvailabilityStatus;
   availabilityLabel?: string;
-  priceNote?: string;
-  priceSnapshotDate?: string;
+  displayPrice?: string;
   merchandisingFlags: MerchandisingFlag[];
   signedCopy: boolean;
   directFromAuthor: boolean;
@@ -73,13 +78,15 @@ export interface BookPurchase {
 }
 
 export interface Book {
-  id: string;
+  id: number;
   slug: string;
   title: string;
+  seriesId: number | null;
   seriesSlug: string;
   seriesLabel?: string;
   seriesOrder: number;
   releaseDate: string;
+  publishYear?: number | null;
   shortHook: string;
   description: string;
   genres: string[];
@@ -87,7 +94,62 @@ export interface Book {
   tropes: string[];
   formats: FormatKey[];
   featured: boolean;
-  coverPalette: 'rose' | 'plum' | 'teal' | 'gold' | 'cobalt' | 'sage' | 'ember';
+  coverPalette: CoverPalette;
+  coverImageUrl?: string;
+  visible: boolean;
+  sortPriority: number;
   catalogStatus?: string;
   purchase: BookPurchase;
+}
+
+export interface BooksBySeries extends Series {
+  books: Book[];
+}
+
+export interface CatalogStats {
+  bookCount: number;
+  seriesCount: number;
+  formatCount: number;
+}
+
+export interface AdminSeriesOption {
+  id: number;
+  slug: string;
+  name: string;
+}
+
+export interface AdminBookRecord {
+  id: number;
+  slug: string;
+  title: string;
+  seriesId: number | null;
+  seriesName?: string;
+  seriesSlug?: string;
+  seriesOrder: number;
+  publishYear: number | null;
+  coverImageUrl: string;
+  shortBlurb: string;
+  description: string;
+  availabilityStatus: AvailabilityStatus;
+  availabilityLabel: string;
+  amazonLink: string;
+  retailerLink: string;
+  stripePaymentLink: string;
+  displayPrice: string;
+  signedCopy: boolean;
+  directFromAuthor: boolean;
+  visible: boolean;
+  sortPriority: number;
+  coverPalette: CoverPalette;
+  featured: boolean;
+  seriesLabelOverride: string;
+  catalogStatus: string;
+  genres: string[];
+  formats: FormatKey[];
+  releaseDate: string;
+}
+
+export interface AdminCatalogSnapshot {
+  books: AdminBookRecord[];
+  series: AdminSeriesOption[];
 }

@@ -152,7 +152,7 @@ function applyEditingLayout_() {
   if (directSales) {
     styleSheet_(directSales);
     directSales.setFrozenRows(1);
-    directSales.hideColumns(15, 7);
+    directSales.hideColumns(14, 8);
     setColumnWidth_(directSales, 'book_title', 220);
     setColumnWidth_(directSales, 'unit_amount', 110);
     setCheckbox_(directSales, 'sync_to_stripe');
@@ -164,6 +164,8 @@ function applyEditingLayout_() {
     setHeaderNote_(directSales, 'sync_to_stripe', 'Turn this on only when this direct-sale checkout should be live on the site.');
     setHeaderNote_(directSales, 'unit_amount', 'Type the price in cents. Example: 1999 means $19.99.');
     setHeaderNote_(directSales, 'purchase_mode', 'Most rows should use Direct checkout.');
+    setHeaderNote_(directSales, 'after_completion_redirect_url', 'Optional. Leave blank to use the site thank-you page automatically during publish.');
+    setHeaderNote_(directSales, 'purchase_url', 'Usually leave this blank. It is filled automatically when Stripe sync creates the Payment Link, or you can use it as a manual override if you already made a link in Stripe.');
   }
 
   if (storeLinks) {

@@ -1,11 +1,15 @@
 ---
+export const prerender = false;
+
 import BookCover from '../components/BookCover.astro';
 import NewsletterPanel from '../components/NewsletterPanel.astro';
 import SocialShowcase from '../components/SocialShowcase.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { booksBySeries } from '../data/catalog';
+import { getPublicCatalogData } from '../lib/catalog/repository';
 import { siteMeta } from '../data/site';
 import { withBase } from '../utils/withBase';
+
+const { booksBySeries } = await getPublicCatalogData();
 
 const primaryHeroBook = booksBySeries.find((series) => series.slug === 'sons-of-the-fallen')?.books[0];
 const secondaryHeroBook = booksBySeries.find((series) => series.slug === 'sent-to-a-fantasy-world')?.books[0];

@@ -85,7 +85,7 @@ const showRetailComingSoon =
 
 const showPurchaseContent =
   showStatusRow ||
-  Boolean(book.purchase.priceNote) ||
+  Boolean(book.purchase.displayPrice) ||
   liveDirectFormats.length > 0 ||
   liveRetailerLinks.length > 0 ||
   showDirectComingSoon ||
@@ -136,13 +136,10 @@ const availabilityTone =
       }
 
       {
-        book.purchase.priceNote && (
+        book.purchase.displayPrice && (
           <div class="surface-box space-y-2 rounded-[1.4rem] px-4 py-4">
-            <p class="eyebrow text-[#7c5a63]">
-              Amazon snapshot
-              {book.purchase.priceSnapshotDate ? ` (${book.purchase.priceSnapshotDate})` : ''}
-            </p>
-            <p class="text-sm leading-7 text-[#5d4b52]">{book.purchase.priceNote}</p>
+            <p class="eyebrow text-[#7c5a63]">Display price</p>
+            <p class="text-sm leading-7 text-[#5d4b52]">{book.purchase.displayPrice}</p>
           </div>
         )
       }
@@ -159,7 +156,13 @@ const availabilityTone =
             <div class:list={[compact ? 'grid gap-2' : 'flex flex-wrap gap-2']}>
               {
                 liveDirectFormats.map((format) => {
-                  const label = `${format.label} - ${formatLabels[format.format]}`;
+                  const label = [
+                    format.label,
+                    format.format ? formatLabels[format.format] : '',
+                    format.displayPrice ?? '',
+                  ]
+                    .filter(Boolean)
+                    .join(' · ');
 
                   if (format.purchaseMode === 'stripe_buy_button' && format.stripeBuyButtonId) {
                     return (
@@ -190,7 +193,9 @@ const availabilityTone =
               {
                 placeholderDirectFormats.map((format) => (
                   <span class:list={['purchase-disabled', compact && 'w-full']}>
-                    {format.label} - {formatLabels[format.format]} soon
+                    {[format.label, format.format ? formatLabels[format.format] : '', 'soon']
+                      .filter(Boolean)
+                      .join(' · ')}
                   </span>
                 ))
               }

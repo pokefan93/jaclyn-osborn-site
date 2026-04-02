@@ -1,0 +1,759 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { getAdminCatalogSnapshot } from '../../lib/catalog/repository';
+import { availabilityOptions } from '../../lib/catalog/shared';
+import { withBase } from '../../utils/withBase';
+
+const initialCatalog = await getAdminCatalogSnapshot();
+const initialCatalogJson = JSON.stringify(initialCatalog).replace(/<\/script/gi, '<\\/script');
+const initialVisibleCount = initialCatalog.books.filter((book) => book.visible).length;
+const initialDirectCount = initialCatalog.books.filter((book) => book.stripePaymentLink).length;
+const availabilityClassMap = {
+  in_stock: 'status-pill status-pill-stock',
+  limited: 'status-pill status-pill-limited',
+  sold_out: 'status-pill status-pill-soldout',
+  preorder: 'status-pill status-pill-preorder',
+} as const;
+const emDash = '\u2014';
+---
+
+<BaseLayout
+  title="Admin"
+  description="Protected catalog dashboard for managing Jaclyn Osborn books."
+>
+  <PageHero
+    eyebrow="Admin"
+    title="Catalog dashboard"
+    description="Update book details, links, order, and visibility without editing code."
+    actions={[
+      { href: withBase('books/'), label: 'View books page', variant: 'primary' },
+      { href: withBase('series/'), label: 'View series page', variant: 'secondary' },
+    ]}
+    compact
+  />
+
+  <section class="px-4 pt-10 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-6">
+      <div class="card-shell rounded-[1.9rem] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="eyebrow text-[#7c5a63]">Protected author dashboard</p>
+            <h2 class="mt-3 font-display text-4xl text-[#241920] sm:text-[2.75rem]">
+              Everything in one place.
+            </h2>
+            <p class="mt-3 max-w-3xl text-sm leading-7 text-[#5d4b52] sm:text-base">
+              This dashboard is built to sit behind Cloudflare Access. Once Access is
+              enabled, Jaclyn can update the live catalog here without touching the repo,
+              Stripe secret keys, or a spreadsheet.
+            </p>
+          </div>
+
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div class="surface-box rounded-[1.35rem] px-4 py-4">
+              <p class="eyebrow text-[#7c5a63]">Books</p>
+              <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-total>
+                {initialCatalog.books.length}
+              </p>
+            </div>
+            <div class="surface-box rounded-[1.35rem] px-4 py-4">
+              <p class="eyebrow text-[#7c5a63]">Visible</p>
+              <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-visible>
+                {initialVisibleCount}
+              </p>
+            </div>
+            <div class="surface-box rounded-[1.35rem] px-4 py-4">
+              <p class="eyebrow text-[#7c5a63]">Direct links</p>
+              <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-direct>
+                {initialDirectCount}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <article class="card-shell rounded-[1.9rem] p-5 sm:p-6">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="eyebrow text-[#7c5a63]">Book list</p>
+              <h2 class="mt-3 font-display text-3xl text-[#241920] sm:text-[2.5rem]">
+                Manage the catalog.
+              </h2>
+              <p class="mt-3 text-sm leading-7 text-[#5d4b52] sm:text-base">
+                Use the quick actions to hide a title, move it up or down, or open it in the editor.
+              </p>
+            </div>
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <label class="w-full sm:w-[18rem]">
+                <span class="sr-only">Search books</span>
+                <input
+                  type="search"
+                  class="input-shell"
+                  placeholder="Search title or series"
+                  data-admin-search
+                />
+              </label>
+              <button type="button" class="button-secondary justify-center" data-new-book>
+                New book
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-5 overflow-x-auto rounded-[1.35rem] border border-white/50">
+            <table class="min-w-full border-separate border-spacing-0 text-left text-sm">
+              <thead class="bg-white/70 text-[#241920]">
+                <tr>
+                  <th class="px-4 py-3 font-semibold">Title</th>
+                  <th class="px-4 py-3 font-semibold">Series</th>
+                  <th class="px-4 py-3 font-semibold">Year</th>
+                  <th class="px-4 py-3 font-semibold">Status</th>
+                  <th class="px-4 py-3 font-semibold">Links</th>
+                  <th class="px-4 py-3 font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody data-book-rows>
+                {
+                  initialCatalog.books.map((book) => (
+                    <tr class="border-t border-white/40">
+                      <td class="px-4 py-4 align-top">
+                        <div class="space-y-1">
+                          <button
+                            type="button"
+                            class="text-left font-semibold text-[#241920] underline decoration-[#d9bcb2] underline-offset-4"
+                            data-action="edit"
+                            data-book-id={book.id}
+                          >
+                            {book.title}
+                          </button>
+                          <p class="text-xs uppercase tracking-[0.22em] text-[#7c5a63]">
+                            {book.visible ? 'Live on site' : 'Hidden'}
+                          </p>
+                        </div>
+                      </td>
+                      <td class="px-4 py-4 align-top text-[#5d4b52]">
+                        {book.seriesName ?? book.seriesLabelOverride ?? 'Standalone'}
+                      </td>
+                      <td class="px-4 py-4 align-top text-[#5d4b52]">
+                        {book.publishYear ?? emDash}
+                      </td>
+                      <td class="px-4 py-4 align-top">
+                        <span class={availabilityClassMap[book.availabilityStatus] ?? availabilityClassMap.in_stock}>
+                          {availabilityOptions.find((option) => option.value === book.availabilityStatus)?.label ?? 'In stock'}
+                        </span>
+                      </td>
+                      <td class="px-4 py-4 align-top text-xs text-[#6e5961]">
+                        <div class="space-y-1">
+                          <p>{book.amazonLink ? 'Amazon' : 'No Amazon link'}</p>
+                          <p>{book.retailerLink ? 'Retailer link' : 'No retailer link'}</p>
+                          <p>{book.stripePaymentLink ? 'Direct checkout' : 'No direct checkout'}</p>
+                        </div>
+                      </td>
+                      <td class="px-4 py-4 align-top">
+                        <div class="flex flex-wrap gap-2">
+                          <button type="button" class="format-button" data-action="edit" data-book-id={book.id}>Edit</button>
+                          <button type="button" class="format-button" data-action="toggle-visible" data-book-id={book.id}>
+                            {book.visible ? 'Hide' : 'Show'}
+                          </button>
+                          <button type="button" class="format-button" data-action="move-up" data-book-id={book.id}>Up</button>
+                          <button type="button" class="format-button" data-action="move-down" data-book-id={book.id}>Down</button>
+                          <button type="button" class="purchase-disabled" data-action="delete" data-book-id={book.id}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card-shell rounded-[1.9rem] p-5 sm:p-6">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="eyebrow text-[#7c5a63]">Editor</p>
+              <h2 class="mt-3 font-display text-3xl text-[#241920] sm:text-[2.35rem]" data-editor-heading>
+                Edit book
+              </h2>
+              <p class="mt-3 text-sm leading-7 text-[#5d4b52] sm:text-base">
+                Leave any link blank if that purchase option is not ready yet.
+              </p>
+            </div>
+            <button type="button" class="button-secondary shrink-0 justify-center" data-reset-form>
+              Clear
+            </button>
+          </div>
+
+          <div
+            class="surface-box mt-5 hidden rounded-[1.25rem] px-4 py-3 text-sm text-[#241920]"
+            data-admin-status
+          ></div>
+
+          <form class="mt-5 space-y-4" data-book-form>
+            <input type="hidden" name="bookId" />
+
+            <label class="block space-y-1.5">
+              <span class="text-sm font-semibold text-[#241920]">Title</span>
+              <input type="text" name="title" class="input-shell" required />
+            </label>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Series</span>
+                <select name="seriesId" class="input-shell">
+                  <option value="">Standalone</option>
+                  {initialCatalog.series.map((series) => <option value={series.id}>{series.name}</option>)}
+                </select>
+              </label>
+
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Series order</span>
+                <input type="number" name="seriesOrder" class="input-shell" min="0" step="0.1" />
+              </label>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Year</span>
+                <input type="number" name="publishYear" class="input-shell" min="1900" max="2100" />
+              </label>
+
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Sort priority</span>
+                <input type="number" name="sortPriority" class="input-shell" step="1" />
+              </label>
+            </div>
+
+            <label class="block space-y-1.5">
+              <span class="text-sm font-semibold text-[#241920]">Cover image URL</span>
+              <input type="text" name="coverImageUrl" class="input-shell" placeholder="/covers/book-slug.jpg or https://..." />
+            </label>
+
+            <label class="block space-y-1.5">
+              <span class="text-sm font-semibold text-[#241920]">Short blurb</span>
+              <textarea
+                name="shortBlurb"
+                rows="5"
+                class="input-shell min-h-[8.5rem] resize-y py-3"
+                required
+              ></textarea>
+            </label>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Availability</span>
+                <select name="availabilityStatus" class="input-shell">
+                  {availabilityOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Availability label</span>
+                <input type="text" name="availabilityLabel" class="input-shell" placeholder="Optional custom label" />
+              </label>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Display price</span>
+                <input type="text" name="displayPrice" class="input-shell" placeholder="$14.99" />
+              </label>
+
+              <label class="block space-y-1.5">
+                <span class="text-sm font-semibold text-[#241920]">Stripe Payment Link</span>
+                <input type="text" name="stripePaymentLink" class="input-shell" placeholder="https://buy.stripe.com/..." />
+              </label>
+            </div>
+
+            <label class="block space-y-1.5">
+              <span class="text-sm font-semibold text-[#241920]">Amazon link</span>
+              <input type="text" name="amazonLink" class="input-shell" placeholder="https://www.amazon.com/..." />
+            </label>
+
+            <label class="block space-y-1.5">
+              <span class="text-sm font-semibold text-[#241920]">Universal retailer link</span>
+              <input type="text" name="retailerLink" class="input-shell" placeholder="https://books2read.com/... or another universal page" />
+            </label>
+
+            <div class="grid gap-3 sm:grid-cols-3">
+              <label class="surface-box flex items-center gap-3 rounded-[1.2rem] px-4 py-3">
+                <input type="checkbox" name="signedCopy" class="h-4 w-4 rounded border-[#d9bcb2]" />
+                <span class="text-sm font-semibold text-[#241920]">Signed copy</span>
+              </label>
+
+              <label class="surface-box flex items-center gap-3 rounded-[1.2rem] px-4 py-3">
+                <input type="checkbox" name="directFromAuthor" class="h-4 w-4 rounded border-[#d9bcb2]" />
+                <span class="text-sm font-semibold text-[#241920]">Direct from Jaclyn</span>
+              </label>
+
+              <label class="surface-box flex items-center gap-3 rounded-[1.2rem] px-4 py-3">
+                <input type="checkbox" name="visible" class="h-4 w-4 rounded border-[#d9bcb2]" checked />
+                <span class="text-sm font-semibold text-[#241920]">Show on site</span>
+              </label>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+              <button type="submit" class="button-primary justify-center" data-submit-button>
+                Save changes
+              </button>
+              <button type="button" class="button-secondary justify-center" data-create-button>
+                Start a new book
+              </button>
+              <button type="button" class="purchase-disabled justify-center sm:ml-auto" data-delete-button>
+                Delete this book
+              </button>
+            </div>
+          </form>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <script id="admin-catalog-data" type="application/json" is:inline set:html={initialCatalogJson}></script>
+  <script is:inline>
+    const dataNode = document.getElementById('admin-catalog-data');
+    const form = document.querySelector('[data-book-form]');
+    const searchInput = document.querySelector('[data-admin-search]');
+    const rowsContainer = document.querySelector('[data-book-rows]');
+    const statusBox = document.querySelector('[data-admin-status]');
+    const heading = document.querySelector('[data-editor-heading]');
+    const submitButton = document.querySelector('[data-submit-button]');
+    const deleteButton = document.querySelector('[data-delete-button]');
+    const resetButton = document.querySelector('[data-reset-form]');
+    const createButton = document.querySelector('[data-create-button]');
+    const newBookButton = document.querySelector('[data-new-book]');
+    const statTotal = document.querySelector('[data-stat-total]');
+    const statVisible = document.querySelector('[data-stat-visible]');
+    const statDirect = document.querySelector('[data-stat-direct]');
+
+    if (
+      !(dataNode instanceof HTMLScriptElement) ||
+      !(form instanceof HTMLFormElement) ||
+      !(searchInput instanceof HTMLInputElement) ||
+      !(rowsContainer instanceof HTMLElement) ||
+      !(statusBox instanceof HTMLElement) ||
+      !(heading instanceof HTMLElement) ||
+      !(submitButton instanceof HTMLButtonElement) ||
+      !(deleteButton instanceof HTMLButtonElement) ||
+      !(resetButton instanceof HTMLButtonElement) ||
+      !(createButton instanceof HTMLButtonElement) ||
+      !(newBookButton instanceof HTMLButtonElement) ||
+      !(statTotal instanceof HTMLElement) ||
+      !(statVisible instanceof HTMLElement) ||
+      !(statDirect instanceof HTMLElement)
+    ) {
+      throw new Error('Admin dashboard did not load correctly.');
+    }
+
+    const availabilityLabelMap = {
+      in_stock: 'In stock',
+      limited: 'Limited stock',
+      sold_out: 'Sold out',
+      preorder: 'Preorder',
+    };
+
+    const initial = JSON.parse(dataNode.textContent || '{"books":[],"series":[]}');
+    const blankBook = () => ({
+      id: null,
+      slug: '',
+      title: '',
+      seriesId: null,
+      seriesName: '',
+      seriesSlug: '',
+      seriesOrder: 0,
+      publishYear: null,
+      coverImageUrl: '',
+      shortBlurb: '',
+      description: '',
+      availabilityStatus: 'in_stock',
+      availabilityLabel: '',
+      amazonLink: '',
+      retailerLink: '',
+      stripePaymentLink: '',
+      displayPrice: '',
+      signedCopy: false,
+      directFromAuthor: false,
+      visible: true,
+      sortPriority: 0,
+      coverPalette: 'plum',
+      featured: false,
+      seriesLabelOverride: '',
+      catalogStatus: '',
+      genres: [],
+      formats: [],
+      releaseDate: '',
+    });
+
+    const state = {
+      books: initial.books || [],
+      series: initial.series || [],
+      selectedId: initial.books?.[0]?.id ?? null,
+      search: '',
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function nextSortPriority() {
+      return state.books.reduce((max, book) => Math.max(max, Number(book.sortPriority || 0)), 0) + 10;
+    }
+
+    function selectedBook() {
+      return state.books.find((book) => book.id === state.selectedId) ?? null;
+    }
+
+    function currentFormBook() {
+      const book = selectedBook();
+      return book ? { ...book } : { ...blankBook(), sortPriority: nextSortPriority() };
+    }
+
+    function setStatus(message, tone = 'info') {
+      statusBox.classList.remove('hidden');
+      statusBox.textContent = message;
+      statusBox.style.borderColor =
+        tone === 'error' ? 'rgba(186, 90, 88, 0.35)' : 'rgba(111, 66, 94, 0.16)';
+      statusBox.style.background =
+        tone === 'error' ? 'rgba(240, 222, 215, 0.72)' : 'var(--surface-soft)';
+    }
+
+    function clearStatus() {
+      statusBox.classList.add('hidden');
+      statusBox.textContent = '';
+      statusBox.style.borderColor = '';
+      statusBox.style.background = '';
+    }
+
+    function populateForm(book) {
+      form.elements.namedItem('bookId').value = book.id ?? '';
+      form.elements.namedItem('title').value = book.title ?? '';
+      form.elements.namedItem('seriesId').value = book.seriesId ?? '';
+      form.elements.namedItem('seriesOrder').value = book.seriesOrder ?? 0;
+      form.elements.namedItem('publishYear').value = book.publishYear ?? '';
+      form.elements.namedItem('sortPriority').value = book.sortPriority ?? nextSortPriority();
+      form.elements.namedItem('coverImageUrl').value = book.coverImageUrl ?? '';
+      form.elements.namedItem('shortBlurb').value = book.shortBlurb ?? '';
+      form.elements.namedItem('availabilityStatus').value = book.availabilityStatus ?? 'in_stock';
+      form.elements.namedItem('availabilityLabel').value = book.availabilityLabel ?? '';
+      form.elements.namedItem('displayPrice').value = book.displayPrice ?? '';
+      form.elements.namedItem('stripePaymentLink').value = book.stripePaymentLink ?? '';
+      form.elements.namedItem('amazonLink').value = book.amazonLink ?? '';
+      form.elements.namedItem('retailerLink').value = book.retailerLink ?? '';
+      form.elements.namedItem('signedCopy').checked = Boolean(book.signedCopy);
+      form.elements.namedItem('directFromAuthor').checked = Boolean(book.directFromAuthor);
+      form.elements.namedItem('visible').checked = book.visible !== false;
+
+      const editingExisting = Boolean(book.id);
+      heading.textContent = editingExisting ? `Edit ${book.title}` : 'Create book';
+      submitButton.textContent = editingExisting ? 'Save changes' : 'Create book';
+      deleteButton.classList.toggle('hidden', !editingExisting);
+    }
+
+    function renderStats() {
+      statTotal.textContent = String(state.books.length);
+      statVisible.textContent = String(state.books.filter((book) => book.visible).length);
+      statDirect.textContent = String(state.books.filter((book) => book.stripePaymentLink).length);
+    }
+
+    function filteredBooks() {
+      const query = state.search.trim().toLowerCase();
+      if (!query) return state.books;
+
+      return state.books.filter((book) => {
+        const haystack = [
+          book.title,
+          book.seriesName,
+          book.seriesLabelOverride,
+          book.shortBlurb,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
+        return haystack.includes(query);
+      });
+    }
+
+    function renderRows() {
+      rowsContainer.innerHTML = filteredBooks()
+        .map((book) => {
+          const isSelected = book.id === state.selectedId;
+          const statusClass =
+            book.availabilityStatus === 'preorder'
+              ? 'status-pill status-pill-preorder'
+              : book.availabilityStatus === 'limited'
+                ? 'status-pill status-pill-limited'
+                : book.availabilityStatus === 'sold_out'
+                  ? 'status-pill status-pill-soldout'
+                  : 'status-pill status-pill-stock';
+
+          return `
+            <tr class="border-t border-white/40 ${isSelected ? 'bg-white/50' : ''}">
+              <td class="px-4 py-4 align-top">
+                <div class="space-y-1">
+                  <button
+                    type="button"
+                    class="text-left font-semibold text-[#241920] underline decoration-[#d9bcb2] underline-offset-4"
+                    data-action="edit"
+                    data-book-id="${book.id}"
+                  >
+                    ${escapeHtml(book.title)}
+                  </button>
+                  <p class="text-xs uppercase tracking-[0.22em] text-[#7c5a63]">
+                    ${book.visible ? 'Live on site' : 'Hidden'}
+                  </p>
+                </div>
+              </td>
+              <td class="px-4 py-4 align-top text-[#5d4b52]">
+                ${escapeHtml(book.seriesName || book.seriesLabelOverride || 'Standalone')}
+              </td>
+              <td class="px-4 py-4 align-top text-[#5d4b52]">
+                ${escapeHtml(book.publishYear || '\u2014')}
+              </td>
+              <td class="px-4 py-4 align-top">
+                <span class="${statusClass}">
+                  ${escapeHtml(availabilityLabelMap[book.availabilityStatus] || 'In stock')}
+                </span>
+              </td>
+              <td class="px-4 py-4 align-top text-xs text-[#6e5961]">
+                <div class="space-y-1">
+                  <p>${book.amazonLink ? 'Amazon' : 'No Amazon link'}</p>
+                  <p>${book.retailerLink ? 'Retailer link' : 'No retailer link'}</p>
+                  <p>${book.stripePaymentLink ? 'Direct checkout' : 'No direct checkout'}</p>
+                </div>
+              </td>
+              <td class="px-4 py-4 align-top">
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" class="format-button" data-action="edit" data-book-id="${book.id}">Edit</button>
+                  <button type="button" class="format-button" data-action="toggle-visible" data-book-id="${book.id}">
+                    ${book.visible ? 'Hide' : 'Show'}
+                  </button>
+                  <button type="button" class="format-button" data-action="move-up" data-book-id="${book.id}">Up</button>
+                  <button type="button" class="format-button" data-action="move-down" data-book-id="${book.id}">Down</button>
+                  <button type="button" class="purchase-disabled" data-action="delete" data-book-id="${book.id}">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join('');
+    }
+
+    async function refreshCatalog(nextSelectedId = state.selectedId) {
+      const response = await fetch('/api/admin/catalog/', {
+        headers: { accept: 'application/json' },
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || 'Could not refresh the catalog.');
+      }
+
+      state.books = payload.data.books;
+      state.series = payload.data.series;
+      state.selectedId = state.books.some((book) => book.id === nextSelectedId)
+        ? nextSelectedId
+        : state.books[0]?.id ?? null;
+
+      renderStats();
+      renderRows();
+      populateForm(currentFormBook());
+    }
+
+    function formPayload() {
+      return {
+        title: form.elements.namedItem('title').value,
+        seriesId: form.elements.namedItem('seriesId').value || null,
+        seriesOrder: form.elements.namedItem('seriesOrder').value || 0,
+        publishYear: form.elements.namedItem('publishYear').value || null,
+        coverImageUrl: form.elements.namedItem('coverImageUrl').value,
+        shortBlurb: form.elements.namedItem('shortBlurb').value,
+        availabilityStatus: form.elements.namedItem('availabilityStatus').value,
+        availabilityLabel: form.elements.namedItem('availabilityLabel').value,
+        amazonLink: form.elements.namedItem('amazonLink').value,
+        retailerLink: form.elements.namedItem('retailerLink').value,
+        stripePaymentLink: form.elements.namedItem('stripePaymentLink').value,
+        displayPrice: form.elements.namedItem('displayPrice').value,
+        signedCopy: form.elements.namedItem('signedCopy').checked,
+        directFromAuthor: form.elements.namedItem('directFromAuthor').checked,
+        visible: form.elements.namedItem('visible').checked,
+        sortPriority: form.elements.namedItem('sortPriority').value || nextSortPriority(),
+      };
+    }
+
+    async function saveBook() {
+      clearStatus();
+      const currentId = form.elements.namedItem('bookId').value;
+      const payload = formPayload();
+      const url = currentId ? `/api/admin/books/${currentId}/` : '/api/admin/books/';
+      const method = currentId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Could not save the book.');
+      }
+
+      await refreshCatalog(result.data?.id ?? null);
+      setStatus(currentId ? 'Changes saved.' : 'Book created.');
+    }
+
+    async function removeBook(bookId) {
+      const book = state.books.find((item) => item.id === bookId);
+      if (!book) return;
+
+      const confirmed = window.confirm(`Delete "${book.title}" from the catalog?`);
+      if (!confirmed) return;
+
+      const response = await fetch(`/api/admin/books/${bookId}/`, {
+        method: 'DELETE',
+        headers: { accept: 'application/json' },
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Could not delete the book.');
+      }
+
+      const nextSelected = state.selectedId === bookId ? null : state.selectedId;
+      await refreshCatalog(nextSelected);
+      setStatus('Book deleted.');
+    }
+
+    async function toggleVisible(bookId) {
+      const book = state.books.find((item) => item.id === bookId);
+      if (!book) return;
+
+      const response = await fetch(`/api/admin/books/${bookId}/`, {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({
+          ...book,
+          visible: !book.visible,
+          coverImageUrl: book.coverImageUrl || '',
+          shortBlurb: book.shortBlurb,
+          availabilityLabel: book.availabilityLabel || '',
+          amazonLink: book.amazonLink || '',
+          retailerLink: book.retailerLink || '',
+          stripePaymentLink: book.stripePaymentLink || '',
+          displayPrice: book.displayPrice || '',
+        }),
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Could not update visibility.');
+      }
+
+      await refreshCatalog(bookId);
+      setStatus(book.visible ? 'Book hidden from the public site.' : 'Book is live on the public site.');
+    }
+
+    async function moveBook(bookId, direction) {
+      const response = await fetch('/api/admin/books/reorder/', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({ bookId, direction }),
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Could not reorder the book.');
+      }
+
+      await refreshCatalog(bookId);
+      setStatus(`Moved ${direction === 'up' ? 'up' : 'down'}.`);
+    }
+
+    function startNewBook() {
+      state.selectedId = null;
+      populateForm({ ...blankBook(), sortPriority: nextSortPriority() });
+      clearStatus();
+    }
+
+    rowsContainer.addEventListener('click', async (event) => {
+      const target = event.target instanceof HTMLElement ? event.target.closest('[data-action]') : null;
+      if (!(target instanceof HTMLElement)) return;
+
+      const action = target.dataset.action;
+      const bookId = Number(target.dataset.bookId);
+      if (!Number.isFinite(bookId)) return;
+
+      try {
+        if (action === 'edit') {
+          state.selectedId = bookId;
+          populateForm(currentFormBook());
+          renderRows();
+          clearStatus();
+        } else if (action === 'toggle-visible') {
+          await toggleVisible(bookId);
+        } else if (action === 'move-up') {
+          await moveBook(bookId, 'up');
+        } else if (action === 'move-down') {
+          await moveBook(bookId, 'down');
+        } else if (action === 'delete') {
+          await removeBook(bookId);
+        }
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : 'Something went wrong.', 'error');
+      }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      try {
+        await saveBook();
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : 'Something went wrong.', 'error');
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      state.search = searchInput.value;
+      renderRows();
+    });
+
+    deleteButton.addEventListener('click', async () => {
+      const currentId = Number(form.elements.namedItem('bookId').value);
+      if (!Number.isFinite(currentId) || currentId <= 0) return;
+
+      try {
+        await removeBook(currentId);
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : 'Something went wrong.', 'error');
+      }
+    });
+
+    resetButton.addEventListener('click', startNewBook);
+    createButton.addEventListener('click', startNewBook);
+    newBookButton.addEventListener('click', startNewBook);
+
+    renderStats();
+    renderRows();
+    populateForm(currentFormBook());
+  </script>
+</BaseLayout>

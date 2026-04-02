@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jaclyn-osborn-site",
+  "compatibility_date": "2026-03-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": "./dist",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jaclyn-osborn-catalog",
+      "database_id": "dafbc876-1d3b-4e0e-a826-31ee01ddc0c6"
+    }
+  ]
+}

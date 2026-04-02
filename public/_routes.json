@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "include": [
+    "/",
+    "/admin",
+    "/admin/*",
+    "/api/*",
+    "/books",
+    "/books/*",
+    "/series",
+    "/series/*"
+  ],
+  "exclude": [
+    "/_astro/*",
+    "/about",
+    "/about/*",
+    "/contact",
+    "/contact/*",
+    "/covers/*",
+    "/favicon.ico",
+    "/favicon.svg",
+    "/faq",
+    "/faq/*",
+    "/newsletter",
+    "/newsletter/*",
+    "/photos/*",
+    "/thank-you",
+    "/thank-you/*"
+  ]
+}

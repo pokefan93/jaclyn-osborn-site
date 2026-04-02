@@ -45,17 +45,21 @@ jobs:
           fi
 
           if [ "$REPOSITORY_NAME" = "${REPOSITORY_OWNER}.github.io" ]; then
+            SITE_URL="https://${REPOSITORY_OWNER}.github.io"
             COVER_BASE_URL="https://${REPOSITORY_OWNER}.github.io/covers"
           else
+            SITE_URL="https://${REPOSITORY_OWNER}.github.io/${REPOSITORY_NAME}"
             COVER_BASE_URL="https://${REPOSITORY_OWNER}.github.io/${REPOSITORY_NAME}/covers"
           fi
 
           TEMP_WORKBOOK="$RUNNER_TEMP/jaclyn-catalog-synced.xlsx"
+          DEFAULT_REDIRECT_URL="${SITE_URL}/thank-you/"
 
           python scripts/sync_stripe_from_workbook.py \
             --workbook "$WORKBOOK_PATH" \
             --output "$TEMP_WORKBOOK" \
-            --cover-base-url "$COVER_BASE_URL"
+            --cover-base-url "$COVER_BASE_URL" \
+            --default-after-completion-redirect-url "$DEFAULT_REDIRECT_URL"
 
           python scripts/build_catalog_from_workbook.py \
             --workbook "$TEMP_WORKBOOK" \

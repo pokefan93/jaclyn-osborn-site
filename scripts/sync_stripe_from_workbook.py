@@ -50,6 +50,14 @@ def normalize_text(value: Any) -> str:
     return str(value).strip()
 
 
+def coalesce_text(*values: Any) -> str:
+    for value in values:
+        normalized = normalize_text(value)
+        if normalized:
+            return normalized
+    return ""
+
+
 def normalize_purchase_mode(value: Any) -> str:
     normalized = normalize_text(value).lower().replace("-", " ").replace("_", " ")
     mapping = {
@@ -419,6 +427,7 @@ def sync_direct_sale_formats(
     direct_headers: dict[str, int],
     direct_rows: list[dict[str, Any]],
     product_ids_by_slug: dict[str, str],
+    default_redirect_url: str = "",
 ) -> None:
     existing_payment_links_by_sale_id: dict[str, dict[str, Any]] = {}
     existing_prices_by_product: dict[str, list[dict[str, Any]]] = {}
@@ -540,7 +549,10 @@ def sync_direct_sale_formats(
         existing_payment_link_id = normalize_text(row.get("stripe_payment_link_id"))
         existing_payment_link_url = normalize_text(row.get("stripe_payment_link_url"))
         purchase_url = normalize_text(row.get("purchase_url"))
-        redirect_url = normalize_text(row.get("after_completion_redirect_url"))
+        redirect_url = coalesce_text(
+            row.get("after_completion_redirect_url"),
+            default_redirect_url,
+        )
         allow_promotion_codes = normalize_bool(row.get("allow_promotion_codes"))
         collect_shipping_address = normalize_bool(row.get("collect_shipping_address"))
         shipping_countries = parse_country_list(normalize_text(row.get("shipping_countries")))
@@ -602,6 +614,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--cover-base-url", default="")
+    parser.add_argument("--default-after-completion-redirect-url", default="")
     args = parser.parse_args()
 
     workbook_path = args.workbook
@@ -669,7 +682,14 @@ def main() -> None:
         books,
         cover_base_url=normalize_text(args.cover_base_url),
     )
-    sync_direct_sale_formats(client, direct_ws, direct_headers, direct_rows, product_ids_by_slug)
+    sync_direct_sale_formats(
+        client,
+        direct_ws,
+        direct_headers,
+        direct_rows,
+        product_ids_by_slug,
+        default_redirect_url=normalize_text(args.default_after_completion_redirect_url),
+    )
 
     if args.dry_run:
         print("Dry run complete. No Stripe or workbook changes were saved.")

@@ -6,16 +6,23 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "astro check",
+    "dev": "wrangler types && astro dev",
+    "build": "wrangler types && astro check && astro build && node scripts/patch_pages_build.mjs",
+    "preview": "wrangler types && astro preview",
+    "db:seed:generate": "node scripts/generate_d1_seed.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply jaclyn-osborn-catalog --local",
+    "db:migrate": "wrangler d1 migrations apply jaclyn-osborn-catalog",
+    "db:seed:local": "wrangler d1 execute jaclyn-osborn-catalog --local --file migrations/0002_seed_catalog.sql",
+    "db:seed": "wrangler d1 execute jaclyn-osborn-catalog --file migrations/0002_seed_catalog.sql",    "check": "astro check",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.1.7",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.2",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "wrangler": "^4.79.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",

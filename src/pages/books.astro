@@ -1,31 +1,33 @@
 ---
+export const prerender = false;
+
 import BookCard from '../components/BookCard.astro';
 import PageHero from '../components/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import {
-  books,
-  booksBySeries,
   formatLabels,
-  genreVibeTags,
+  sortCatalogBooks,
+  buildBooksBySeries,
   getBookCollectionLabel,
 } from '../data/catalog';
+import { getPublicCatalogData } from '../lib/catalog/repository';
 import { withBase } from '../utils/withBase';
 
-const sortedBooks = [...books].sort((a, b) => {
-  const seriesCompare = getBookCollectionLabel(a).localeCompare(
-    getBookCollectionLabel(b),
-  );
+const { books, series } = await getPublicCatalogData();
+const booksBySeries = buildBooksBySeries(books, series);
+const sortedBooks = sortCatalogBooks(books);
 
-  if (seriesCompare !== 0) {
-    return seriesCompare;
-  }
+const categoryOptions = [...new Set(books.flatMap((book) => book.genres))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((slug) => ({
+    slug,
+    label: slug
+      .split('-')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' '),
+  }));
 
-  return a.seriesOrder - b.seriesOrder;
-});
-
-const categoryOptions = [...genreVibeTags]
-  .filter((tag) => tag.kind === 'genre')
-  .sort((a, b) => a.label.localeCompare(b.label));
+const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
 ---
 
 <BaseLayout
@@ -89,7 +91,7 @@ const categoryOptions = [...genreVibeTags]
             <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Format</span>
             <select name="format" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
               <option value="all">Any format</option>
-              {Object.entries(formatLabels).map(([value, label]) => <option value={value}>{label}</option>)}
+              {availableFormats.map((value) => <option value={value}>{formatLabels[value]}</option>)}
             </select>
           </label>
 
