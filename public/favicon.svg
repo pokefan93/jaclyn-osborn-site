@@ -1,12 +1,69 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="a" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#241920"/>
-      <stop offset=".52" stop-color="#6F425E"/>
-      <stop offset="1" stop-color="#D19B89"/>
+    <linearGradient id="bg" x1="10" y1="8" x2="55" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1F1620"/>
+      <stop offset=".56" stop-color="#5E3A51"/>
+      <stop offset="1" stop-color="#D29A86"/>
     </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(20 16) rotate(38) scale(38 29)">
+      <stop stop-color="#FFF7F0" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#FFF7F0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bookStroke" x1="18" y1="22" x2="47" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9E5D9"/>
+      <stop offset="1" stop-color="#E8C5B5"/>
+    </linearGradient>
+    <filter id="shadow" x="10" y="14" width="44" height="38" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1A121A" flood-opacity=".18"/>
+    </filter>
+    <filter id="typeShadow" x="11" y="13" width="42" height="40" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-color="#1A121A" flood-opacity=".22"/>
+    </filter>
   </defs>
-  <rect width="64" height="64" rx="20" fill="url(#a)"/>
-  <circle cx="22" cy="22" r="8" fill="white" fill-opacity=".14"/>
-  <path d="M23.5 17.5h17v3h-4.5v19.4c0 5.5-3.4 8.6-9.1 8.6-2.4 0-4.7-.6-6.5-1.7l1.4-3.2c1.3.8 2.8 1.2 4.4 1.2 3.5 0 5.1-1.6 5.1-5.1V20.5h-7.8v-3Zm12 9.7h5.9c4.6 0 7.4 2.3 7.4 6.3 0 3.9-2.8 6.4-7.4 6.4h-2.5v7.1h-3.4V27.2Zm5.4 9.8c2.8 0 4.3-1.2 4.3-3.5 0-2.3-1.5-3.4-4.3-3.4h-2V37h2Z" fill="#FFF8F3"/>
+
+  <rect width="64" height="64" rx="19" fill="url(#bg)"/>
+  <rect width="64" height="64" rx="19" fill="url(#glow)"/>
+  <circle cx="18" cy="17" r="7" fill="#FFF7F0" fill-opacity=".08"/>
+  <circle cx="48" cy="47" r="10" fill="#FFF7F0" fill-opacity=".05"/>
+
+  <g filter="url(#shadow)" opacity=".92">
+    <path
+      d="M17.5 22.7C21.9 20.7 27 20.5 31 22.3V41.4C26.6 39.9 22 39.8 17.5 41.5V22.7Z"
+      fill="#FFF7F0"
+      fill-opacity=".16"
+      stroke="url(#bookStroke)"
+      stroke-width="1.35"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M33 22.3C37 20.5 42.1 20.7 46.5 22.7V41.5C42 39.8 37.4 39.9 33 41.4V22.3Z"
+      fill="#FFF7F0"
+      fill-opacity=".12"
+      stroke="url(#bookStroke)"
+      stroke-width="1.35"
+      stroke-linejoin="round"
+    />
+    <path d="M32 22V42.1" stroke="#F7DCCF" stroke-opacity=".78" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M20.2 25.8C23.1 24.8 26.2 24.8 29.2 25.8" stroke="#FFF2EA" stroke-opacity=".54" stroke-width="1.05" stroke-linecap="round"/>
+    <path d="M34.8 25.8C37.8 24.8 40.9 24.8 43.8 25.8" stroke="#FFF2EA" stroke-opacity=".46" stroke-width="1.05" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#typeShadow)">
+    <text
+      x="32"
+      y="39"
+      text-anchor="middle"
+      fill="#FFF8F2"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="23"
+      font-weight="700"
+      letter-spacing="-1.2"
+      style="paint-order: stroke fill;"
+      stroke="#F4D6C6"
+      stroke-opacity=".22"
+      stroke-width=".8"
+    >
+      JO
+    </text>
+  </g>
 </svg>
