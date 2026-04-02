@@ -3,7 +3,7 @@ import { siteMeta } from '../data/site';
 ---
 
 <section class="card-shell overflow-hidden rounded-[1.85rem] p-5 sm:rounded-[2.35rem] sm:p-7">
-  <div class="grid gap-5 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+  <div class="mx-auto max-w-3xl space-y-5 text-center">
     <div class="space-y-5">
       <p class="eyebrow text-[#7c5a63]">Social</p>
       <h2 class="font-display text-[2.15rem] leading-tight text-[#241920] sm:text-5xl">
@@ -13,20 +13,9 @@ import { siteMeta } from '../data/site';
         For coffee, anime, cover reveals, and book updates, Instagram is the best
         place to keep up with Jaclyn between releases.
       </p>
-      <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="button-secondary w-full justify-center sm:w-auto">
+      <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="button-secondary w-full justify-center sm:mx-auto sm:w-auto">
         Visit Instagram
       </a>
-    </div>
-
-    <div class="rounded-[1.5rem] bg-[linear-gradient(140deg,#241920_0%,#6f425e_48%,#d6a28f_100%)] px-5 py-6 text-white shadow-[0_24px_54px_rgba(36,25,32,0.18)] sm:rounded-[2rem] sm:px-7 sm:py-8">
-      <p class="eyebrow text-[#edd6cf]">Instagram</p>
-      <h3 class="mt-4 font-display text-[2rem] leading-[0.98] sm:text-[2.8rem]">
-        Book news, cozy chaos, and the occasional anime obsession.
-      </h3>
-      <p class="mt-4 text-sm leading-7 text-white/78 sm:text-base">
-        Follow for release updates, cover reveals, signed-copy posts, and the
-        behind-the-scenes moments that do not make it onto the site.
-      </p>
     </div>
   </div>
 </section>
