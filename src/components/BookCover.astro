@@ -1,5 +1,6 @@
 ---
 import type { Book } from '../types/catalog';
+import { resolveCoverAlt, resolveCoverImagePath } from '../lib/catalog/covers';
 import { withBase } from '../utils/withBase';
 
 interface Props {
@@ -41,7 +42,8 @@ const paletteMap = {
 } as const;
 
 const palette = paletteMap[book.coverPalette];
-const coverSrc = withBase(book.coverImageUrl ?? `covers/${book.slug}.jpg`);
+const coverSrc = withBase(resolveCoverImagePath(book));
+const coverAlt = resolveCoverAlt(book);
 const releaseYear = /^\d{4}/.test(book.releaseDate)
   ? new Date(book.releaseDate).getFullYear()
   : null;
@@ -54,10 +56,10 @@ const releaseYear = /^\d{4}/.test(book.releaseDate)
   ]}
   style={`background:${palette.gradient};`}
 >
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.32),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.18),transparent_40%)]"></div>
-  <div class="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,rgba(255,255,255,0.35)_0%,transparent_36%),linear-gradient(320deg,rgba(255,255,255,0.08)_0%,transparent_42%)]"></div>
-  <div class="absolute left-5 top-5 h-14 w-14 rounded-full border border-white/30 bg-white/12 backdrop-blur-sm"></div>
-  <div class="absolute bottom-4 left-4 right-4 rounded-[0.8rem] border border-white/16 bg-black/10 px-4 py-4 backdrop-blur-sm">
+  <div aria-hidden="true" class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.32),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.18),transparent_40%)]"></div>
+  <div aria-hidden="true" class="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,rgba(255,255,255,0.35)_0%,transparent_36%),linear-gradient(320deg,rgba(255,255,255,0.08)_0%,transparent_42%)]"></div>
+  <div aria-hidden="true" class="absolute left-5 top-5 h-14 w-14 rounded-full border border-white/30 bg-white/12 backdrop-blur-sm"></div>
+  <div aria-hidden="true" class="absolute bottom-4 left-4 right-4 rounded-[0.8rem] border border-white/16 bg-black/10 px-4 py-4 backdrop-blur-sm">
     <p class="text-[10px] uppercase tracking-[0.32em] text-white/78">
       Jaclyn Osborn
     </p>
@@ -78,8 +80,8 @@ const releaseYear = /^\d{4}/.test(book.releaseDate)
   ></div>
   <img
     src={coverSrc}
-    alt={`Cover of ${book.title} by Jaclyn Osborn`}
-    class="absolute inset-0 z-20 h-full w-full object-cover"
+    alt={coverAlt}
+    class="absolute inset-0 z-20 h-full w-full object-contain"
     loading="lazy"
     decoding="async"
     onerror="this.remove()"

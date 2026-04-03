@@ -32,15 +32,15 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
 
 <BaseLayout
   title="Books"
-  description="Browse Jaclyn Osborn books by series, category, and format."
+  description="Browse Jaclyn Osborn books by series, genre, and format."
 >
   <PageHero
-    eyebrow="Catalog"
-    title="Browse the catalog"
-    description="Browse by series, filter the list, and find your next read."
+    eyebrow="Books"
+    title="Books by Jaclyn Osborn"
+    description="Browse the books, filter by series or genre, and find what you want to read next."
     actions={[
       { href: withBase('series/'), label: 'See all series', variant: 'secondary' },
-      { href: withBase('about/#about-newsletter'), label: 'Join the newsletter', variant: 'primary' },
+      { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
     ]}
     compact
   />
@@ -50,9 +50,9 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
       <div class="card-shell rounded-[1.6rem] p-4 sm:rounded-[2.3rem] sm:p-6">
         <div class="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
           <div>
-            <p class="eyebrow text-[#7c5a63]">Filter the list</p>
+            <p class="eyebrow text-[#7c5a63]">Find a book</p>
             <p class="mt-1 text-sm leading-6 text-[#5d4b52] sm:mt-2 sm:leading-7">
-              Search by title or series, or filter below.
+              Search by title or series, or use the filters below.
             </p>
           </div>
           <p class="text-sm font-semibold text-[#241920]" aria-live="polite" data-results-count>
@@ -80,9 +80,9 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
           </label>
 
           <label class="space-y-1.5">
-            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Category</span>
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Genre</span>
             <select name="category" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
-              <option value="all">All categories</option>
+              <option value="all">All genres</option>
               {categoryOptions.map((option) => <option value={option.slug}>{option.label}</option>)}
             </select>
           </label>
@@ -105,7 +105,7 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
 
           <div class="col-span-2 flex items-end justify-end pt-1 lg:col-span-5 lg:pt-0">
             <button type="button" class="button-secondary min-h-11 px-4 py-2.5 text-sm" data-clear-filters>
-              Clear
+              Clear filters
             </button>
           </div>
         </form>

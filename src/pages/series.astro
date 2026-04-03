@@ -29,7 +29,8 @@ const seriesHeroStyle = `background:
 >
   <PageHero
     eyebrow="Series"
-    title="Find a series and start at book one."
+    title="Series in reading order"
+    description="Browse the series, see where each one begins, and read in order."
     actions={[
       { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
       { href: withBase('about/'), label: 'About Jaclyn', variant: 'secondary' },
@@ -92,7 +93,7 @@ const seriesHeroStyle = `background:
                     </h3>
                   </div>
                   <a href={withBase(`books/?series=${item.slug}&sort=series-order`)} class="button-secondary w-full justify-center sm:w-auto">
-                    Browse books
+                    See books
                   </a>
                 </div>
 

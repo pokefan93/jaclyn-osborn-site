@@ -2,13 +2,13 @@ export const siteMeta = {
   name: 'Jaclyn Osborn',
   title: 'Jaclyn Osborn | M/M Romance',
   description:
-    'M/M romance by Jaclyn Osborn across contemporary, fantasy, paranormal, and historical stories.',
+    'M/M romance by Jaclyn Osborn, including contemporary, fantasy, paranormal, and historical stories.',
   shortTagline: 'Author, coffee addict, & anime lover.',
   heroTitle: 'M/M romance by Jaclyn Osborn.',
   heroCopy:
-    'Explore contemporary, fantasy, paranormal, and historical stories, along with series reading order, book details, and updates.',
+    'Jaclyn Osborn writes contemporary, fantasy, paranormal, and historical M/M romance. Browse the books, explore the series, and find a good place to start.',
   longBio:
-    'Jaclyn Osborn is a bestselling M/M romance author writing across contemporary, fantasy, paranormal, and historical stories. When she is not writing, she is usually drinking coffee or watching anime.',
+    'Jaclyn Osborn is an M/M romance author writing contemporary, fantasy, paranormal, and historical stories. When she is not writing, she is usually drinking coffee or watching anime.',
   instagramUrl: 'https://instagram.com/jaclynosborn',
   newsletterUrl: 'mailto:hello@jaclynosbornbooks.com?subject=Newsletter%20Signup',
   email: 'hello@jaclynosbornbooks.com',
@@ -19,7 +19,7 @@ export const siteMeta = {
     thankYouPath: '/thank-you/',
     stripeBuyButtonPublishableKey: '',
     signedCopyNote:
-      'Signed copy updates will be shared on the site and in the newsletter.',
+      'Signed copy updates will be shared here and in the newsletter.',
     shippingNote: '',
     fulfillmentNote: '',
     whereToBuyNote: '',
@@ -34,9 +34,9 @@ export const navItems = [
 ];
 
 export const newsletterBenefits = [
-  'Release news and preorder announcements',
-  'Cover reveals and signed copy updates',
-  'Occasional notes from Jaclyn',
+  'New release updates',
+  'Cover reveals and preorder news',
+  'Signed copy updates',
 ];
 
 export const socialPreviewCards = [
@@ -61,7 +61,7 @@ export const faqItems = [
   {
     question: 'Where should a new reader start?',
     answer:
-      'If you want contemporary romance, Blue Harbor and Unexpected Love are great places to begin. If you want paranormal romance, start with Ivy Grove or Sons of the Fallen. If you want historical fantasy, try Tales of Fate.',
+      'If you want contemporary romance, Blue Harbor or Unexpected Love are good places to start. For paranormal romance, try Ivy Grove or Sons of the Fallen. For historical romance, Axios and Tales of Fate are good options.',
   },
   {
     question: 'Do I need to read the series in order?',
@@ -71,7 +71,7 @@ export const faqItems = [
   {
     question: 'Are signed copies available?',
     answer:
-      'Signed copy and direct shop updates will be shared here on the site and in the newsletter.',
+      'Not at the moment. Signed copy updates will be posted here on the site and shared in the newsletter.',
   },
   {
     question: 'How do I sign up for the newsletter?',
@@ -81,7 +81,7 @@ export const faqItems = [
   {
     question: 'Where can I buy the books?',
     answer:
-      'Retailer links and direct shop updates will be added here as they are ready. The newsletter is also a good place to hear about new links.',
+      'Each book listing includes retailer links when they are available. Direct shop and signed copy updates will be added here as they are ready.',
   },
 ];
 

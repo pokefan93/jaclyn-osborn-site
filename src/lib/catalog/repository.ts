@@ -49,6 +49,7 @@ interface BookRow {
   publish_year: number | null;
   release_date: string | null;
   cover_image_url: string | null;
+  cover_alt: string | null;
   short_blurb: string;
   description: string;
   availability_status: Book['purchase']['availabilityStatus'];
@@ -179,6 +180,7 @@ function mapBookRow(row: BookRow): Book {
     featured: toBoolean(row.featured),
     coverPalette: row.cover_palette,
     coverImageUrl: optionalText(row.cover_image_url) || undefined,
+    coverAlt: optionalText(row.cover_alt) || undefined,
     visible: toBoolean(row.visible),
     sortPriority: Number(row.sort_priority ?? 0),
     catalogStatus: optionalText(row.catalog_status) || undefined,
@@ -208,6 +210,7 @@ function mapAdminBookRow(row: BookRow): AdminBookRecord {
     seriesOrder: book.seriesOrder,
     publishYear: book.publishYear ?? null,
     coverImageUrl: book.coverImageUrl ?? '',
+    coverAlt: book.coverAlt ?? '',
     shortBlurb: book.shortHook,
     description: book.description,
     availabilityStatus: book.purchase.availabilityStatus,
@@ -271,6 +274,7 @@ async function listBooks(includeHidden = false) {
         b.publish_year,
         b.release_date,
         b.cover_image_url,
+        b.cover_alt,
         b.short_blurb,
         b.description,
         b.availability_status,
@@ -319,6 +323,7 @@ async function listAdminBooks() {
         b.publish_year,
         b.release_date,
         b.cover_image_url,
+        b.cover_alt,
         b.short_blurb,
         b.description,
         b.availability_status,
@@ -361,6 +366,7 @@ async function getAdminBookById(id: number) {
         b.publish_year,
         b.release_date,
         b.cover_image_url,
+        b.cover_alt,
         b.short_blurb,
         b.description,
         b.availability_status,
@@ -518,6 +524,7 @@ export async function createBook(input: AdminBookInput) {
           publish_year,
           release_date,
           cover_image_url,
+          cover_alt,
           short_blurb,
           description,
           availability_status,
@@ -534,7 +541,7 @@ export async function createBook(input: AdminBookInput) {
           catalog_status,
           genres_json,
           formats_json
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         slug,
@@ -544,6 +551,7 @@ export async function createBook(input: AdminBookInput) {
         input.publishYear,
         releaseDateForYear(input.publishYear),
         input.coverImageUrl || null,
+        input.coverAlt || null,
         input.shortBlurb,
         description,
         input.availabilityStatus,
@@ -583,6 +591,7 @@ export async function updateBook(id: number, input: AdminBookInput) {
         publish_year,
         release_date,
         cover_image_url,
+        cover_alt,
         short_blurb,
         description,
         availability_status,
@@ -628,6 +637,7 @@ export async function updateBook(id: number, input: AdminBookInput) {
           publish_year = ?,
           release_date = ?,
           cover_image_url = ?,
+          cover_alt = ?,
           short_blurb = ?,
           description = ?,
           availability_status = ?,
@@ -650,6 +660,7 @@ export async function updateBook(id: number, input: AdminBookInput) {
         input.publishYear,
         releaseDateForYear(input.publishYear),
         input.coverImageUrl || null,
+        input.coverAlt || null,
         input.shortBlurb,
         description,
         input.availabilityStatus,

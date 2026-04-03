@@ -59,6 +59,7 @@ export const adminBookInputSchema = z.object({
     z.number().int().min(1900).max(2100).nullable(),
   ),
   coverImageUrl: optionalUrlField,
+  coverAlt: z.preprocess(trimString, z.string().max(240)),
   shortBlurb: z.preprocess(
     trimString,
     z.string().min(1, 'Short blurb is required.').max(600),

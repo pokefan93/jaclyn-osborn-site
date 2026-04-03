@@ -96,6 +96,7 @@ export interface Book {
   featured: boolean;
   coverPalette: CoverPalette;
   coverImageUrl?: string;
+  coverAlt?: string;
   visible: boolean;
   sortPriority: number;
   catalogStatus?: string;
@@ -128,6 +129,7 @@ export interface AdminBookRecord {
   seriesOrder: number;
   publishYear: number | null;
   coverImageUrl: string;
+  coverAlt: string;
   shortBlurb: string;
   description: string;
   availabilityStatus: AvailabilityStatus;

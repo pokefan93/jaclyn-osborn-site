@@ -21,8 +21,6 @@ const isPlaceholderUrl = (url?: string) =>
   !url ||
   url.includes('example.com');
 
-const isTestStripeUrl = (url?: string) => Boolean(url?.includes('buy.stripe.com/test_'));
-
 const isLiveDirectFormat = (format: Book['purchase']['directSaleFormats'][number]) => {
   if (format.purchaseMode === 'unavailable') {
     return false;
@@ -40,9 +38,6 @@ const placeholderDirectFormats = book.purchase.directSaleFormats.filter(
   (format) =>
     format.purchaseMode !== 'unavailable' && !isLiveDirectFormat(format),
 );
-const hasTestStripeLinks = liveDirectFormats.some((format) =>
-  isTestStripeUrl(format.purchaseUrl),
-);
 
 const liveRetailerLinks = book.purchase.retailerLinks.filter(
   (retailer) => !isPlaceholderUrl(retailer.purchaseUrl),
@@ -54,14 +49,7 @@ const hasLivePurchaseOptions =
 const merchandisingFlags = hasLivePurchaseOptions ? getMerchandisingFlags(book) : [];
 const availabilityLabel = getAvailabilityLabel(book.purchase);
 const supportNotes = hasLivePurchaseOptions
-  ? [
-      ...new Set([
-        ...getPurchaseSupportNotes(book, siteMeta.directSales),
-        ...(hasTestStripeLinks
-          ? ['Direct checkout is currently in Stripe test mode for site QA.']
-          : []),
-      ]),
-    ]
+  ? [...new Set(getPurchaseSupportNotes(book, siteMeta.directSales))]
   : [];
 
 const showAvailability =

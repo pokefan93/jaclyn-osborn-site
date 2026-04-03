@@ -7,14 +7,13 @@
   },
   "scripts": {
     "dev": "wrangler types && astro dev",
-    "build": "wrangler types && astro check && astro build && node scripts/patch_pages_build.mjs",
+    "build": "wrangler types && astro check && astro build",
     "preview": "wrangler types && astro preview",
     "db:seed:generate": "node scripts/generate_d1_seed.mjs",
     "db:migrate:local": "wrangler d1 migrations apply jaclyn-osborn-catalog --local",
-    "db:migrate": "wrangler d1 migrations apply jaclyn-osborn-catalog",
-    "db:seed:local": "wrangler d1 execute jaclyn-osborn-catalog --local --file migrations/0002_seed_catalog.sql",
-    "db:seed": "wrangler d1 execute jaclyn-osborn-catalog --file migrations/0002_seed_catalog.sql",    "check": "astro check",
-    "astro": "astro"
+    "db:migrate": "wrangler d1 migrations apply jaclyn-osborn-catalog --remote",
+    "db:seed:local": "wrangler d1 execute jaclyn-osborn-catalog --local --file seeds/catalog.sql",
+    "db:seed": "wrangler d1 execute jaclyn-osborn-catalog --remote --file seeds/catalog.sql"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.7",

@@ -8,10 +8,11 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  site:
-    process.env.SITE_URL ??
-    process.env.CF_PAGES_URL ??
-    'https://jaclyn-osborn-site.karnestaylor.workers.dev',
+  // SITE_URL must be set at build time so canonical URLs, Open Graph tags,
+  // sitemap.xml, and robots.txt all reference the correct production hostname.
+  // The fallback keeps local dev and CI builds pointed at the current workers.dev URL.
+  // When Jaclyn's custom domain is live, set SITE_URL to that domain and rebuild.
+  site: process.env.SITE_URL ?? 'https://jaclyn-osborn-site.karnestaylor.workers.dev',
   trailingSlash: 'always',
   adapter: cloudflare({
     imageService: 'passthrough',

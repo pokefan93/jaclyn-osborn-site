@@ -14,7 +14,7 @@ const { compact = false } = Astro.props;
       <div class="space-y-5">
         <p class="eyebrow text-[#e7cec6]">Newsletter</p>
         <h2 class="font-display text-[2.15rem] leading-tight sm:text-5xl">
-          Join Jaclyn's newsletter.
+          Join Jaclyn's newsletter
         </h2>
         <div class="flex flex-wrap gap-2">
           {newsletterBenefits.map((benefit) => <span class="pill border border-white/12 bg-white/8 text-white/84">{benefit}</span>)}
@@ -25,10 +25,10 @@ const { compact = false } = Astro.props;
       compact ? (
         <div class="rounded-[1.6rem] border border-white/10 bg-white/6 p-5 backdrop-blur-sm sm:rounded-[2rem] sm:p-6">
           <p class="text-sm leading-7 text-white/76">
-            New releases, cover reveals, and signed copy updates sent straight to your inbox.
+            Release updates, cover reveals, and signed copy news sent straight to your inbox.
           </p>
           <a
-            href={withBase('about/#about-newsletter')}
+            href={withBase('newsletter/')}
             class="button-primary mt-6 w-full justify-center sm:w-auto"
           >
             Join the newsletter
@@ -38,7 +38,7 @@ const { compact = false } = Astro.props;
         <div class="rounded-[1.6rem] border border-white/10 bg-white/6 p-5 backdrop-blur-sm sm:rounded-[2rem] sm:p-6">
           <div class="space-y-5">
             <p class="text-sm leading-6 text-white/56">
-              Release news, cover reveals, book updates, and more from Jaclyn.
+              Release updates, cover reveals, and book news from Jaclyn.
             </p>
             <div>
               <label
@@ -51,7 +51,7 @@ const { compact = false } = Astro.props;
                 id="newsletter-email-input"
                 type="email"
                 name="newsletter_email"
-                placeholder="Subscribe to Jaclyn's newsletter"
+                placeholder="Your email address"
                 class="input-shell"
                 data-newsletter-email-input
               />
@@ -62,7 +62,7 @@ const { compact = false } = Astro.props;
               data-newsletter-email-trigger
               data-newsletter-target={siteMeta.email}
             >
-              Join by email
+              Sign up by email
             </button>
           </div>
         </div>
@@ -81,8 +81,8 @@ const { compact = false } = Astro.props;
       const target = trigger.dataset.newsletterTarget ?? '';
       const subject = 'Newsletter Signup';
       const body = typedEmail
-        ? `Please add this email to Jaclyn's newsletter list:\n\n${typedEmail}`
-        : `Please add me to Jaclyn's newsletter list.`;
+        ? `Hi,\n\nI'd like to join Jaclyn's newsletter. Please use this email:\n\n${typedEmail}`
+        : `Hi,\n\nI'd like to join Jaclyn's newsletter.`;
 
       window.location.href = `mailto:${target}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });

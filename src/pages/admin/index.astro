@@ -1,9 +1,10 @@
 ---
 export const prerender = false;
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAdminCatalogSnapshot } from '../../lib/catalog/repository';
+import { getDefaultCoverImagePath, resolveCoverAlt, resolveCoverImagePath } from '../../lib/catalog/covers';
 import { availabilityOptions } from '../../lib/catalog/shared';
 import { withBase } from '../../utils/withBase';
 
@@ -11,13 +12,42 @@ const initialCatalog = await getAdminCatalogSnapshot();
 const initialCatalogJson = JSON.stringify(initialCatalog).replace(/<\/script/gi, '<\\/script');
 const initialVisibleCount = initialCatalog.books.filter((book) => book.visible).length;
 const initialDirectCount = initialCatalog.books.filter((book) => book.stripePaymentLink).length;
+const initialHiddenCount = initialCatalog.books.filter((book) => !book.visible).length;
+
 const availabilityClassMap = {
   in_stock: 'status-pill status-pill-stock',
   limited: 'status-pill status-pill-limited',
   sold_out: 'status-pill status-pill-soldout',
   preorder: 'status-pill status-pill-preorder',
 } as const;
+
 const emDash = '\u2014';
+
+function getAvailabilityLabel(status: string) {
+  return availabilityOptions.find((option) => option.value === status)?.label ?? 'In stock';
+}
+
+function getBookSeriesLabel(book: (typeof initialCatalog.books)[number]) {
+  return book.seriesName ?? book.seriesLabelOverride ?? 'Standalone';
+}
+
+function getBookInitials(title: string) {
+  const pieces = title
+    .split(/\s+/)
+    .map((piece) => piece.trim())
+    .filter(Boolean)
+    .slice(0, 2);
+
+  if (pieces.length === 0) {
+    return 'BO';
+  }
+
+  return pieces.map((piece) => piece[0]?.toUpperCase() ?? '').join('');
+}
+
+function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
+  return withBase(resolveCoverImagePath(book));
+}
 ---
 
 <BaseLayout
@@ -27,7 +57,7 @@ const emDash = '\u2014';
   <PageHero
     eyebrow="Admin"
     title="Catalog dashboard"
-    description="Update book details, links, order, and visibility without editing code."
+    description="Add books, update links, and keep the storefront tidy without touching code."
     actions={[
       { href: withBase('books/'), label: 'View books page', variant: 'primary' },
       { href: withBase('series/'), label: 'View series page', variant: 'secondary' },
@@ -35,23 +65,29 @@ const emDash = '\u2014';
     compact
   />
 
-  <section class="px-4 pt-10 sm:px-6 lg:px-8">
+  <section
+    class="px-4 pt-10 sm:px-6 lg:px-8"
+    data-admin-root
+    data-base-url={withBase('/')}
+    data-api-catalog={withBase('api/admin/catalog/')}
+    data-api-books={withBase('api/admin/books/')}
+    data-api-reorder={withBase('api/admin/books/reorder/')}
+  >
     <div class="mx-auto max-w-7xl space-y-6">
       <div class="card-shell rounded-[1.9rem] p-5 sm:p-6">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
+        <div class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div class="max-w-3xl">
             <p class="eyebrow text-[#7c5a63]">Protected author dashboard</p>
             <h2 class="mt-3 font-display text-4xl text-[#241920] sm:text-[2.75rem]">
-              Everything in one place.
+              Calm, simple catalog care.
             </h2>
-            <p class="mt-3 max-w-3xl text-sm leading-7 text-[#5d4b52] sm:text-base">
-              This dashboard is built to sit behind Cloudflare Access. Once Access is
-              enabled, Jaclyn can update the live catalog here without touching the repo,
-              Stripe secret keys, or a spreadsheet.
+            <p class="mt-3 text-sm leading-7 text-[#5d4b52] sm:text-base">
+              Pick a book on the left, make changes on the right, and save when you are ready.
+              Blank buy links stay hidden on the public site.
             </p>
           </div>
 
-          <div class="grid gap-3 sm:grid-cols-3">
+          <div class="admin-summary-grid w-full xl:max-w-[34rem]">
             <div class="surface-box rounded-[1.35rem] px-4 py-4">
               <p class="eyebrow text-[#7c5a63]">Books</p>
               <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-total>
@@ -59,112 +95,196 @@ const emDash = '\u2014';
               </p>
             </div>
             <div class="surface-box rounded-[1.35rem] px-4 py-4">
-              <p class="eyebrow text-[#7c5a63]">Visible</p>
+              <p class="eyebrow text-[#7c5a63]">Live</p>
               <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-visible>
                 {initialVisibleCount}
               </p>
             </div>
             <div class="surface-box rounded-[1.35rem] px-4 py-4">
-              <p class="eyebrow text-[#7c5a63]">Direct links</p>
+              <p class="eyebrow text-[#7c5a63]">Direct sale</p>
               <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-direct>
                 {initialDirectCount}
+              </p>
+            </div>
+            <div class="surface-box rounded-[1.35rem] px-4 py-4">
+              <p class="eyebrow text-[#7c5a63]">Hidden</p>
+              <p class="mt-2 font-display text-4xl text-[#241920]" data-stat-hidden>
+                {initialHiddenCount}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+      <div class="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
         <article class="card-shell rounded-[1.9rem] p-5 sm:p-6">
           <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p class="eyebrow text-[#7c5a63]">Book list</p>
-              <h2 class="mt-3 font-display text-3xl text-[#241920] sm:text-[2.5rem]">
-                Manage the catalog.
+              <p class="eyebrow text-[#7c5a63]">Browse books</p>
+              <h2 class="mt-3 font-display text-3xl text-[#241920] sm:text-[2.45rem]">
+                Find what you want quickly.
               </h2>
               <p class="mt-3 text-sm leading-7 text-[#5d4b52] sm:text-base">
-                Use the quick actions to hide a title, move it up or down, or open it in the editor.
+                Search by title, narrow to one series, and glance at link status before you open the editor.
               </p>
             </div>
 
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <label class="w-full sm:w-[18rem]">
-                <span class="sr-only">Search books</span>
-                <input
-                  type="search"
-                  class="input-shell"
-                  placeholder="Search title or series"
-                  data-admin-search
-                />
-              </label>
-              <button type="button" class="button-secondary justify-center" data-new-book>
-                New book
-              </button>
-            </div>
+            <button type="button" class="button-primary justify-center" data-new-book>
+              Add book
+            </button>
           </div>
 
-          <div class="mt-5 overflow-x-auto rounded-[1.35rem] border border-white/50">
-            <table class="min-w-full border-separate border-spacing-0 text-left text-sm">
-              <thead class="bg-white/70 text-[#241920]">
+          <div class="admin-control-row mt-5">
+            <label class="admin-field">
+              <span class="admin-field-label">Search</span>
+              <input
+                type="search"
+                class="input-shell"
+                placeholder="Search title, blurb, or series"
+                data-admin-search
+              />
+            </label>
+
+            <label class="admin-field">
+              <span class="admin-field-label">Series</span>
+              <select class="input-shell" data-series-filter>
+                <option value="all">All books</option>
+                <option value="__standalone__">Standalone only</option>
+                {initialCatalog.series.map((series) => <option value={series.id}>{series.name}</option>)}
+              </select>
+            </label>
+          </div>
+
+          <p class="admin-results-copy mt-4" data-results-summary>
+            Showing {initialCatalog.books.length} of {initialCatalog.books.length} books.
+          </p>
+
+          <div class="admin-table-wrap mt-5">
+            <table class="admin-table">
+              <thead>
                 <tr>
-                  <th class="px-4 py-3 font-semibold">Title</th>
-                  <th class="px-4 py-3 font-semibold">Series</th>
-                  <th class="px-4 py-3 font-semibold">Year</th>
-                  <th class="px-4 py-3 font-semibold">Status</th>
-                  <th class="px-4 py-3 font-semibold">Links</th>
-                  <th class="px-4 py-3 font-semibold">Actions</th>
+                  <th>Book</th>
+                  <th>Series</th>
+                  <th>Status</th>
+                  <th>Buy links</th>
+                  <th>Order</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody data-book-rows>
                 {
-                  initialCatalog.books.map((book) => (
-                    <tr class="border-t border-white/40">
-                      <td class="px-4 py-4 align-top">
-                        <div class="space-y-1">
-                          <button
-                            type="button"
-                            class="text-left font-semibold text-[#241920] underline decoration-[#d9bcb2] underline-offset-4"
-                            data-action="edit"
-                            data-book-id={book.id}
-                          >
-                            {book.title}
-                          </button>
-                          <p class="text-xs uppercase tracking-[0.22em] text-[#7c5a63]">
-                            {book.visible ? 'Live on site' : 'Hidden'}
-                          </p>
-                        </div>
-                      </td>
-                      <td class="px-4 py-4 align-top text-[#5d4b52]">
-                        {book.seriesName ?? book.seriesLabelOverride ?? 'Standalone'}
-                      </td>
-                      <td class="px-4 py-4 align-top text-[#5d4b52]">
-                        {book.publishYear ?? emDash}
-                      </td>
-                      <td class="px-4 py-4 align-top">
-                        <span class={availabilityClassMap[book.availabilityStatus] ?? availabilityClassMap.in_stock}>
-                          {availabilityOptions.find((option) => option.value === book.availabilityStatus)?.label ?? 'In stock'}
-                        </span>
-                      </td>
-                      <td class="px-4 py-4 align-top text-xs text-[#6e5961]">
-                        <div class="space-y-1">
-                          <p>{book.amazonLink ? 'Amazon' : 'No Amazon link'}</p>
-                          <p>{book.retailerLink ? 'Retailer link' : 'No retailer link'}</p>
-                          <p>{book.stripePaymentLink ? 'Direct checkout' : 'No direct checkout'}</p>
-                        </div>
-                      </td>
-                      <td class="px-4 py-4 align-top">
-                        <div class="flex flex-wrap gap-2">
-                          <button type="button" class="format-button" data-action="edit" data-book-id={book.id}>Edit</button>
-                          <button type="button" class="format-button" data-action="toggle-visible" data-book-id={book.id}>
-                            {book.visible ? 'Hide' : 'Show'}
-                          </button>
-                          <button type="button" class="format-button" data-action="move-up" data-book-id={book.id}>Up</button>
-                          <button type="button" class="format-button" data-action="move-down" data-book-id={book.id}>Down</button>
-                          <button type="button" class="purchase-disabled" data-action="delete" data-book-id={book.id}>Delete</button>
+                  initialCatalog.books.length > 0 ? (
+                    initialCatalog.books.map((book, index) => (
+                      <tr class:list={{ 'admin-row-selected': index === 0 }}>
+                        <td>
+                          <div class="admin-book-cell">
+                            <div class="admin-cover-thumb">
+                              <img
+                                src={getBookCoverSource(book)}
+                                alt=""
+                                loading="lazy"
+                                class="admin-cover-image"
+                                data-admin-cover
+                              />
+                              <span
+                                class="admin-cover-fallback"
+                                data-admin-cover-fallback
+                                hidden
+                              >
+                                {getBookInitials(book.title)}
+                              </span>
+                            </div>
+
+                            <div class="min-w-0 space-y-1">
+                              <button
+                                type="button"
+                                class="admin-book-title"
+                                data-action="edit"
+                                data-book-id={book.id}
+                              >
+                                {book.title}
+                              </button>
+                              <p class="admin-microcopy">
+                                {book.publishYear ?? emDash}
+                                <span aria-hidden="true"> | </span>
+                                {book.visible ? 'Live on site' : 'Hidden from site'}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="space-y-1">
+                            <p class="font-semibold text-[#241920]">{getBookSeriesLabel(book)}</p>
+                            <p class="admin-microcopy">Slug: {book.slug}</p>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="space-y-2">
+                            <span class={availabilityClassMap[book.availabilityStatus] ?? availabilityClassMap.in_stock}>
+                              {getAvailabilityLabel(book.availabilityStatus)}
+                            </span>
+                            {
+                              book.availabilityLabel ? (
+                                <p class="admin-microcopy">{book.availabilityLabel}</p>
+                              ) : null
+                            }
+                          </div>
+                        </td>
+                        <td>
+                          <div class="admin-chip-list">
+                            {
+                              book.stripePaymentLink ? <span class="admin-chip">Direct sale</span> : null
+                            }
+                            {
+                              book.retailerLink ? <span class="admin-chip admin-chip-muted">Retailer</span> : null
+                            }
+                            {
+                              book.amazonLink ? <span class="admin-chip admin-chip-muted">Amazon</span> : null
+                            }
+                            {
+                              !book.stripePaymentLink && !book.retailerLink && !book.amazonLink ? (
+                                <span class="admin-chip admin-chip-empty">No links yet</span>
+                              ) : null
+                            }
+                          </div>
+                        </td>
+                        <td>
+                          <div class="space-y-1">
+                            <p class="admin-microcopy">Series: {book.seriesOrder}</p>
+                            <p class="admin-microcopy">Site: {book.sortPriority}</p>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="admin-table-actions">
+                            <button type="button" class="format-button" data-action="edit" data-book-id={book.id}>
+                              Edit
+                            </button>
+                            <button type="button" class="format-button" data-action="toggle-visible" data-book-id={book.id}>
+                              {book.visible ? 'Hide' : 'Show'}
+                            </button>
+                            <button type="button" class="format-button" data-action="move-up" data-book-id={book.id}>
+                              Up
+                            </button>
+                            <button type="button" class="format-button" data-action="move-down" data-book-id={book.id}>
+                              Down
+                            </button>
+                            <button type="button" class="admin-danger-button" data-action="delete" data-book-id={book.id}>
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colspan="6">
+                        <div class="admin-empty">
+                          <h3>No books yet</h3>
+                          <p>Add your first title to start building the catalog.</p>
                         </div>
                       </td>
                     </tr>
-                  ))
+                  )
                 }
               </tbody>
             </table>
@@ -172,140 +292,360 @@ const emDash = '\u2014';
         </article>
 
         <article class="card-shell rounded-[1.9rem] p-5 sm:p-6">
-          <div class="flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p class="eyebrow text-[#7c5a63]">Editor</p>
+              <p class="eyebrow text-[#7c5a63]" data-editor-mode>
+                {initialCatalog.books.length > 0 ? 'Editing book' : 'Add a book'}
+              </p>
               <h2 class="mt-3 font-display text-3xl text-[#241920] sm:text-[2.35rem]" data-editor-heading>
-                Edit book
+                {initialCatalog.books[0]?.title ?? 'Start a new book'}
               </h2>
-              <p class="mt-3 text-sm leading-7 text-[#5d4b52] sm:text-base">
-                Leave any link blank if that purchase option is not ready yet.
+              <p class="mt-3 text-sm leading-7 text-[#5d4b52] sm:text-base" data-editor-subheading>
+                Keep the details here simple and practical. You can always come back and adjust later.
               </p>
             </div>
-            <button type="button" class="button-secondary shrink-0 justify-center" data-reset-form>
-              Clear
-            </button>
           </div>
 
           <div
-            class="surface-box mt-5 hidden rounded-[1.25rem] px-4 py-3 text-sm text-[#241920]"
+            class="admin-notice mt-5"
             data-admin-status
+            aria-live="polite"
+            hidden
           ></div>
 
-          <form class="mt-5 space-y-4" data-book-form>
-            <input type="hidden" name="bookId" />
+          <form class="mt-5 space-y-4" data-book-form novalidate>
+            <fieldset class="space-y-4" data-book-fieldset>
+              <input type="hidden" name="bookId" value={initialCatalog.books[0]?.id ?? ''} />
 
-            <label class="block space-y-1.5">
-              <span class="text-sm font-semibold text-[#241920]">Title</span>
-              <input type="text" name="title" class="input-shell" required />
-            </label>
+              <section class="admin-section-card">
+                <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div class="flex-1">
+                    <h3 class="admin-section-title">Basics</h3>
+                    <p class="admin-section-copy">
+                      Title, slug, collection, and sorting.
+                    </p>
 
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Series</span>
-                <select name="seriesId" class="input-shell">
-                  <option value="">Standalone</option>
-                  {initialCatalog.series.map((series) => <option value={series.id}>{series.name}</option>)}
-                </select>
-              </label>
+                    <div class="mt-4 grid gap-4">
+                      <label class="admin-field">
+                        <span class="admin-field-label">Title</span>
+                        <input
+                          type="text"
+                          name="title"
+                          class="input-shell"
+                          value={initialCatalog.books[0]?.title ?? ''}
+                          required
+                        />
+                        <span class="admin-field-error" data-field-error="title"></span>
+                      </label>
 
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Series order</span>
-                <input type="number" name="seriesOrder" class="input-shell" min="0" step="0.1" />
-              </label>
-            </div>
+                      <label class="admin-field">
+                        <span class="admin-field-label">Slug</span>
+                        <input
+                          type="text"
+                          class="input-shell admin-readonly"
+                          data-slug-preview
+                          value={initialCatalog.books[0]?.slug ?? ''}
+                          readonly
+                        />
+                        <span class="admin-field-help" data-slug-help>
+                          {
+                            initialCatalog.books[0]
+                              ? 'This stays the same so existing links keep working.'
+                              : 'Created from the title when you save.'
+                          }
+                        </span>
+                      </label>
 
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Year</span>
-                <input type="number" name="publishYear" class="input-shell" min="1900" max="2100" />
-              </label>
+                      <div class="grid gap-4 sm:grid-cols-2">
+                        <label class="admin-field">
+                          <span class="admin-field-label">Series</span>
+                          <select name="seriesId" class="input-shell">
+                            <option value="">Standalone</option>
+                            {
+                              initialCatalog.series.map((series) => (
+                                <option
+                                  value={series.id}
+                                  selected={series.id === initialCatalog.books[0]?.seriesId}
+                                >
+                                  {series.name}
+                                </option>
+                              ))
+                            }
+                          </select>
+                        </label>
 
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Sort priority</span>
-                <input type="number" name="sortPriority" class="input-shell" step="1" />
-              </label>
-            </div>
+                        <label class="admin-field">
+                          <span class="admin-field-label">Series order</span>
+                          <input
+                            type="number"
+                            name="seriesOrder"
+                            class="input-shell"
+                            min="0"
+                            step="0.1"
+                            value={initialCatalog.books[0]?.seriesOrder ?? 0}
+                          />
+                        </label>
+                      </div>
 
-            <label class="block space-y-1.5">
-              <span class="text-sm font-semibold text-[#241920]">Cover image URL</span>
-              <input type="text" name="coverImageUrl" class="input-shell" placeholder="/covers/book-slug.jpg or https://..." />
-            </label>
+                      <div class="grid gap-4 sm:grid-cols-2">
+                        <label class="admin-field">
+                          <span class="admin-field-label">Year</span>
+                          <input
+                            type="number"
+                            name="publishYear"
+                            class="input-shell"
+                            min="1900"
+                            max="2100"
+                            inputmode="numeric"
+                            value={initialCatalog.books[0]?.publishYear ?? ''}
+                          />
+                          <span class="admin-field-error" data-field-error="publishYear"></span>
+                        </label>
 
-            <label class="block space-y-1.5">
-              <span class="text-sm font-semibold text-[#241920]">Short blurb</span>
-              <textarea
-                name="shortBlurb"
-                rows="5"
-                class="input-shell min-h-[8.5rem] resize-y py-3"
-                required
-              ></textarea>
-            </label>
+                        <label class="admin-field">
+                          <span class="admin-field-label">Sort priority</span>
+                          <input
+                            type="number"
+                            name="sortPriority"
+                            class="input-shell"
+                            step="1"
+                            value={initialCatalog.books[0]?.sortPriority ?? 0}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
 
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Availability</span>
-                <select name="availabilityStatus" class="input-shell">
-                  {availabilityOptions.map((option) => <option value={option.value}>{option.label}</option>)}
-                </select>
-              </label>
+              <section class="admin-section-card">
+                <div class="flex flex-col gap-5">
+                  <div>
+                    <h3 class="admin-section-title">Cover and blurb</h3>
+                    <p class="admin-section-copy">
+                      Add a cover image if you have one, and keep the short blurb easy to scan.
+                    </p>
+                  </div>
 
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Availability label</span>
-                <input type="text" name="availabilityLabel" class="input-shell" placeholder="Optional custom label" />
-              </label>
-            </div>
+                  <div class="admin-preview-card">
+                    <div class="admin-editor-cover">
+                      <img
+                        src={initialCatalog.books[0] ? getBookCoverSource(initialCatalog.books[0]) : ''}
+                        alt={initialCatalog.books[0] ? resolveCoverAlt(initialCatalog.books[0]) : 'Cover preview'}
+                        class="admin-editor-cover-image"
+                        data-cover-preview-image
+                        hidden={Boolean(!initialCatalog.books[0])}
+                      />
+                      <div
+                        class="admin-editor-cover-fallback"
+                        data-cover-preview-fallback
+                        hidden={Boolean(initialCatalog.books[0])}
+                      >
+                        {getBookInitials(initialCatalog.books[0]?.title ?? 'New book')}
+                      </div>
+                    </div>
 
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Display price</span>
-                <input type="text" name="displayPrice" class="input-shell" placeholder="$14.99" />
-              </label>
+                    <div class="grid gap-4">
+                      <label class="admin-field">
+                        <span class="admin-field-label">Cover image path or URL</span>
+                        <input
+                          type="text"
+                          name="coverImageUrl"
+                          class="input-shell"
+                          value={initialCatalog.books[0]?.coverImageUrl ?? ''}
+                          placeholder="/covers/your-book.jpg or https://..."
+                        />
+                        <span class="admin-field-help">
+                          Paste a full image URL or a site path like <code>/covers/galen.jpg</code>. Leave this blank to try <code>{getDefaultCoverImagePath(initialCatalog.books[0]?.slug ?? 'book-slug')}</code>.
+                        </span>
+                        <span class="admin-field-help" data-cover-source-hint>
+                          Preview source: {initialCatalog.books[0] ? resolveCoverImagePath(initialCatalog.books[0]) : getDefaultCoverImagePath('book-slug')}
+                        </span>
+                        <span class="admin-field-error" data-field-error="coverImageUrl"></span>
+                      </label>
 
-              <label class="block space-y-1.5">
-                <span class="text-sm font-semibold text-[#241920]">Stripe Payment Link</span>
-                <input type="text" name="stripePaymentLink" class="input-shell" placeholder="https://buy.stripe.com/..." />
-              </label>
-            </div>
+                      <label class="admin-field">
+                        <span class="admin-field-label">Cover alt text</span>
+                        <input
+                          type="text"
+                          name="coverAlt"
+                          class="input-shell"
+                          value={initialCatalog.books[0]?.coverAlt ?? ''}
+                          placeholder="Optional short description"
+                        />
+                        <span class="admin-field-help">
+                          Leave blank to use "Cover of [title] by Jaclyn Osborn."
+                        </span>
+                      </label>
 
-            <label class="block space-y-1.5">
-              <span class="text-sm font-semibold text-[#241920]">Amazon link</span>
-              <input type="text" name="amazonLink" class="input-shell" placeholder="https://www.amazon.com/..." />
-            </label>
+                      <label class="admin-field">
+                        <span class="admin-field-label">Short blurb</span>
+                        <textarea
+                          name="shortBlurb"
+                          rows="5"
+                          class="input-shell min-h-[8.75rem] resize-y py-3"
+                          required
+                        >{initialCatalog.books[0]?.shortBlurb ?? ''}</textarea>
+                        <span class="admin-field-error" data-field-error="shortBlurb"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </section>
 
-            <label class="block space-y-1.5">
-              <span class="text-sm font-semibold text-[#241920]">Universal retailer link</span>
-              <input type="text" name="retailerLink" class="input-shell" placeholder="https://books2read.com/... or another universal page" />
-            </label>
+              <section class="admin-section-card">
+                <div>
+                  <h3 class="admin-section-title">Availability and buy links</h3>
+                  <p class="admin-section-copy">
+                    Blank links are fine. They simply stay out of the public storefront.
+                  </p>
+                </div>
 
-            <div class="grid gap-3 sm:grid-cols-3">
-              <label class="surface-box flex items-center gap-3 rounded-[1.2rem] px-4 py-3">
-                <input type="checkbox" name="signedCopy" class="h-4 w-4 rounded border-[#d9bcb2]" />
-                <span class="text-sm font-semibold text-[#241920]">Signed copy</span>
-              </label>
+                <div class="mt-4 grid gap-4">
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="admin-field">
+                      <span class="admin-field-label">Availability status</span>
+                      <select name="availabilityStatus" class="input-shell">
+                        {
+                          availabilityOptions.map((option) => (
+                            <option
+                              value={option.value}
+                              selected={option.value === initialCatalog.books[0]?.availabilityStatus}
+                            >
+                              {option.label}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </label>
 
-              <label class="surface-box flex items-center gap-3 rounded-[1.2rem] px-4 py-3">
-                <input type="checkbox" name="directFromAuthor" class="h-4 w-4 rounded border-[#d9bcb2]" />
-                <span class="text-sm font-semibold text-[#241920]">Direct from Jaclyn</span>
-              </label>
+                    <label class="admin-field">
+                      <span class="admin-field-label">Availability label</span>
+                      <input
+                        type="text"
+                        name="availabilityLabel"
+                        class="input-shell"
+                        value={initialCatalog.books[0]?.availabilityLabel ?? ''}
+                        placeholder="Optional note for readers"
+                      />
+                    </label>
+                  </div>
 
-              <label class="surface-box flex items-center gap-3 rounded-[1.2rem] px-4 py-3">
-                <input type="checkbox" name="visible" class="h-4 w-4 rounded border-[#d9bcb2]" checked />
-                <span class="text-sm font-semibold text-[#241920]">Show on site</span>
-              </label>
-            </div>
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="admin-field">
+                      <span class="admin-field-label">Display price</span>
+                      <input
+                        type="text"
+                        name="displayPrice"
+                        class="input-shell"
+                        value={initialCatalog.books[0]?.displayPrice ?? ''}
+                        placeholder="$14.99"
+                      />
+                    </label>
 
-            <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
-              <button type="submit" class="button-primary justify-center" data-submit-button>
-                Save changes
-              </button>
-              <button type="button" class="button-secondary justify-center" data-create-button>
-                Start a new book
-              </button>
-              <button type="button" class="purchase-disabled justify-center sm:ml-auto" data-delete-button>
-                Delete this book
-              </button>
-            </div>
+                    <label class="admin-field">
+                      <span class="admin-field-label">Stripe Payment Link</span>
+                      <input
+                        type="text"
+                        name="stripePaymentLink"
+                        class="input-shell"
+                        value={initialCatalog.books[0]?.stripePaymentLink ?? ''}
+                        placeholder="https://buy.stripe.com/..."
+                      />
+                      <span class="admin-field-error" data-field-error="stripePaymentLink"></span>
+                    </label>
+                  </div>
+
+                  <label class="admin-field">
+                    <span class="admin-field-label">Amazon link</span>
+                    <input
+                      type="text"
+                      name="amazonLink"
+                      class="input-shell"
+                      value={initialCatalog.books[0]?.amazonLink ?? ''}
+                      placeholder="https://www.amazon.com/..."
+                    />
+                    <span class="admin-field-error" data-field-error="amazonLink"></span>
+                  </label>
+
+                  <label class="admin-field">
+                    <span class="admin-field-label">Universal retailer link</span>
+                    <input
+                      type="text"
+                      name="retailerLink"
+                      class="input-shell"
+                      value={initialCatalog.books[0]?.retailerLink ?? ''}
+                      placeholder="https://books2read.com/... or another universal link"
+                    />
+                    <span class="admin-field-error" data-field-error="retailerLink"></span>
+                  </label>
+                </div>
+              </section>
+
+              <section class="admin-section-card">
+                <div>
+                  <h3 class="admin-section-title">Visibility</h3>
+                  <p class="admin-section-copy">
+                    Use these switches to control what appears publicly and how the book is sold.
+                  </p>
+                </div>
+
+                <div class="admin-toggle-grid mt-4">
+                  <label class="admin-toggle">
+                    <input
+                      type="checkbox"
+                      name="signedCopy"
+                      checked={Boolean(initialCatalog.books[0]?.signedCopy)}
+                    />
+                    <span>
+                      <strong>Signed copy</strong>
+                      <span>Show this as a signed option when direct checkout is available.</span>
+                    </span>
+                  </label>
+
+                  <label class="admin-toggle">
+                    <input
+                      type="checkbox"
+                      name="directFromAuthor"
+                      checked={Boolean(initialCatalog.books[0]?.directFromAuthor)}
+                    />
+                    <span>
+                      <strong>Direct from Jaclyn</strong>
+                      <span>Use this when the author is handling the sale directly.</span>
+                    </span>
+                  </label>
+
+                  <label class="admin-toggle">
+                    <input
+                      type="checkbox"
+                      name="visible"
+                      checked={initialCatalog.books[0] ? initialCatalog.books[0].visible !== false : true}
+                    />
+                    <span>
+                      <strong>Show on site</strong>
+                      <span>Turn this off to hide the book from the public catalog.</span>
+                    </span>
+                  </label>
+                </div>
+              </section>
+
+              <div class="admin-action-row pt-2">
+                <button type="submit" class="button-primary justify-center" data-submit-button>
+                  {initialCatalog.books.length > 0 ? 'Save changes' : 'Create book'}
+                </button>
+                <button type="button" class="button-secondary justify-center" data-cancel-button>
+                  {initialCatalog.books.length > 0 ? 'Cancel changes' : 'Clear form'}
+                </button>
+                <button
+                  type="button"
+                  class="admin-danger-button justify-center sm:ml-auto"
+                  data-delete-button
+                  hidden={initialCatalog.books.length === 0}
+                >
+                  Delete book
+                </button>
+              </div>
+            </fieldset>
           </form>
         </article>
       </div>
@@ -313,85 +653,134 @@ const emDash = '\u2014';
   </section>
 
   <script id="admin-catalog-data" type="application/json" is:inline set:html={initialCatalogJson}></script>
+
   <script is:inline>
     const dataNode = document.getElementById('admin-catalog-data');
+    const root = document.querySelector('[data-admin-root]');
     const form = document.querySelector('[data-book-form]');
-    const searchInput = document.querySelector('[data-admin-search]');
+    const fieldset = document.querySelector('[data-book-fieldset]');
     const rowsContainer = document.querySelector('[data-book-rows]');
+    const searchInput = document.querySelector('[data-admin-search]');
+    const seriesFilter = document.querySelector('[data-series-filter]');
     const statusBox = document.querySelector('[data-admin-status]');
     const heading = document.querySelector('[data-editor-heading]');
+    const editorMode = document.querySelector('[data-editor-mode]');
+    const editorSubheading = document.querySelector('[data-editor-subheading]');
+    const resultsSummary = document.querySelector('[data-results-summary]');
     const submitButton = document.querySelector('[data-submit-button]');
+    const cancelButton = document.querySelector('[data-cancel-button]');
     const deleteButton = document.querySelector('[data-delete-button]');
-    const resetButton = document.querySelector('[data-reset-form]');
-    const createButton = document.querySelector('[data-create-button]');
     const newBookButton = document.querySelector('[data-new-book]');
+    const slugPreview = document.querySelector('[data-slug-preview]');
+    const slugHelp = document.querySelector('[data-slug-help]');
+    const coverSourceHint = document.querySelector('[data-cover-source-hint]');
+    const coverPreviewImage = document.querySelector('[data-cover-preview-image]');
+    const coverPreviewFallback = document.querySelector('[data-cover-preview-fallback]');
     const statTotal = document.querySelector('[data-stat-total]');
     const statVisible = document.querySelector('[data-stat-visible]');
     const statDirect = document.querySelector('[data-stat-direct]');
+    const statHidden = document.querySelector('[data-stat-hidden]');
 
     if (
       !(dataNode instanceof HTMLScriptElement) ||
+      !(root instanceof HTMLElement) ||
       !(form instanceof HTMLFormElement) ||
-      !(searchInput instanceof HTMLInputElement) ||
+      !(fieldset instanceof HTMLFieldSetElement) ||
       !(rowsContainer instanceof HTMLElement) ||
+      !(searchInput instanceof HTMLInputElement) ||
+      !(seriesFilter instanceof HTMLSelectElement) ||
       !(statusBox instanceof HTMLElement) ||
       !(heading instanceof HTMLElement) ||
+      !(editorMode instanceof HTMLElement) ||
+      !(editorSubheading instanceof HTMLElement) ||
+      !(resultsSummary instanceof HTMLElement) ||
       !(submitButton instanceof HTMLButtonElement) ||
+      !(cancelButton instanceof HTMLButtonElement) ||
       !(deleteButton instanceof HTMLButtonElement) ||
-      !(resetButton instanceof HTMLButtonElement) ||
-      !(createButton instanceof HTMLButtonElement) ||
       !(newBookButton instanceof HTMLButtonElement) ||
+      !(slugPreview instanceof HTMLInputElement) ||
+      !(slugHelp instanceof HTMLElement) ||
+      !(coverSourceHint instanceof HTMLElement) ||
+      !(coverPreviewImage instanceof HTMLImageElement) ||
+      !(coverPreviewFallback instanceof HTMLElement) ||
       !(statTotal instanceof HTMLElement) ||
       !(statVisible instanceof HTMLElement) ||
-      !(statDirect instanceof HTMLElement)
+      !(statDirect instanceof HTMLElement) ||
+      !(statHidden instanceof HTMLElement)
     ) {
       throw new Error('Admin dashboard did not load correctly.');
     }
 
+    const fields = {
+      bookId: form.elements.namedItem('bookId'),
+      title: form.elements.namedItem('title'),
+      seriesId: form.elements.namedItem('seriesId'),
+      seriesOrder: form.elements.namedItem('seriesOrder'),
+      publishYear: form.elements.namedItem('publishYear'),
+      sortPriority: form.elements.namedItem('sortPriority'),
+      coverImageUrl: form.elements.namedItem('coverImageUrl'),
+      coverAlt: form.elements.namedItem('coverAlt'),
+      shortBlurb: form.elements.namedItem('shortBlurb'),
+      availabilityStatus: form.elements.namedItem('availabilityStatus'),
+      availabilityLabel: form.elements.namedItem('availabilityLabel'),
+      amazonLink: form.elements.namedItem('amazonLink'),
+      retailerLink: form.elements.namedItem('retailerLink'),
+      stripePaymentLink: form.elements.namedItem('stripePaymentLink'),
+      displayPrice: form.elements.namedItem('displayPrice'),
+      signedCopy: form.elements.namedItem('signedCopy'),
+      directFromAuthor: form.elements.namedItem('directFromAuthor'),
+      visible: form.elements.namedItem('visible'),
+    };
+
+    if (
+      !(fields.bookId instanceof HTMLInputElement) ||
+      !(fields.title instanceof HTMLInputElement) ||
+      !(fields.seriesId instanceof HTMLSelectElement) ||
+      !(fields.seriesOrder instanceof HTMLInputElement) ||
+      !(fields.publishYear instanceof HTMLInputElement) ||
+      !(fields.sortPriority instanceof HTMLInputElement) ||
+      !(fields.coverImageUrl instanceof HTMLInputElement) ||
+      !(fields.coverAlt instanceof HTMLInputElement) ||
+      !(fields.shortBlurb instanceof HTMLTextAreaElement) ||
+      !(fields.availabilityStatus instanceof HTMLSelectElement) ||
+      !(fields.availabilityLabel instanceof HTMLInputElement) ||
+      !(fields.amazonLink instanceof HTMLInputElement) ||
+      !(fields.retailerLink instanceof HTMLInputElement) ||
+      !(fields.stripePaymentLink instanceof HTMLInputElement) ||
+      !(fields.displayPrice instanceof HTMLInputElement) ||
+      !(fields.signedCopy instanceof HTMLInputElement) ||
+      !(fields.directFromAuthor instanceof HTMLInputElement) ||
+      !(fields.visible instanceof HTMLInputElement)
+    ) {
+      throw new Error('Admin form fields are missing.');
+    }
+
+    const initial = JSON.parse(dataNode.textContent || '{"books":[],"series":[]}');
+    const standaloneFilterValue = '__standalone__';
+    const urlPattern = /^(https?:\/\/|\/)/i;
     const availabilityLabelMap = {
       in_stock: 'In stock',
       limited: 'Limited stock',
       sold_out: 'Sold out',
       preorder: 'Preorder',
     };
-
-    const initial = JSON.parse(dataNode.textContent || '{"books":[],"series":[]}');
-    const blankBook = () => ({
-      id: null,
-      slug: '',
-      title: '',
-      seriesId: null,
-      seriesName: '',
-      seriesSlug: '',
-      seriesOrder: 0,
-      publishYear: null,
-      coverImageUrl: '',
-      shortBlurb: '',
-      description: '',
-      availabilityStatus: 'in_stock',
-      availabilityLabel: '',
-      amazonLink: '',
-      retailerLink: '',
-      stripePaymentLink: '',
-      displayPrice: '',
-      signedCopy: false,
-      directFromAuthor: false,
-      visible: true,
-      sortPriority: 0,
-      coverPalette: 'plum',
-      featured: false,
-      seriesLabelOverride: '',
-      catalogStatus: '',
-      genres: [],
-      formats: [],
-      releaseDate: '',
-    });
+    const availabilityClassMap = {
+      in_stock: 'status-pill status-pill-stock',
+      limited: 'status-pill status-pill-limited',
+      sold_out: 'status-pill status-pill-soldout',
+      preorder: 'status-pill status-pill-preorder',
+    };
 
     const state = {
-      books: initial.books || [],
-      series: initial.series || [],
+      books: Array.isArray(initial.books) ? initial.books : [],
+      series: Array.isArray(initial.series) ? initial.series : [],
       selectedId: initial.books?.[0]?.id ?? null,
+      previousSelectedId: initial.books?.[0]?.id ?? null,
+      draftMode: !(initial.books?.length),
       search: '',
+      seriesFilter: 'all',
+      isBusy: false,
+      statusTimer: null,
     };
 
     function escapeHtml(value) {
@@ -403,76 +792,162 @@ const emDash = '\u2014';
         .replaceAll("'", '&#39;');
     }
 
+    function slugify(value) {
+      return String(value ?? '')
+        .toLowerCase()
+        .trim()
+        .replace(/&/g, ' and ')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    function withBasePath(path = '') {
+      if (!path) {
+        return root.dataset.baseUrl || '/';
+      }
+
+      if (/^(https?:|mailto:|tel:|#)/.test(path)) {
+        return path;
+      }
+
+      const base = root.dataset.baseUrl || '/';
+      const url = new URL(path.replace(/^\/+/, ''), `https://example.com${base}`);
+      return `${url.pathname}${url.search}${url.hash}`;
+    }
+
+    function bookInitials(title) {
+      const pieces = String(title || '')
+        .split(/\s+/)
+        .map((piece) => piece.trim())
+        .filter(Boolean)
+        .slice(0, 2);
+
+      if (!pieces.length) {
+        return 'BO';
+      }
+
+      return pieces.map((piece) => piece[0]?.toUpperCase() || '').join('');
+    }
+
     function nextSortPriority() {
       return state.books.reduce((max, book) => Math.max(max, Number(book.sortPriority || 0)), 0) + 10;
     }
 
+    function defaultCoverPath(slug = '') {
+      const trimmedSlug = String(slug || '').trim() || 'book-slug';
+      return `/covers/${trimmedSlug}.jpg`;
+    }
+
+    function resolvedCoverPath(input) {
+      const coverImageUrl = String(input?.coverImageUrl || '').trim();
+      return coverImageUrl || defaultCoverPath(input?.slug || '');
+    }
+
+    function blankBook() {
+      return {
+        id: null,
+        slug: '',
+        title: '',
+        seriesId: null,
+        seriesName: '',
+        seriesSlug: '',
+        seriesOrder: 0,
+        publishYear: null,
+        coverImageUrl: '',
+        coverAlt: '',
+        shortBlurb: '',
+        description: '',
+        availabilityStatus: 'in_stock',
+        availabilityLabel: '',
+        amazonLink: '',
+        retailerLink: '',
+        stripePaymentLink: '',
+        displayPrice: '',
+        signedCopy: false,
+        directFromAuthor: false,
+        visible: true,
+        sortPriority: nextSortPriority(),
+        coverPalette: 'plum',
+        featured: false,
+        seriesLabelOverride: '',
+        catalogStatus: '',
+        genres: [],
+        formats: [],
+        releaseDate: '',
+      };
+    }
+
     function selectedBook() {
-      return state.books.find((book) => book.id === state.selectedId) ?? null;
+      return state.books.find((book) => book.id === state.selectedId) || null;
     }
 
-    function currentFormBook() {
-      const book = selectedBook();
-      return book ? { ...book } : { ...blankBook(), sortPriority: nextSortPriority() };
+    function collectionLabel(book) {
+      return book.seriesName || book.seriesLabelOverride || 'Standalone';
     }
 
-    function setStatus(message, tone = 'info') {
-      statusBox.classList.remove('hidden');
-      statusBox.textContent = message;
-      statusBox.style.borderColor =
-        tone === 'error' ? 'rgba(186, 90, 88, 0.35)' : 'rgba(111, 66, 94, 0.16)';
-      statusBox.style.background =
-        tone === 'error' ? 'rgba(240, 222, 215, 0.72)' : 'var(--surface-soft)';
+    function availabilityLabel(status) {
+      return availabilityLabelMap[status] || 'In stock';
     }
 
-    function clearStatus() {
-      statusBox.classList.add('hidden');
-      statusBox.textContent = '';
-      statusBox.style.borderColor = '';
-      statusBox.style.background = '';
+    function coverMarkup(book) {
+      const initials = escapeHtml(bookInitials(book.title));
+      const src = withBasePath(resolvedCoverPath(book));
+
+      return `
+        <div class="admin-cover-thumb">
+          <img src="${escapeHtml(src)}" alt="" loading="lazy" class="admin-cover-image" data-admin-cover />
+          <span class="admin-cover-fallback" data-admin-cover-fallback hidden>${initials}</span>
+        </div>
+      `;
     }
 
-    function populateForm(book) {
-      form.elements.namedItem('bookId').value = book.id ?? '';
-      form.elements.namedItem('title').value = book.title ?? '';
-      form.elements.namedItem('seriesId').value = book.seriesId ?? '';
-      form.elements.namedItem('seriesOrder').value = book.seriesOrder ?? 0;
-      form.elements.namedItem('publishYear').value = book.publishYear ?? '';
-      form.elements.namedItem('sortPriority').value = book.sortPriority ?? nextSortPriority();
-      form.elements.namedItem('coverImageUrl').value = book.coverImageUrl ?? '';
-      form.elements.namedItem('shortBlurb').value = book.shortBlurb ?? '';
-      form.elements.namedItem('availabilityStatus').value = book.availabilityStatus ?? 'in_stock';
-      form.elements.namedItem('availabilityLabel').value = book.availabilityLabel ?? '';
-      form.elements.namedItem('displayPrice').value = book.displayPrice ?? '';
-      form.elements.namedItem('stripePaymentLink').value = book.stripePaymentLink ?? '';
-      form.elements.namedItem('amazonLink').value = book.amazonLink ?? '';
-      form.elements.namedItem('retailerLink').value = book.retailerLink ?? '';
-      form.elements.namedItem('signedCopy').checked = Boolean(book.signedCopy);
-      form.elements.namedItem('directFromAuthor').checked = Boolean(book.directFromAuthor);
-      form.elements.namedItem('visible').checked = book.visible !== false;
+    function linkChipsMarkup(book) {
+      const chips = [];
 
-      const editingExisting = Boolean(book.id);
-      heading.textContent = editingExisting ? `Edit ${book.title}` : 'Create book';
-      submitButton.textContent = editingExisting ? 'Save changes' : 'Create book';
-      deleteButton.classList.toggle('hidden', !editingExisting);
-    }
+      if (book.stripePaymentLink) {
+        chips.push('<span class="admin-chip">Direct sale</span>');
+      }
 
-    function renderStats() {
-      statTotal.textContent = String(state.books.length);
-      statVisible.textContent = String(state.books.filter((book) => book.visible).length);
-      statDirect.textContent = String(state.books.filter((book) => book.stripePaymentLink).length);
+      if (book.retailerLink) {
+        chips.push('<span class="admin-chip admin-chip-muted">Retailer</span>');
+      }
+
+      if (book.amazonLink) {
+        chips.push('<span class="admin-chip admin-chip-muted">Amazon</span>');
+      }
+
+      if (chips.length === 0) {
+        chips.push('<span class="admin-chip admin-chip-empty">No links yet</span>');
+      }
+
+      return `<div class="admin-chip-list">${chips.join('')}</div>`;
     }
 
     function filteredBooks() {
       const query = state.search.trim().toLowerCase();
-      if (!query) return state.books;
 
       return state.books.filter((book) => {
+        const matchesSeries =
+          state.seriesFilter === 'all'
+            ? true
+            : state.seriesFilter === standaloneFilterValue
+              ? !book.seriesId
+              : String(book.seriesId || '') === state.seriesFilter;
+
+        if (!matchesSeries) {
+          return false;
+        }
+
+        if (!query) {
+          return true;
+        }
+
         const haystack = [
           book.title,
           book.seriesName,
           book.seriesLabelOverride,
           book.shortBlurb,
+          book.slug,
         ]
           .filter(Boolean)
           .join(' ')
@@ -482,73 +957,394 @@ const emDash = '\u2014';
       });
     }
 
+    function emptyStateMessage() {
+      if (state.books.length === 0) {
+        return {
+          title: 'No books yet',
+          copy: 'Add your first title to start building the catalog.',
+        };
+      }
+
+      if (state.search.trim()) {
+        return {
+          title: 'No matching books',
+          copy: 'Try a different search, or clear the series filter.',
+        };
+      }
+
+      if (state.seriesFilter === standaloneFilterValue) {
+        return {
+          title: 'No standalone books',
+          copy: 'Switch the filter to another series, or add a new standalone title.',
+        };
+      }
+
+      if (state.seriesFilter !== 'all') {
+        return {
+          title: 'No books in this series',
+          copy: 'Choose another series, or add the next book here.',
+        };
+      }
+
+      return {
+        title: 'Nothing to show',
+        copy: 'Adjust the filters and try again.',
+      };
+    }
+
+    function clearStatus() {
+      if (state.statusTimer) {
+        window.clearTimeout(state.statusTimer);
+        state.statusTimer = null;
+      }
+
+      statusBox.hidden = true;
+      statusBox.textContent = '';
+      statusBox.dataset.tone = '';
+    }
+
+    function setStatus(message, tone = 'info') {
+      if (state.statusTimer) {
+        window.clearTimeout(state.statusTimer);
+        state.statusTimer = null;
+      }
+
+      statusBox.hidden = false;
+      statusBox.textContent = message;
+      statusBox.dataset.tone = tone;
+
+      if (tone !== 'error') {
+        state.statusTimer = window.setTimeout(() => {
+          clearStatus();
+        }, 4200);
+      }
+    }
+
+    function setBusy(isBusy) {
+      state.isBusy = isBusy;
+      fieldset.disabled = isBusy;
+      searchInput.disabled = isBusy;
+      seriesFilter.disabled = isBusy;
+      newBookButton.disabled = isBusy;
+      rowsContainer.setAttribute('aria-busy', isBusy ? 'true' : 'false');
+      root.classList.toggle('admin-is-busy', isBusy);
+
+      const currentId = fields.bookId.value;
+      submitButton.textContent = isBusy
+        ? currentId
+          ? 'Saving...'
+          : 'Creating...'
+        : currentId
+          ? 'Save changes'
+          : 'Create book';
+    }
+
+    function clearFieldError(name) {
+      const field = form.elements.namedItem(name);
+      const errorNode = form.querySelector(`[data-field-error="${name}"]`);
+
+      if (field instanceof HTMLElement) {
+        field.removeAttribute('aria-invalid');
+      }
+
+      if (errorNode instanceof HTMLElement) {
+        errorNode.textContent = '';
+      }
+    }
+
+    function clearFieldErrors() {
+      [
+        'title',
+        'publishYear',
+        'coverImageUrl',
+        'shortBlurb',
+        'amazonLink',
+        'retailerLink',
+        'stripePaymentLink',
+      ].forEach(clearFieldError);
+    }
+
+    function setFieldError(name, message) {
+      const field = form.elements.namedItem(name);
+      const errorNode = form.querySelector(`[data-field-error="${name}"]`);
+
+      if (field instanceof HTMLElement) {
+        field.setAttribute('aria-invalid', 'true');
+      }
+
+      if (errorNode instanceof HTMLElement) {
+        errorNode.textContent = message;
+      }
+    }
+
+    function fieldValidationMessage(name, payload) {
+      const value = payload[name];
+
+      if (name === 'title' && !String(value || '').trim()) {
+        return 'Add a title before saving.';
+      }
+
+      if (name === 'shortBlurb' && !String(value || '').trim()) {
+        return 'Add a short blurb for readers.';
+      }
+
+      if (name === 'publishYear') {
+        const rawValue = fields.publishYear.value.trim();
+        if (!rawValue) {
+          return '';
+        }
+
+        if (!/^\d{4}$/.test(rawValue)) {
+          return 'Use a four-digit year.';
+        }
+
+        const year = Number(rawValue);
+        if (year < 1900 || year > 2100) {
+          return 'Year should be between 1900 and 2100.';
+        }
+      }
+
+      if (
+        ['coverImageUrl', 'amazonLink', 'retailerLink', 'stripePaymentLink'].includes(name) &&
+        String(value || '').trim() &&
+        !urlPattern.test(String(value || '').trim())
+      ) {
+        return 'Use a full https:// URL or a site-relative /path.';
+      }
+
+      return '';
+    }
+
+    function validatePayload(payload) {
+      const errors = {};
+
+      [
+        'title',
+        'shortBlurb',
+        'publishYear',
+        'coverImageUrl',
+        'amazonLink',
+        'retailerLink',
+        'stripePaymentLink',
+      ].forEach((name) => {
+        const message = fieldValidationMessage(name, payload);
+        if (message) {
+          errors[name] = message;
+        }
+      });
+
+      return errors;
+    }
+
+    function formPayload() {
+      return {
+        title: fields.title.value.trim(),
+        seriesId: fields.seriesId.value ? Number(fields.seriesId.value) : null,
+        seriesOrder: fields.seriesOrder.value === '' ? 0 : Number(fields.seriesOrder.value),
+        publishYear: fields.publishYear.value === '' ? null : Number(fields.publishYear.value),
+        coverImageUrl: fields.coverImageUrl.value.trim(),
+        coverAlt: fields.coverAlt.value.trim(),
+        shortBlurb: fields.shortBlurb.value.trim(),
+        availabilityStatus: fields.availabilityStatus.value,
+        availabilityLabel: fields.availabilityLabel.value.trim(),
+        amazonLink: fields.amazonLink.value.trim(),
+        retailerLink: fields.retailerLink.value.trim(),
+        stripePaymentLink: fields.stripePaymentLink.value.trim(),
+        displayPrice: fields.displayPrice.value.trim(),
+        signedCopy: fields.signedCopy.checked,
+        directFromAuthor: fields.directFromAuthor.checked,
+        visible: fields.visible.checked,
+        sortPriority: fields.sortPriority.value === '' ? nextSortPriority() : Number(fields.sortPriority.value),
+      };
+    }
+
+    function payloadFromBook(book) {
+      return {
+        title: book.title || '',
+        seriesId: book.seriesId ?? null,
+        seriesOrder: Number(book.seriesOrder ?? 0),
+        publishYear: book.publishYear ?? null,
+        coverImageUrl: book.coverImageUrl || '',
+        coverAlt: book.coverAlt || '',
+        shortBlurb: book.shortBlurb || '',
+        availabilityStatus: book.availabilityStatus || 'in_stock',
+        availabilityLabel: book.availabilityLabel || '',
+        amazonLink: book.amazonLink || '',
+        retailerLink: book.retailerLink || '',
+        stripePaymentLink: book.stripePaymentLink || '',
+        displayPrice: book.displayPrice || '',
+        signedCopy: Boolean(book.signedCopy),
+        directFromAuthor: Boolean(book.directFromAuthor),
+        visible: book.visible !== false,
+        sortPriority: Number(book.sortPriority ?? 0),
+        description: book.description || book.shortBlurb || '',
+      };
+    }
+
+    function attachCoverFallbacks(scope) {
+      scope.querySelectorAll('[data-admin-cover]').forEach((image) => {
+        if (!(image instanceof HTMLImageElement)) {
+          return;
+        }
+
+        const fallback = image.parentElement?.querySelector('[data-admin-cover-fallback]');
+        if (!(fallback instanceof HTMLElement)) {
+          return;
+        }
+
+        const showFallback = () => {
+          image.hidden = true;
+          fallback.hidden = false;
+        };
+
+        image.addEventListener('error', showFallback, { once: true });
+
+        if (image.complete && image.naturalWidth === 0) {
+          showFallback();
+        }
+      });
+    }
+
+    function updateCoverPreview(url = '', title = '', coverAlt = '') {
+      const slug = slugPreview.value || slugify(title) || 'book-slug';
+      const rawSource = String(url || '').trim() || defaultCoverPath(slug);
+      const resolved = withBasePath(rawSource);
+
+      coverPreviewFallback.textContent = bookInitials(title);
+      coverPreviewImage.hidden = false;
+      coverPreviewImage.src = resolved;
+      coverPreviewImage.alt = String(coverAlt || '').trim() || (title ? `Cover of ${title} by Jaclyn Osborn` : 'Cover preview');
+      coverPreviewFallback.hidden = true;
+      coverSourceHint.textContent = `Preview source: ${rawSource}`;
+    }
+
+    function updateSlugPreview() {
+      const isExisting = Boolean(fields.bookId.value);
+      const preview = isExisting
+        ? selectedBook()?.slug || slugify(fields.title.value) || 'book'
+        : slugify(fields.title.value) || 'book';
+
+      slugPreview.value = preview;
+      slugHelp.textContent = isExisting
+        ? 'This stays the same so existing links keep working.'
+        : 'Created from the title when you save. If it is already taken, it will adjust automatically.';
+    }
+
+    function renderStats() {
+      statTotal.textContent = String(state.books.length);
+      statVisible.textContent = String(state.books.filter((book) => book.visible).length);
+      statDirect.textContent = String(state.books.filter((book) => book.stripePaymentLink).length);
+      statHidden.textContent = String(state.books.filter((book) => !book.visible).length);
+    }
+
+    function renderResultsSummary() {
+      const shown = filteredBooks().length;
+      const pieces = [`Showing ${shown} of ${state.books.length} books.`];
+
+      if (state.seriesFilter === standaloneFilterValue) {
+        pieces.push('Filter: standalone.');
+      } else if (state.seriesFilter !== 'all') {
+        const series = state.series.find((entry) => String(entry.id) === state.seriesFilter);
+        if (series) {
+          pieces.push(`Filter: ${series.name}.`);
+        }
+      }
+
+      if (state.search.trim()) {
+        pieces.push(`Search: "${state.search.trim()}".`);
+      }
+
+      resultsSummary.textContent = pieces.join(' ');
+    }
+
     function renderRows() {
-      rowsContainer.innerHTML = filteredBooks()
+      const books = filteredBooks();
+
+      if (books.length === 0) {
+        const empty = emptyStateMessage();
+        rowsContainer.innerHTML = `
+          <tr>
+            <td colspan="6">
+              <div class="admin-empty">
+                <h3>${escapeHtml(empty.title)}</h3>
+                <p>${escapeHtml(empty.copy)}</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        renderResultsSummary();
+        return;
+      }
+
+      rowsContainer.innerHTML = books
         .map((book) => {
-          const isSelected = book.id === state.selectedId;
-          const statusClass =
-            book.availabilityStatus === 'preorder'
-              ? 'status-pill status-pill-preorder'
-              : book.availabilityStatus === 'limited'
-                ? 'status-pill status-pill-limited'
-                : book.availabilityStatus === 'sold_out'
-                  ? 'status-pill status-pill-soldout'
-                  : 'status-pill status-pill-stock';
+          const isSelected = !state.draftMode && book.id === state.selectedId;
+          const availabilityText = availabilityLabel(book.availabilityStatus);
+          const availabilityClass = availabilityClassMap[book.availabilityStatus] || availabilityClassMap.in_stock;
+          const actionDisabled = state.isBusy ? 'disabled' : '';
 
           return `
-            <tr class="border-t border-white/40 ${isSelected ? 'bg-white/50' : ''}">
-              <td class="px-4 py-4 align-top">
-                <div class="space-y-1">
-                  <button
-                    type="button"
-                    class="text-left font-semibold text-[#241920] underline decoration-[#d9bcb2] underline-offset-4"
-                    data-action="edit"
-                    data-book-id="${book.id}"
-                  >
-                    ${escapeHtml(book.title)}
-                  </button>
-                  <p class="text-xs uppercase tracking-[0.22em] text-[#7c5a63]">
-                    ${book.visible ? 'Live on site' : 'Hidden'}
-                  </p>
+            <tr class="${isSelected ? 'admin-row-selected' : ''}">
+              <td>
+                <div class="admin-book-cell">
+                  ${coverMarkup(book)}
+                  <div class="min-w-0 space-y-1">
+                    <button
+                      type="button"
+                      class="admin-book-title"
+                      data-action="edit"
+                      data-book-id="${book.id}"
+                      ${actionDisabled}
+                    >
+                      ${escapeHtml(book.title)}
+                    </button>
+                    <p class="admin-microcopy">
+                      ${escapeHtml(book.publishYear || '\u2014')}
+                      <span aria-hidden="true"> | </span>
+                      ${book.visible ? 'Live on site' : 'Hidden from site'}
+                    </p>
+                  </div>
                 </div>
               </td>
-              <td class="px-4 py-4 align-top text-[#5d4b52]">
-                ${escapeHtml(book.seriesName || book.seriesLabelOverride || 'Standalone')}
-              </td>
-              <td class="px-4 py-4 align-top text-[#5d4b52]">
-                ${escapeHtml(book.publishYear || '\u2014')}
-              </td>
-              <td class="px-4 py-4 align-top">
-                <span class="${statusClass}">
-                  ${escapeHtml(availabilityLabelMap[book.availabilityStatus] || 'In stock')}
-                </span>
-              </td>
-              <td class="px-4 py-4 align-top text-xs text-[#6e5961]">
+              <td>
                 <div class="space-y-1">
-                  <p>${book.amazonLink ? 'Amazon' : 'No Amazon link'}</p>
-                  <p>${book.retailerLink ? 'Retailer link' : 'No retailer link'}</p>
-                  <p>${book.stripePaymentLink ? 'Direct checkout' : 'No direct checkout'}</p>
+                  <p class="font-semibold text-[#241920]">${escapeHtml(collectionLabel(book))}</p>
+                  <p class="admin-microcopy">Slug: ${escapeHtml(book.slug)}</p>
                 </div>
               </td>
-              <td class="px-4 py-4 align-top">
-                <div class="flex flex-wrap gap-2">
-                  <button type="button" class="format-button" data-action="edit" data-book-id="${book.id}">Edit</button>
-                  <button type="button" class="format-button" data-action="toggle-visible" data-book-id="${book.id}">
-                    ${book.visible ? 'Hide' : 'Show'}
-                  </button>
-                  <button type="button" class="format-button" data-action="move-up" data-book-id="${book.id}">Up</button>
-                  <button type="button" class="format-button" data-action="move-down" data-book-id="${book.id}">Down</button>
-                  <button type="button" class="purchase-disabled" data-action="delete" data-book-id="${book.id}">Delete</button>
+              <td>
+                <div class="space-y-2">
+                  <span class="${availabilityClass}">${escapeHtml(availabilityText)}</span>
+                  ${book.availabilityLabel ? `<p class="admin-microcopy">${escapeHtml(book.availabilityLabel)}</p>` : ''}
+                </div>
+              </td>
+              <td>${linkChipsMarkup(book)}</td>
+              <td>
+                <div class="space-y-1">
+                  <p class="admin-microcopy">Series: ${escapeHtml(book.seriesOrder)}</p>
+                  <p class="admin-microcopy">Site: ${escapeHtml(book.sortPriority)}</p>
+                </div>
+              </td>
+              <td>
+                <div class="admin-table-actions">
+                  <button type="button" class="format-button" data-action="edit" data-book-id="${book.id}" ${actionDisabled}>Edit</button>
+                  <button type="button" class="format-button" data-action="toggle-visible" data-book-id="${book.id}" ${actionDisabled}>${book.visible ? 'Hide' : 'Show'}</button>
+                  <button type="button" class="format-button" data-action="move-up" data-book-id="${book.id}" ${actionDisabled}>Up</button>
+                  <button type="button" class="format-button" data-action="move-down" data-book-id="${book.id}" ${actionDisabled}>Down</button>
+                  <button type="button" class="admin-danger-button" data-action="delete" data-book-id="${book.id}" ${actionDisabled}>Delete</button>
                 </div>
               </td>
             </tr>
           `;
         })
         .join('');
+
+      attachCoverFallbacks(rowsContainer);
+      renderResultsSummary();
     }
 
     async function refreshCatalog(nextSelectedId = state.selectedId) {
-      const response = await fetch('/api/admin/catalog/', {
+      const response = await fetch(root.dataset.apiCatalog || '/api/admin/catalog/', {
         headers: { accept: 'application/json' },
       });
       const payload = await response.json();
@@ -559,155 +1355,263 @@ const emDash = '\u2014';
 
       state.books = payload.data.books;
       state.series = payload.data.series;
-      state.selectedId = state.books.some((book) => book.id === nextSelectedId)
-        ? nextSelectedId
-        : state.books[0]?.id ?? null;
+
+      if (state.books.some((book) => book.id === nextSelectedId)) {
+        state.selectedId = nextSelectedId;
+        state.draftMode = false;
+      } else if (state.books.length > 0) {
+        state.selectedId = state.books[0].id;
+        state.draftMode = false;
+      } else {
+        state.selectedId = null;
+        state.draftMode = true;
+      }
+
+      state.previousSelectedId = state.selectedId;
 
       renderStats();
       renderRows();
-      populateForm(currentFormBook());
+      populateForm(state.draftMode ? blankBook() : selectedBook() || blankBook());
     }
 
-    function formPayload() {
-      return {
-        title: form.elements.namedItem('title').value,
-        seriesId: form.elements.namedItem('seriesId').value || null,
-        seriesOrder: form.elements.namedItem('seriesOrder').value || 0,
-        publishYear: form.elements.namedItem('publishYear').value || null,
-        coverImageUrl: form.elements.namedItem('coverImageUrl').value,
-        shortBlurb: form.elements.namedItem('shortBlurb').value,
-        availabilityStatus: form.elements.namedItem('availabilityStatus').value,
-        availabilityLabel: form.elements.namedItem('availabilityLabel').value,
-        amazonLink: form.elements.namedItem('amazonLink').value,
-        retailerLink: form.elements.namedItem('retailerLink').value,
-        stripePaymentLink: form.elements.namedItem('stripePaymentLink').value,
-        displayPrice: form.elements.namedItem('displayPrice').value,
-        signedCopy: form.elements.namedItem('signedCopy').checked,
-        directFromAuthor: form.elements.namedItem('directFromAuthor').checked,
-        visible: form.elements.namedItem('visible').checked,
-        sortPriority: form.elements.namedItem('sortPriority').value || nextSortPriority(),
-      };
+    function populateForm(book) {
+      fields.bookId.value = book.id ?? '';
+      fields.title.value = book.title ?? '';
+      fields.seriesId.value = book.seriesId ?? '';
+      fields.seriesOrder.value = book.seriesOrder ?? 0;
+      fields.publishYear.value = book.publishYear ?? '';
+      fields.sortPriority.value = book.sortPriority ?? nextSortPriority();
+      fields.coverImageUrl.value = book.coverImageUrl ?? '';
+      fields.coverAlt.value = book.coverAlt ?? '';
+      fields.shortBlurb.value = book.shortBlurb ?? '';
+      fields.availabilityStatus.value = book.availabilityStatus ?? 'in_stock';
+      fields.availabilityLabel.value = book.availabilityLabel ?? '';
+      fields.amazonLink.value = book.amazonLink ?? '';
+      fields.retailerLink.value = book.retailerLink ?? '';
+      fields.stripePaymentLink.value = book.stripePaymentLink ?? '';
+      fields.displayPrice.value = book.displayPrice ?? '';
+      fields.signedCopy.checked = Boolean(book.signedCopy);
+      fields.directFromAuthor.checked = Boolean(book.directFromAuthor);
+      fields.visible.checked = book.visible !== false;
+
+      const editingExisting = Boolean(book.id);
+      editorMode.textContent = editingExisting ? 'Editing book' : 'Add a book';
+      heading.textContent = editingExisting ? book.title : 'Start a new book';
+      editorSubheading.textContent = editingExisting
+        ? 'Make your changes, then save when you are ready.'
+        : 'Fill in what you have now. You can leave optional links blank.';
+      cancelButton.textContent = editingExisting ? 'Cancel changes' : state.books.length > 0 ? 'Cancel' : 'Clear form';
+      deleteButton.hidden = !editingExisting;
+
+      updateSlugPreview();
+      updateCoverPreview(book.coverImageUrl, book.title, book.coverAlt);
+      clearFieldErrors();
+    }
+
+    function startNewBook() {
+      state.previousSelectedId = state.selectedId;
+      state.selectedId = null;
+      state.draftMode = true;
+      clearStatus();
+      populateForm(blankBook());
+      renderRows();
+      fields.title.focus();
+    }
+
+    function cancelEditing() {
+      clearStatus();
+      clearFieldErrors();
+
+      if (state.draftMode) {
+        if (state.previousSelectedId && state.books.some((book) => book.id === state.previousSelectedId)) {
+          state.selectedId = state.previousSelectedId;
+          state.draftMode = false;
+          populateForm(selectedBook() || blankBook());
+        } else {
+          populateForm(blankBook());
+        }
+      } else {
+        populateForm(selectedBook() || blankBook());
+      }
+
+      renderRows();
     }
 
     async function saveBook() {
       clearStatus();
-      const currentId = form.elements.namedItem('bookId').value;
+      clearFieldErrors();
+
       const payload = formPayload();
-      const url = currentId ? `/api/admin/books/${currentId}/` : '/api/admin/books/';
-      const method = currentId ? 'PUT' : 'POST';
+      const errors = validatePayload(payload);
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'content-type': 'application/json',
-          accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      if (Object.keys(errors).length > 0) {
+        Object.entries(errors).forEach(([name, message]) => {
+          setFieldError(name, message);
+        });
 
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Could not save the book.');
+        const firstMessage = Object.values(errors)[0];
+        setStatus(firstMessage, 'error');
+        return;
       }
 
-      await refreshCatalog(result.data?.id ?? null);
-      setStatus(currentId ? 'Changes saved.' : 'Book created.');
+      const currentId = fields.bookId.value;
+      const url = currentId
+        ? `${root.dataset.apiBooks || '/api/admin/books/'}${currentId}/`
+        : root.dataset.apiBooks || '/api/admin/books/';
+      const method = currentId ? 'PUT' : 'POST';
+
+      setBusy(true);
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'content-type': 'application/json',
+            accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || 'Could not save the book.');
+        }
+
+        await refreshCatalog(result.data?.id ?? null);
+        setStatus(currentId ? 'Changes saved.' : 'Book created.', 'success');
+      } finally {
+        setBusy(false);
+      }
     }
 
     async function removeBook(bookId) {
-      const book = state.books.find((item) => item.id === bookId);
-      if (!book) return;
-
-      const confirmed = window.confirm(`Delete "${book.title}" from the catalog?`);
-      if (!confirmed) return;
-
-      const response = await fetch(`/api/admin/books/${bookId}/`, {
-        method: 'DELETE',
-        headers: { accept: 'application/json' },
-      });
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Could not delete the book.');
+      const book = state.books.find((entry) => entry.id === bookId);
+      if (!book) {
+        return;
       }
 
-      const nextSelected = state.selectedId === bookId ? null : state.selectedId;
-      await refreshCatalog(nextSelected);
-      setStatus('Book deleted.');
+      const confirmed = window.confirm(`Delete "${book.title}" from the catalog? This cannot be undone.`);
+      if (!confirmed) {
+        return;
+      }
+
+      setBusy(true);
+
+      try {
+        const response = await fetch(`${root.dataset.apiBooks || '/api/admin/books/'}${bookId}/`, {
+          method: 'DELETE',
+          headers: { accept: 'application/json' },
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || 'Could not delete the book.');
+        }
+
+        const nextSelectedId =
+          state.selectedId === bookId
+            ? state.books.find((entry) => entry.id !== bookId)?.id ?? null
+            : state.selectedId;
+
+        await refreshCatalog(nextSelectedId);
+        setStatus('Book deleted.', 'success');
+      } finally {
+        setBusy(false);
+      }
     }
 
     async function toggleVisible(bookId) {
-      const book = state.books.find((item) => item.id === bookId);
-      if (!book) return;
-
-      const response = await fetch(`/api/admin/books/${bookId}/`, {
-        method: 'PUT',
-        headers: {
-          'content-type': 'application/json',
-          accept: 'application/json',
-        },
-        body: JSON.stringify({
-          ...book,
-          visible: !book.visible,
-          coverImageUrl: book.coverImageUrl || '',
-          shortBlurb: book.shortBlurb,
-          availabilityLabel: book.availabilityLabel || '',
-          amazonLink: book.amazonLink || '',
-          retailerLink: book.retailerLink || '',
-          stripePaymentLink: book.stripePaymentLink || '',
-          displayPrice: book.displayPrice || '',
-        }),
-      });
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Could not update visibility.');
+      const book = state.books.find((entry) => entry.id === bookId);
+      if (!book) {
+        return;
       }
 
-      await refreshCatalog(bookId);
-      setStatus(book.visible ? 'Book hidden from the public site.' : 'Book is live on the public site.');
+      if (book.visible) {
+        const confirmed = window.confirm(`Hide "${book.title}" from the public site?`);
+        if (!confirmed) {
+          return;
+        }
+      }
+
+      setBusy(true);
+
+      try {
+        const response = await fetch(`${root.dataset.apiBooks || '/api/admin/books/'}${bookId}/`, {
+          method: 'PUT',
+          headers: {
+            'content-type': 'application/json',
+            accept: 'application/json',
+          },
+          body: JSON.stringify({
+            ...payloadFromBook(book),
+            visible: !book.visible,
+          }),
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || 'Could not update visibility.');
+        }
+
+        await refreshCatalog(bookId);
+        setStatus(book.visible ? 'Book hidden from the public site.' : 'Book is live on the public site.', 'success');
+      } finally {
+        setBusy(false);
+      }
     }
 
     async function moveBook(bookId, direction) {
-      const response = await fetch('/api/admin/books/reorder/', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          accept: 'application/json',
-        },
-        body: JSON.stringify({ bookId, direction }),
-      });
-      const result = await response.json();
+      setBusy(true);
 
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Could not reorder the book.');
+      try {
+        const response = await fetch(root.dataset.apiReorder || '/api/admin/books/reorder/', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            accept: 'application/json',
+          },
+          body: JSON.stringify({ bookId, direction }),
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || 'Could not reorder the book.');
+        }
+
+        await refreshCatalog(bookId);
+        setStatus(direction === 'up' ? 'Moved up.' : 'Moved down.', 'success');
+      } finally {
+        setBusy(false);
       }
-
-      await refreshCatalog(bookId);
-      setStatus(`Moved ${direction === 'up' ? 'up' : 'down'}.`);
-    }
-
-    function startNewBook() {
-      state.selectedId = null;
-      populateForm({ ...blankBook(), sortPriority: nextSortPriority() });
-      clearStatus();
     }
 
     rowsContainer.addEventListener('click', async (event) => {
       const target = event.target instanceof HTMLElement ? event.target.closest('[data-action]') : null;
-      if (!(target instanceof HTMLElement)) return;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
 
       const action = target.dataset.action;
       const bookId = Number(target.dataset.bookId);
-      if (!Number.isFinite(bookId)) return;
+      if (!Number.isFinite(bookId) || state.isBusy) {
+        return;
+      }
 
       try {
         if (action === 'edit') {
+          const book = state.books.find((entry) => entry.id === bookId);
+          if (!book) {
+            return;
+          }
+
           state.selectedId = bookId;
-          populateForm(currentFormBook());
-          renderRows();
+          state.previousSelectedId = bookId;
+          state.draftMode = false;
           clearStatus();
+          populateForm(book);
+          renderRows();
+          fields.title.focus();
         } else if (action === 'toggle-visible') {
           await toggleVisible(bookId);
         } else if (action === 'move-up') {
@@ -732,14 +1636,11 @@ const emDash = '\u2014';
       }
     });
 
-    searchInput.addEventListener('input', () => {
-      state.search = searchInput.value;
-      renderRows();
-    });
-
     deleteButton.addEventListener('click', async () => {
-      const currentId = Number(form.elements.namedItem('bookId').value);
-      if (!Number.isFinite(currentId) || currentId <= 0) return;
+      const currentId = Number(fields.bookId.value);
+      if (!Number.isFinite(currentId) || currentId <= 0 || state.isBusy) {
+        return;
+      }
 
       try {
         await removeBook(currentId);
@@ -748,12 +1649,451 @@ const emDash = '\u2014';
       }
     });
 
-    resetButton.addEventListener('click', startNewBook);
-    createButton.addEventListener('click', startNewBook);
-    newBookButton.addEventListener('click', startNewBook);
+    newBookButton.addEventListener('click', () => {
+      if (!state.isBusy) {
+        startNewBook();
+      }
+    });
 
+    cancelButton.addEventListener('click', () => {
+      if (!state.isBusy) {
+        cancelEditing();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      state.search = searchInput.value;
+      renderRows();
+    });
+
+    seriesFilter.addEventListener('change', () => {
+      state.seriesFilter = seriesFilter.value;
+      renderRows();
+    });
+
+    [
+      ['title', fields.title],
+      ['shortBlurb', fields.shortBlurb],
+      ['publishYear', fields.publishYear],
+      ['coverImageUrl', fields.coverImageUrl],
+      ['coverAlt', fields.coverAlt],
+      ['amazonLink', fields.amazonLink],
+      ['retailerLink', fields.retailerLink],
+      ['stripePaymentLink', fields.stripePaymentLink],
+    ].forEach(([name, field]) => {
+      field.addEventListener('input', () => {
+        clearFieldError(name);
+
+        if (name === 'title') {
+          updateSlugPreview();
+          updateCoverPreview(fields.coverImageUrl.value, fields.title.value, fields.coverAlt.value);
+        }
+
+        if (name === 'coverImageUrl') {
+          updateCoverPreview(fields.coverImageUrl.value, fields.title.value, fields.coverAlt.value);
+        }
+
+        if (name === 'coverAlt') {
+          updateCoverPreview(fields.coverImageUrl.value, fields.title.value, fields.coverAlt.value);
+        }
+      });
+
+      field.addEventListener('blur', () => {
+        const message = fieldValidationMessage(name, formPayload());
+        clearFieldError(name);
+
+        if (message) {
+          setFieldError(name, message);
+        }
+      });
+    });
+
+    coverPreviewImage.addEventListener('error', () => {
+      coverPreviewImage.hidden = true;
+      coverPreviewFallback.hidden = false;
+    });
+
+    attachCoverFallbacks(document);
     renderStats();
     renderRows();
-    populateForm(currentFormBook());
+    populateForm(state.draftMode ? blankBook() : selectedBook() || blankBook());
   </script>
+
+  <style is:global>
+    .admin-summary-grid {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    @media (min-width: 640px) {
+      .admin-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .admin-control-row {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .admin-control-row {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      }
+    }
+
+    .admin-section-card {
+      border-radius: 1.45rem;
+      background: rgba(255, 255, 255, 0.56);
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+      padding: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .admin-section-card {
+        padding: 1.25rem;
+      }
+    }
+
+    .admin-section-title {
+      font-family: 'Newsreader', serif;
+      font-size: 1.5rem;
+      line-height: 1.1;
+      color: var(--surface-strong);
+    }
+
+    .admin-section-copy {
+      margin-top: 0.45rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--surface-copy);
+    }
+
+    .admin-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .admin-field-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--surface-strong);
+    }
+
+    .admin-field-help {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--surface-muted);
+    }
+
+    .admin-field-error {
+      min-height: 1.2rem;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: #8a5a58;
+    }
+
+    .admin-readonly {
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--surface-muted);
+    }
+
+    .admin-preview-card {
+      display: grid;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    @media (min-width: 640px) {
+      .admin-preview-card {
+        grid-template-columns: 7rem minmax(0, 1fr);
+      }
+    }
+
+    .admin-editor-cover {
+      position: relative;
+      width: 7rem;
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      border-radius: 1.2rem;
+      box-shadow: 0 18px 38px rgba(36, 25, 32, 0.16);
+      background: linear-gradient(145deg, #7c5a63 0%, #c48073 100%);
+    }
+
+    .admin-editor-cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: rgba(17, 10, 16, 0.12);
+    }
+
+    .admin-editor-cover-fallback {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Newsreader', serif;
+      font-size: 1.6rem;
+      color: #ffffff;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 30%),
+        linear-gradient(145deg, #241920 0%, #6f425e 58%, #c48073 100%);
+    }
+
+    .admin-toggle-grid {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      .admin-toggle-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .admin-toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      border-radius: 1.2rem;
+      background: var(--surface-soft);
+      box-shadow: inset 0 0 0 1px var(--surface-soft-border);
+      padding: 0.95rem 1rem;
+    }
+
+    .admin-toggle input {
+      margin-top: 0.15rem;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 0.25rem;
+    }
+
+    .admin-toggle strong {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--surface-strong);
+    }
+
+    .admin-toggle span span {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--surface-muted);
+    }
+
+    .admin-action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .admin-notice {
+      border-radius: 1.25rem;
+      border: 1px solid rgba(111, 66, 94, 0.18);
+      background: var(--surface-soft);
+      padding: 0.95rem 1rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--surface-strong);
+    }
+
+    .admin-notice[data-tone='success'] {
+      border-color: rgba(48, 88, 92, 0.22);
+      background: rgba(237, 244, 241, 0.88);
+      color: #30585c;
+    }
+
+    .admin-notice[data-tone='error'] {
+      border-color: rgba(186, 90, 88, 0.32);
+      background: rgba(240, 222, 215, 0.88);
+      color: #7e4a49;
+    }
+
+    .admin-results-copy {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--surface-muted);
+    }
+
+    .admin-table-wrap {
+      overflow-x: auto;
+      border-radius: 1.4rem;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .admin-table {
+      width: 100%;
+      min-width: 840px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .admin-table thead th {
+      background: rgba(255, 255, 255, 0.74);
+      padding: 0.95rem 1rem;
+      text-align: left;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--surface-strong);
+    }
+
+    .admin-table td {
+      padding: 1rem;
+      vertical-align: top;
+    }
+
+    .admin-table tbody tr + tr td {
+      border-top: 1px solid rgba(255, 255, 255, 0.48);
+    }
+
+    .admin-row-selected td {
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .admin-book-cell {
+      display: grid;
+      grid-template-columns: 3.75rem minmax(0, 1fr);
+      gap: 0.9rem;
+      align-items: start;
+    }
+
+    .admin-cover-thumb {
+      position: relative;
+      width: 3.75rem;
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      border-radius: 1rem;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.14), transparent 32%),
+        linear-gradient(145deg, #241920 0%, #6f425e 58%, #c48073 100%);
+      box-shadow: 0 14px 30px rgba(36, 25, 32, 0.14);
+    }
+
+    .admin-cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: rgba(17, 10, 16, 0.12);
+    }
+
+    .admin-cover-fallback {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Newsreader', serif;
+      font-size: 1.05rem;
+      color: #ffffff;
+    }
+
+    .admin-book-title {
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--surface-strong);
+      text-decoration: underline;
+      text-decoration-color: #d9bcb2;
+      text-underline-offset: 0.2rem;
+    }
+
+    .admin-book-title:hover {
+      color: var(--surface-accent);
+    }
+
+    .admin-microcopy {
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--surface-muted);
+    }
+
+    .admin-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .admin-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 170, 163, 0.44);
+      background: rgba(255, 255, 255, 0.88);
+      padding: 0.4rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--surface-strong);
+    }
+
+    .admin-chip-muted {
+      background: var(--surface-soft);
+      color: var(--surface-accent);
+    }
+
+    .admin-chip-empty {
+      border-style: dashed;
+      background: transparent;
+      color: var(--surface-muted);
+    }
+
+    .admin-table-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .admin-danger-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      border-radius: 999px;
+      border: 1px solid rgba(168, 100, 98, 0.34);
+      background: rgba(240, 222, 215, 0.78);
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #7e4a49;
+      box-shadow: 0 10px 24px rgba(36, 25, 32, 0.06);
+    }
+
+    .admin-danger-button:hover {
+      background: rgba(240, 222, 215, 0.94);
+      transform: translateY(-1px);
+    }
+
+    .admin-danger-button:disabled,
+    .admin-is-busy .admin-danger-button,
+    .admin-is-busy .format-button {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    .admin-empty {
+      padding: 2.4rem 1.5rem;
+      text-align: center;
+    }
+
+    .admin-empty h3 {
+      font-family: 'Newsreader', serif;
+      font-size: 1.8rem;
+      line-height: 1.05;
+      color: var(--surface-strong);
+    }
+
+    .admin-empty p {
+      margin-top: 0.7rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--surface-copy);
+    }
+  </style>
 </BaseLayout>

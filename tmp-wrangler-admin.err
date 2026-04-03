@@ -1,0 +1,371 @@
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\chunks\_virtual_astro_server-island-manifest_DBxKN41v.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\chunks\_virtual_astro_server-island-manifest_DBxKN41v.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\prerender-entry.LqRh0sPx.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\chunks\_virtual_astro_session-driver_x9Ra2-EZ.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, open 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\chunks\_virtual_astro_session-driver_x9Ra2-EZ.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1269:14)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48750:29)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: ENOENT: no such file or directory, scandir 'C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\dist\_worker.js\.prerender\_astro'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48601:23)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async getFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48605:9)
+    at async matchFiles (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48740:20)
+    at async findAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:48638:20)
+    at async getAdditionalModules (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306058:10)
+    at async updateBundle (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306069:34)
+    at async FSWatcher.<anonymous> (C:\Users\tkarn\dev\jaclyn-site\jaclyn-osborn-site\node_modules\wrangler\wrangler-dist\cli.js:306137:9)

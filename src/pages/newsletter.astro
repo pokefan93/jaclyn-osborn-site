@@ -1,34 +1,38 @@
 ---
 export const prerender = true;
 
+import NewsletterPanel from '../components/NewsletterPanel.astro';
+import PageHero from '../components/PageHero.astro';
+import SocialShowcase from '../components/SocialShowcase.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteMeta } from '../data/site';
 import { withBase } from '../utils/withBase';
-
-const target = withBase('about/#about-newsletter');
 ---
 
 <BaseLayout
   title="Newsletter"
-  description="Newsletter signup has moved to the About page."
+  description="Join Jaclyn Osborn's newsletter for release updates and book news."
 >
-  <section class="px-4 pt-8 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-3xl">
-      <div class="card-shell rounded-[1.2rem] p-6 text-center sm:p-8">
-        <p class="eyebrow text-[#7c5a63]">Moved</p>
-        <h1 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          Newsletter has moved to About.
-        </h1>
-        <p class="mt-4 text-base leading-8 text-[#5d4b52] sm:text-lg">
-          You will be redirected automatically. If nothing happens, use the button below.
-        </p>
-        <a href={target} class="button-secondary mt-6">
-          Go to About
-        </a>
-      </div>
+  <PageHero
+    eyebrow="Newsletter"
+    title="Join Jaclyn's newsletter"
+    description="Get release updates, cover reveals, signed copy news, and the occasional note from Jaclyn."
+    actions={[
+      { href: withBase('books/'), label: 'Browse books', variant: 'secondary' },
+      { href: siteMeta.instagramUrl, label: 'Follow on Instagram', variant: 'primary', external: true },
+    ]}
+    compact
+  />
+
+  <section class="px-4 pt-10 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <NewsletterPanel />
     </div>
   </section>
 
-  <script is:inline define:vars={{ target }}>
-    window.location.replace(target);
-  </script>
+  <section class="px-4 pb-6 pt-12 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <SocialShowcase />
+    </div>
+  </section>
 </BaseLayout>

@@ -17,7 +17,7 @@ import { withBase } from '../utils/withBase';
     title="Thank you for your order."
     description="A receipt should be on its way to your email. If you need help with your order, Jaclyn can be reached any time."
     actions={[
-      { href: withBase('about/#about-newsletter'), label: 'Join the newsletter', variant: 'primary' },
+      { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
       { href: siteMeta.instagramUrl, label: 'Follow on Instagram', variant: 'secondary', external: true },
     ]}
     centered
@@ -51,10 +51,10 @@ import { withBase } from '../utils/withBase';
       <article class="card-shell rounded-[2.35rem] p-6 sm:p-8">
         <p class="eyebrow text-[#7c5a63]">Stay connected</p>
         <h2 class="mt-4 font-display text-4xl text-[#241920] sm:text-5xl">
-          Keep up with new books and shop updates.
+          Keep up with new books and signed copy updates.
         </h2>
         <div class="mt-6 space-y-4">
-          <a href={withBase('about/#about-newsletter')} class="button-secondary w-full justify-center sm:w-auto">
+          <a href={withBase('newsletter/')} class="button-secondary w-full justify-center sm:w-auto">
             Join the newsletter
           </a>
           <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="button-secondary w-full justify-center sm:w-auto">
