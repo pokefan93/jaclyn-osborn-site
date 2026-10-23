@@ -1,0 +1,5 @@
+{
+  "name": "tts-control",
+  "main": "control.ts",
+  "compatibility_date": "2026-04-02"
+}

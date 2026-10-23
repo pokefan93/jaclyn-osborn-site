@@ -1,11 +1,12 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import NewsletterPanel from '../components/NewsletterPanel.astro';
 import PageHero from '../components/PageHero.astro';
 import SocialShowcase from '../components/SocialShowcase.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { siteMeta } from '../data/site';
+import { siteMeta as defaults } from '../data/site';
+const siteMeta = { ...defaults, ...Astro.locals.content };
 import { withBase } from '../utils/withBase';
 ---
 

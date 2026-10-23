@@ -40,6 +40,7 @@ interface SeriesRow {
 }
 
 interface BookRow {
+  portal_details: string;
   id: number;
   slug: string;
   title: string;
@@ -125,9 +126,13 @@ function buildRetailerLinks(row: BookRow): RetailerLink[] {
   return links;
 }
 
-function buildDirectLinks(row: BookRow, formats: Book['formats']): DirectSaleFormat[] {
+function buildDirectLinks(
+  row: BookRow,
+  formats: Book['formats'],
+): DirectSaleFormat[] {
   const directUrl = optionalText(row.stripe_payment_link);
-  if (!directUrl) {
+  // Seed data includes Stripe sandbox links. Never present those as a real sale.
+  if (!directUrl || /^https:\/\/buy\.stripe\.com\/test_/i.test(directUrl)) {
     return [];
   }
 
@@ -153,6 +158,13 @@ function buildDirectLinks(row: BookRow, formats: Book['formats']): DirectSaleFor
 }
 
 function mapBookRow(row: BookRow): Book {
+  const extra = JSON.parse(row.portal_details || '{}') as {
+    purchase?: Partial<Book['purchase']>;
+    vibes?: string[];
+    tropes?: string[];
+  };
+  const live = (url?: string) =>
+    !url || !/^https:\/\/buy\.stripe\.com\/test_/i.test(url);
   const publishYear = row.publish_year ? Number(row.publish_year) : null;
   const releaseDate = releaseDateForYear(
     publishYear,
@@ -167,15 +179,18 @@ function mapBookRow(row: BookRow): Book {
     title: row.title,
     seriesId: row.series_id ? Number(row.series_id) : null,
     seriesSlug: optionalText(row.series_slug),
-    seriesLabel: optionalText(row.series_name) || optionalText(row.series_label_override) || undefined,
+    seriesLabel:
+      optionalText(row.series_name) ||
+      optionalText(row.series_label_override) ||
+      undefined,
     seriesOrder: Number(row.series_order ?? 0),
     releaseDate,
     publishYear,
     shortHook: row.short_blurb,
     description: row.description || row.short_blurb,
     genres,
-    vibes: [],
-    tropes: [],
+    vibes: extra.vibes ?? [],
+    tropes: extra.tropes ?? [],
     formats,
     featured: toBoolean(row.featured),
     coverPalette: row.cover_palette,
@@ -185,14 +200,19 @@ function mapBookRow(row: BookRow): Book {
     sortPriority: Number(row.sort_priority ?? 0),
     catalogStatus: optionalText(row.catalog_status) || undefined,
     purchase: {
+      ...extra.purchase,
       availabilityStatus: row.availability_status,
       availabilityLabel: optionalText(row.availability_label) || undefined,
       displayPrice: optionalText(row.display_price) || undefined,
-      merchandisingFlags: [],
+      merchandisingFlags: extra.purchase?.merchandisingFlags ?? [],
       signedCopy: toBoolean(row.signed_copy),
       directFromAuthor: toBoolean(row.direct_from_author),
-      retailerLinks: buildRetailerLinks(row),
-      directSaleFormats: buildDirectLinks(row, formats),
+      retailerLinks: (
+        extra.purchase?.retailerLinks ?? buildRetailerLinks(row)
+      ).filter((r) => live(r.purchaseUrl)),
+      directSaleFormats: (
+        extra.purchase?.directSaleFormats ?? buildDirectLinks(row, formats)
+      ).filter((r) => live(r.purchaseUrl)),
     },
   };
 }
@@ -233,7 +253,7 @@ function mapAdminBookRow(row: BookRow): AdminBookRecord {
   };
 }
 
-async function listSeries(includeHidden = false) {
+export async function listSeries(includeHidden = false) {
   const db = getDb();
   const { results } = await db
     .prepare(
@@ -260,7 +280,7 @@ async function listSeries(includeHidden = false) {
   return (results ?? []).map(mapSeriesRow);
 }
 
-async function listBooks(includeHidden = false) {
+export async function listBooks(includeHidden = false) {
   const db = getDb();
   const { results } = await db
     .prepare(
@@ -292,6 +312,7 @@ async function listBooks(includeHidden = false) {
         b.catalog_status,
         b.genres_json,
         b.formats_json,
+        b.portal_details,
         s.slug AS series_slug,
         s.name AS series_name
       FROM books b
@@ -341,6 +362,7 @@ async function listAdminBooks() {
         b.catalog_status,
         b.genres_json,
         b.formats_json,
+        b.portal_details,
         s.slug AS series_slug,
         s.name AS series_name
       FROM books b
@@ -384,6 +406,7 @@ async function getAdminBookById(id: number) {
         b.catalog_status,
         b.genres_json,
         b.formats_json,
+        b.portal_details,
         s.slug AS series_slug,
         s.name AS series_name
       FROM books b
@@ -437,7 +460,9 @@ async function createUniqueSlug(title: string) {
   return candidate;
 }
 
-async function getFallbackCoverPalette(seriesId: number | null): Promise<CoverPalette> {
+async function getFallbackCoverPalette(
+  seriesId: number | null,
+): Promise<CoverPalette> {
   const db = getDb();
 
   if (seriesId) {
@@ -457,7 +482,8 @@ async function getFallbackCoverPalette(seriesId: number | null): Promise<CoverPa
 }
 
 function normalizeDatabaseError(error: unknown) {
-  const message = error instanceof Error ? error.message : 'Something went wrong.';
+  const message =
+    error instanceof Error ? error.message : 'Something went wrong.';
 
   if (message.includes('UNIQUE constraint failed')) {
     return 'That book already exists in the catalog.';
@@ -472,7 +498,10 @@ export async function getPublicCatalogData(): Promise<{
   booksBySeries: BooksBySeries[];
   catalogStats: CatalogStats;
 }> {
-  const [books, series] = await Promise.all([listBooks(false), listSeries(false)]);
+  const [books, series] = await Promise.all([
+    listBooks(false),
+    listSeries(false),
+  ]);
   const booksBySeries = groupBooksBySeries(books, series).filter(
     (seriesEntry) => seriesEntry.books.length > 0,
   );
@@ -510,9 +539,10 @@ export async function createBook(input: AdminBookInput) {
     const seriesId = await ensureSeriesExists(input.seriesId);
     const slug = await createUniqueSlug(input.title);
     const coverPalette = await getFallbackCoverPalette(seriesId);
-    const description = input.description && input.description.length > 0
-      ? input.description
-      : input.shortBlurb;
+    const description =
+      input.description && input.description.length > 0
+        ? input.description
+        : input.shortBlurb;
 
     const result = await db
       .prepare(
@@ -566,8 +596,8 @@ export async function createBook(input: AdminBookInput) {
         input.sortPriority,
         coverPalette,
         'Core title',
-        stringifyJsonArray([]),
-        stringifyJsonArray([]),
+        stringifyJsonArray(input.genres ?? []),
+        stringifyJsonArray(input.formats ?? []),
       )
       .run();
 
@@ -609,6 +639,7 @@ export async function updateBook(id: number, input: AdminBookInput) {
         catalog_status,
         genres_json,
         formats_json,
+        portal_details,
         '' AS series_slug,
         '' AS series_name
       FROM books
@@ -623,10 +654,54 @@ export async function updateBook(id: number, input: AdminBookInput) {
 
   try {
     const seriesId = await ensureSeriesExists(input.seriesId);
-    const description = input.description && input.description.length > 0
-      ? input.description
-      : existing.description || input.shortBlurb;
+    const description =
+      input.description && input.description.length > 0
+        ? input.description
+        : existing.description || input.shortBlurb;
 
+    const details = JSON.parse(existing.portal_details || '{}');
+    if (details.purchase) {
+      if (
+        optionalText(existing.stripe_payment_link) !==
+          input.stripePaymentLink &&
+        details.purchase.directSaleFormats
+      ) {
+        const links = details.purchase.directSaleFormats;
+        if (input.stripePaymentLink)
+          links[0] = {
+            ...(links[0] || {}),
+            label: links[0]?.label || 'Buy direct',
+            purchaseMode: 'external_retailer',
+            purchaseUrl: input.stripePaymentLink,
+          };
+        else links.shift();
+      }
+      if (details.purchase.retailerLinks) {
+        for (const [label, previous, next] of [
+          ['Amazon', existing.amazon_link, input.amazonLink],
+          ['Retailer', existing.retailer_link, input.retailerLink],
+        ]) {
+          if (optionalText(previous) === next) continue;
+          const links = details.purchase.retailerLinks;
+          const index = links.findIndex((link: RetailerLink) =>
+            label === 'Amazon'
+              ? link.retailer.toLowerCase() === 'amazon'
+              : link.retailer.toLowerCase() !== 'amazon',
+          );
+          if (next) {
+            const value = {
+              ...(index >= 0 ? links[index] : {}),
+              retailer: label,
+              label,
+              purchaseMode: 'external_retailer',
+              purchaseUrl: next,
+            };
+            if (index >= 0) links[index] = value;
+            else links.push(value);
+          } else if (index >= 0) links.splice(index, 1);
+        }
+      }
+    }
     await db
       .prepare(
         `UPDATE books
@@ -650,6 +725,9 @@ export async function updateBook(id: number, input: AdminBookInput) {
           direct_from_author = ?,
           visible = ?,
           sort_priority = ?,
+          genres_json = ?,
+          formats_json = ?,
+          portal_details = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ?`,
       )
@@ -658,7 +736,9 @@ export async function updateBook(id: number, input: AdminBookInput) {
         seriesId,
         input.seriesOrder,
         input.publishYear,
-        releaseDateForYear(input.publishYear),
+        input.publishYear === existing.publish_year
+          ? optionalText(existing.release_date)
+          : releaseDateForYear(input.publishYear),
         input.coverImageUrl || null,
         input.coverAlt || null,
         input.shortBlurb,
@@ -673,6 +753,13 @@ export async function updateBook(id: number, input: AdminBookInput) {
         input.directFromAuthor ? 1 : 0,
         input.visible ? 1 : 0,
         input.sortPriority,
+        stringifyJsonArray(
+          input.genres ?? parseJsonTextArray(existing.genres_json),
+        ),
+        stringifyJsonArray(
+          input.formats ?? parseJsonTextArray(existing.formats_json),
+        ),
+        JSON.stringify(details),
         id,
       )
       .run();
@@ -691,17 +778,22 @@ export async function deleteBook(id: number) {
 export async function reorderBook(input: ReorderBookInput) {
   const db = getDb();
   const { results } = await db
-    .prepare('SELECT id, sort_priority, title FROM books ORDER BY sort_priority ASC, title ASC, id ASC')
+    .prepare(
+      'SELECT id, sort_priority, title FROM books ORDER BY sort_priority ASC, title ASC, id ASC',
+    )
     .all<{ id: number; sort_priority: number; title: string }>();
 
   const orderedBooks = results ?? [];
-  const currentIndex = orderedBooks.findIndex((book) => Number(book.id) === input.bookId);
+  const currentIndex = orderedBooks.findIndex(
+    (book) => Number(book.id) === input.bookId,
+  );
 
   if (currentIndex === -1) {
     throw new Error('That book could not be found.');
   }
 
-  const swapIndex = input.direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+  const swapIndex =
+    input.direction === 'up' ? currentIndex - 1 : currentIndex + 1;
   const currentBook = orderedBooks[currentIndex];
   const swapBook = orderedBooks[swapIndex];
 
@@ -711,10 +803,14 @@ export async function reorderBook(input: ReorderBookInput) {
 
   await db.batch([
     db
-      .prepare('UPDATE books SET sort_priority = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+      .prepare(
+        'UPDATE books SET sort_priority = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      )
       .bind(Number(swapBook.sort_priority), Number(currentBook.id)),
     db
-      .prepare('UPDATE books SET sort_priority = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+      .prepare(
+        'UPDATE books SET sort_priority = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      )
       .bind(Number(currentBook.sort_priority), Number(swapBook.id)),
   ]);
 

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS media (
+  id TEXT PRIMARY KEY,
+  filename TEXT NOT NULL,
+  content_type TEXT NOT NULL,
+  data BLOB NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

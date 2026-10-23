@@ -1,0 +1,214 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EditorNav from '../../components/EditorNav.astro';
+const c = Astro.locals.content;
+const groups = [
+  {
+    title: 'Homepage',
+    fields: [
+      ['heroTitle', 'Main heading'],
+      ['heroCopy', 'Introduction', 'textarea'],
+      ['featuredBookSlug', 'Featured book slug'],
+      ['discoverTitle', 'Series section heading'],
+      ['authorTitle', 'Author section heading'],
+      ['announcement', 'Announcement (optional)'],
+      ['announcementUrl', 'Announcement link (optional)'],
+    ],
+  },
+  {
+    title: 'About Jaclyn',
+    fields: [
+      ['name', 'Author name'],
+      ['shortTagline', 'Short tagline'],
+      ['aboutTitle', 'About page heading'],
+      ['longBio', 'Biography', 'textarea'],
+      ['authorPhoto', 'Author photo URL'],
+    ],
+  },
+  {
+    title: 'Books & series pages',
+    fields: [
+      ['booksTitle', 'Books heading'],
+      ['booksCopy', 'Books introduction', 'textarea'],
+      ['seriesTitle', 'Series heading'],
+      ['seriesCopy', 'Series introduction', 'textarea'],
+    ],
+  },
+  {
+    title: 'Newsletter & social',
+    fields: [
+      ['newsletterTitle', 'Newsletter heading'],
+      ['newsletterCopy', 'Newsletter introduction', 'textarea'],
+      ['newsletterUrl', 'Signup page URL (your email provider)'],
+      ['instagramUrl', 'Instagram URL'],
+      ['socialCopy', 'Social introduction', 'textarea'],
+    ],
+  },
+  {
+    title: 'Contact',
+    fields: [
+      ['contactTitle', 'Contact heading'],
+      ['contactCopy', 'Contact introduction', 'textarea'],
+      ['email', 'Reader email', 'email'],
+      ['mediaEmail', 'Media email', 'email'],
+      ['rightsEmail', 'Business email', 'email'],
+    ],
+  },
+  {
+    title: 'Search & sharing',
+    fields: [
+      ['title', 'Homepage search title'],
+      ['description', 'Homepage search description', 'textarea'],
+    ],
+  },
+];
+---
+
+<BaseLayout title="Pages & settings" noindex>
+  <section class="editorial-width" style="padding-top:32px">
+    <EditorNav />
+    <h1 style="font-size:3rem;margin-bottom:12px">Your words, your website.</h1>
+    <p style="margin-bottom:30px">
+      Edit the fields below, then save. Changes appear on the public site
+      immediately. Use Images to upload a new cover or portrait.
+    </p>
+    <form id="content-form">
+      {groups.map((group) => (
+        <fieldset class="editor-fieldset">
+          <legend>{group.title}</legend>
+          <div class="editor-grid">
+            {group.fields.map(([key, label, type]) => (
+              <label class={type === 'textarea' ? 'editor-wide' : ''}>
+                {label}
+                {type === 'textarea' ? (
+                  <textarea
+                    class="input-shell"
+                    name={key}
+                  >{c[key as keyof typeof c] as string}</textarea>
+                ) : (
+                  <input
+                    class="input-shell"
+                    type={type === 'email' ? 'email' : 'text'}
+                    name={key}
+                    value={c[key as keyof typeof c] as string}
+                  />
+                )}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+      <fieldset class="editor-fieldset">
+        <legend>Frequently asked questions</legend>
+        <div id="faq-fields">
+          {c.faqs.map((item) => (
+            <div class="editor-grid" data-faq style="margin-bottom:24px">
+              <label>
+                Question
+                <input
+                  class="input-shell"
+                  data-question
+                  value={item.question}
+                  required
+                  maxlength="200"
+                />
+              </label>
+              <label>
+                Answer
+                <textarea
+                  class="input-shell"
+                  data-answer
+                  required
+                  maxlength="1500"
+                >{item.answer}</textarea>
+              </label>
+              <button class="text-link" type="button" data-remove>
+                Remove this question
+              </button>
+            </div>
+          ))}
+        </div>
+        <button class="button-secondary" type="button" id="add-faq">
+          Add question
+        </button>
+      </fieldset>
+      <div class="editor-actions">
+        <button class="button-primary" type="submit">
+          Save website content
+        </button>
+        <span
+          class="editor-status"
+          role="status"
+          aria-live="polite"
+          id="content-status"
+        ></span>
+      </div>
+    </form>
+  </section>
+</BaseLayout>
+<script>
+  const form = document.querySelector<HTMLFormElement>('#content-form')!;
+  const status = document.querySelector<HTMLElement>('#content-status')!;
+  const faqFields = document.querySelector<HTMLElement>('#faq-fields')!;
+  let dirty = false;
+  form.addEventListener('input', () => {
+    dirty = true;
+    status.textContent = 'Unsaved changes';
+  });
+  window.addEventListener('beforeunload', (e) => {
+    if (dirty) {
+      e.preventDefault();
+    }
+  });
+  faqFields.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-remove]')) {
+      target.closest('[data-faq]')?.remove();
+      dirty = true;
+    }
+  });
+  document.querySelector('#add-faq')!.addEventListener('click', () => {
+    const row = document.createElement('div');
+    row.className = 'editor-grid';
+    row.dataset.faq = '';
+    row.style.marginBottom = '24px';
+    row.innerHTML =
+      '<label>Question<input class="input-shell" data-question required maxlength="200" /></label><label>Answer<textarea class="input-shell" data-answer required maxlength="1500"></textarea></label><button type="button" class="text-link" data-remove>Remove this question</button>';
+    faqFields.appendChild(row);
+    row.querySelector('input')?.focus();
+    dirty = true;
+  });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const button = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
+    const payload: Record<string, unknown> = Object.fromEntries(
+      new FormData(form),
+    );
+    payload.faqs = Array.from(faqFields.querySelectorAll('[data-faq]')).map(
+      (row) => ({
+        question: row.querySelector<HTMLInputElement>('[data-question]')!.value,
+        answer: row.querySelector<HTMLTextAreaElement>('[data-answer]')!.value,
+      }),
+    );
+    button.disabled = true;
+    status.textContent = 'Saving…';
+    try {
+      const res = await fetch('/api/admin/content/', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = (await res.json()) as { ok: boolean; error?: string };
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Save failed.');
+      dirty = false;
+      status.textContent = 'Saved and verified. Your site is up to date.';
+    } catch (error) {
+      status.textContent =
+        error instanceof Error
+          ? error.message
+          : 'Save failed. Your changes are still here.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

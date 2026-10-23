@@ -1,75 +1,134 @@
 ---
-export const prerender = false;
-
 import BookCover from '../components/BookCover.astro';
 import NewsletterPanel from '../components/NewsletterPanel.astro';
-import SocialShowcase from '../components/SocialShowcase.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublicCatalogData } from '../lib/catalog/repository';
-import { siteMeta } from '../data/site';
-import { withBase } from '../utils/withBase';
-
-const { booksBySeries } = await getPublicCatalogData();
-
-const primaryHeroBook = booksBySeries.find((series) => series.slug === 'sons-of-the-fallen')?.books[0];
-const secondaryHeroBook = booksBySeries.find((series) => series.slug === 'sent-to-a-fantasy-world')?.books[0];
-const tertiaryHeroBook = booksBySeries.find((series) => series.slug === 'axios')?.books[0];
-const quaternaryHeroBook = booksBySeries.find((series) => series.slug === 'ivy-grove')?.books[0];
+const { books, booksBySeries } = await getPublicCatalogData();
+const c = Astro.locals.content;
+const featured =
+  books.find((b) => b.slug === c.featuredBookSlug) ??
+  books.find((b) => b.featured) ??
+  books[0];
+const discoveries = booksBySeries
+  .filter((s) => s.slug !== 'standalones')
+  .slice(0, 4);
 ---
 
 <BaseLayout>
-  <section class="px-4 pt-8 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-5 sm:gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-      <div class="hero-shell animate-reveal overflow-hidden rounded-[2rem] px-5 py-8 sm:rounded-[2.85rem] sm:px-10 sm:py-14">
-        <div class="relative z-10 max-w-2xl">
-          <p class="eyebrow text-[#e7cec6]">{siteMeta.shortTagline}</p>
-          <h1 class="mt-5 font-display text-[2.55rem] leading-[0.92] text-white sm:text-[4.65rem]">
-            {siteMeta.heroTitle}
-          </h1>
-          <p class="mt-6 max-w-xl text-[0.98rem] leading-7 text-white/76 sm:text-lg sm:leading-8">
-            {siteMeta.heroCopy}
-          </p>
-
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <a href={withBase('books/')} class="button-primary w-full justify-center sm:w-auto">
-              Browse books
-            </a>
-            <a href={withBase('series/')} class="button-secondary w-full justify-center sm:w-auto">
-              See series
-            </a>
-            <a href={withBase('newsletter/')} class="button-secondary w-full justify-center sm:w-auto">
-              Join the newsletter
-            </a>
+  {c.announcement && (
+    <aside class="announcement">
+      {c.announcementUrl ? (
+        <a href={c.announcementUrl}>
+          {c.announcement} <span aria-hidden="true">↗</span>
+        </a>
+      ) : (
+        c.announcement
+      )}
+    </aside>
+  )}
+  <section class="home-hero editorial-width">
+    <div class="hero-copy">
+      <p class="eyebrow">The stories of Jaclyn Osborn</p>
+      <h1>{c.heroTitle}</h1>
+      <p class="hero-intro">{c.heroCopy}</p>
+      <div class="hero-actions">
+        <a class="button-primary" href="/books/">
+          Find your next read <span aria-hidden="true">↗</span>
+        </a>
+        <a class="text-link" href="/series/">
+          Explore the series
+        </a>
+      </div>
+      <p class="hero-footnote">
+        M/M ROMANCE <span aria-hidden="true">—</span> CONTEMPORARY · FANTASY ·
+        PARANORMAL · HISTORICAL
+      </p>
+    </div>
+    {featured && (
+      <div class="featured-book">
+        <div class="feature-frame">
+          <span class="feature-index" aria-hidden="true">
+            JO / THE BOOKSHELF
+          </span>
+          <a
+            href={`/books/${featured.slug}/`}
+            aria-label={`Discover ${featured.title}`}
+          >
+            <BookCover book={featured} priority />
+          </a>
+          <span class="feature-caption">A world to get lost in.</span>
+        </div>
+        <div class="feature-credit">
+          <div>
+            <p class="eyebrow">On the bookshelf</p>
+            <h2>
+              <a href={`/books/${featured.slug}/`}>{featured.title}</a>
+            </h2>
           </div>
+          <a
+            href={`/books/${featured.slug}/`}
+            class="round-link"
+            aria-label={`Read about ${featured.title}`}
+          >
+            ↗
+          </a>
         </div>
       </div>
-
-      <div class="relative mx-auto h-[20.5rem] w-full max-w-[22rem] sm:h-[27rem] sm:max-w-[29rem] lg:h-[30rem] lg:max-w-none">
-        <div class="card-shell animate-card-delay-1 absolute left-0 top-5 w-[43%] rounded-[1.45rem] p-1.5 rotate-[-6deg] sm:left-2 sm:top-8 sm:w-[44%] sm:rounded-[2rem] sm:p-2 lg:left-0 lg:top-10">
-          {primaryHeroBook && <BookCover book={primaryHeroBook} />}
-        </div>
-        <div class="card-shell animate-card-delay-2 absolute right-0 top-0 w-[45%] rounded-[1.45rem] p-1.5 rotate-[5deg] sm:right-3 sm:w-[46%] sm:rounded-[2rem] sm:p-2 lg:right-1">
-          {secondaryHeroBook && <BookCover book={secondaryHeroBook} />}
-        </div>
-        <div class="card-shell animate-card-delay-3 absolute bottom-0 left-3 w-[41%] rounded-[1.45rem] p-1.5 rotate-[-3deg] sm:bottom-2 sm:left-7 sm:w-[40%] sm:rounded-[2rem] sm:p-2 lg:bottom-0 lg:left-6">
-          {quaternaryHeroBook && <BookCover book={quaternaryHeroBook} />}
-        </div>
-        <div class="card-shell animate-card-delay-4 absolute bottom-4 right-1 w-[43%] rounded-[1.45rem] p-1.5 rotate-[7deg] sm:bottom-8 sm:right-0 sm:w-[44%] sm:rounded-[2rem] sm:p-2 lg:bottom-7 lg:right-0">
-          {tertiaryHeroBook && <BookCover book={tertiaryHeroBook} />}
-        </div>
+    )}
+  </section>
+  <section class="discovery-section editorial-width">
+    <div class="section-masthead">
+      <div>
+        <p class="eyebrow">One author. Many worlds.</p>
+        <h2>{c.discoverTitle}</h2>
       </div>
+      <a class="text-link" href="/series/">
+        All series <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <div class="discovery-grid">
+      {discoveries.map((series, index) => (
+        <a class="discovery-item" href={`/series/#${series.slug}`}>
+          <div class="discovery-cover">
+            <BookCover book={series.books[0]} />
+            <span class="discovery-number" aria-hidden="true">
+              0{index + 1}
+            </span>
+          </div>
+          <p class="eyebrow">{series.lane || 'M/M romance'}</p>
+          <h3>
+            {series.name} <span aria-hidden="true">↗</span>
+          </h3>
+          <p>
+            {series.books.length} {series.books.length === 1 ? 'book' : 'books'}{' '}
+            · Explore the reading order
+          </p>
+        </a>
+      ))}
     </div>
   </section>
-
-  <section class="px-4 pt-14 sm:px-6 sm:pt-18 lg:px-8">
-    <div class="mx-auto max-w-7xl">
-      <NewsletterPanel />
+  <section class="author-section editorial-width">
+    <div class="author-portrait">
+      <img
+        src={c.authorPhoto}
+        alt={c.name}
+        width="480"
+        height="600"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div>
+      <p class="eyebrow">Hello, I’m Jaclyn.</p>
+      <h2>{c.authorTitle}</h2>
+      <p class="author-bio">{c.longBio}</p>
+      <a class="text-link" href="/about/">
+        A little more about me <span aria-hidden="true">↗</span>
+      </a>
+      <p class="author-signature">{c.name}</p>
     </div>
   </section>
-
-  <section class="px-4 pb-10 pt-18 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl">
-      <SocialShowcase />
-    </div>
-  </section>
+  <div class="editorial-width newsletter-wrap">
+    <NewsletterPanel />
+  </div>
 </BaseLayout>

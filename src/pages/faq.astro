@@ -1,10 +1,10 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import FaqList from '../components/FaqList.astro';
 import PageHero from '../components/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { faqItems } from '../data/site';
+const faqItems = Astro.locals.content.faqs;
 import { withBase } from '../utils/withBase';
 ---
 

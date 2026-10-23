@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCover from '../../components/BookCover.astro';
+import PurchaseActions from '../../components/PurchaseActions.astro';
+import { getPublicCatalogData } from '../../lib/catalog/repository';
+import { resolveCoverImagePath } from '../../lib/catalog/covers';
+const { books } = await getPublicCatalogData();
+const book = books.find((book) => book.slug === Astro.params.slug);
+if (!book) return Astro.rewrite('/404/');
+const c = Astro.locals.content;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: book.title,
+  description: book.shortHook,
+  url: new URL(`/books/${book.slug}/`, Astro.site).href,
+  image: new URL(resolveCoverImagePath(book), Astro.site).href,
+  author: {
+    '@type': 'Person',
+    name: c.name,
+    url: new URL('/about/', Astro.site).href,
+  },
+  inLanguage: 'en',
+  genre: book.genres,
+  ...(book.publishYear ? { datePublished: String(book.publishYear) } : {}),
+};
+---
+
+<BaseLayout
+  title={book.title}
+  description={book.shortHook.slice(0, 300)}
+  image={resolveCoverImagePath(book)}
+  structuredData={schema}
+>
+  <div class="editorial-width" style="padding-top:30px">
+    <a class="text-link" href="/books/">
+      ← Back to the bookshelf
+    </a>
+  </div>
+  <article class="book-detail editorial-width">
+    <BookCover book={book} priority />
+    <div>
+      <p class="eyebrow">
+        {book.seriesLabel || book.seriesSlug.replaceAll('-', ' ')}{' '}
+        {book.seriesOrder > 0 ? ` / Book ${book.seriesOrder}` : ''}
+      </p>
+      <h1>{book.title}</h1>
+      <p>By {c.name}</p>
+      <div class="book-description">{book.description || book.shortHook}</div>
+      <PurchaseActions book={book} />
+      {book.seriesSlug && (
+        <a
+          href={`/series/#${book.seriesSlug}`}
+          class="text-link"
+          style="margin-top:24px"
+        >
+          See the series reading order →
+        </a>
+      )}
+    </div>
+  </article>
+</BaseLayout>

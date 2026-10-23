@@ -1,0 +1,25 @@
+---
+const items = [
+  ['/admin/', 'Books'],
+  ['/admin/content/', 'Pages & settings'],
+  ['/admin/series/', 'Series'],
+  ['/admin/media/', 'Images'],
+];
+---
+
+<nav aria-label="Site editor" class="editor-tabs">
+  {items.map(([href, label]) => (
+    <a
+      href={href}
+      class={
+        Astro.url.pathname === href ? 'button-primary' : 'button-secondary'
+      }
+      aria-current={Astro.url.pathname === href ? 'page' : undefined}
+    >
+      {label}
+    </a>
+  ))}
+  <a class="text-link" href="/" target="_blank">
+    View site ↗
+  </a>
+</nav>

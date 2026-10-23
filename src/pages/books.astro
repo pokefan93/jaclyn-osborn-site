@@ -6,7 +6,6 @@ import PageHero from '../components/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import {
   formatLabels,
-  sortCatalogBooks,
   buildBooksBySeries,
   getBookCollectionLabel,
 } from '../data/catalog';
@@ -15,7 +14,9 @@ import { withBase } from '../utils/withBase';
 
 const { books, series } = await getPublicCatalogData();
 const booksBySeries = buildBooksBySeries(books, series);
-const sortedBooks = sortCatalogBooks(books);
+const sortedBooks = [...books].sort(
+  (a, b) => a.sortPriority - b.sortPriority || a.title.localeCompare(b.title),
+);
 
 const categoryOptions = [...new Set(books.flatMap((book) => book.genres))]
   .sort((a, b) => a.localeCompare(b))
@@ -36,11 +37,19 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
 >
   <PageHero
     eyebrow="Books"
-    title="Books by Jaclyn Osborn"
-    description="Browse the books, filter by series or genre, and find what you want to read next."
+    title={Astro.locals.content.booksTitle}
+    description={Astro.locals.content.booksCopy}
     actions={[
-      { href: withBase('series/'), label: 'See all series', variant: 'secondary' },
-      { href: withBase('newsletter/'), label: 'Join the newsletter', variant: 'primary' },
+      {
+        href: withBase('series/'),
+        label: 'See all series',
+        variant: 'secondary',
+      },
+      {
+        href: withBase('newsletter/'),
+        label: 'Join the newsletter',
+        variant: 'primary',
+      },
     ]}
     compact
   />
@@ -55,14 +64,23 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
               Search by title or series, or use the filters below.
             </p>
           </div>
-          <p class="text-sm font-semibold text-[#241920]" aria-live="polite" data-results-count>
+          <p
+            class="text-sm font-semibold text-[#241920]"
+            aria-live="polite"
+            data-results-count
+          >
             Showing {sortedBooks.length} titles
           </p>
         </div>
 
-        <form class="mt-4 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]" data-catalog-form>
+        <form
+          class="mt-4 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]"
+          data-catalog-form
+        >
           <label class="col-span-2 space-y-1.5 lg:col-span-1">
-            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Search</span>
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">
+              Search
+            </span>
             <input
               type="search"
               name="q"
@@ -72,39 +90,70 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
           </label>
 
           <label class="space-y-1.5">
-            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Series</span>
-            <select name="series" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">
+              Series
+            </span>
+            <select
+              name="series"
+              class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]"
+            >
               <option value="all">All series</option>
-              {booksBySeries.map((item) => <option value={item.slug}>{item.name}</option>)}
+              {booksBySeries.map((item) => (
+                <option value={item.slug}>{item.name}</option>
+              ))}
             </select>
           </label>
 
           <label class="space-y-1.5">
-            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Genre</span>
-            <select name="category" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">
+              Genre
+            </span>
+            <select
+              name="category"
+              class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]"
+            >
               <option value="all">All genres</option>
-              {categoryOptions.map((option) => <option value={option.slug}>{option.label}</option>)}
+              {categoryOptions.map((option) => (
+                <option value={option.slug}>{option.label}</option>
+              ))}
             </select>
           </label>
 
           <label class="space-y-1.5">
-            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Format</span>
-            <select name="format" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">
+              Format
+            </span>
+            <select
+              name="format"
+              class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]"
+            >
               <option value="all">Any format</option>
-              {availableFormats.map((value) => <option value={value}>{formatLabels[value]}</option>)}
+              {availableFormats.map((value) => (
+                <option value={value}>{formatLabels[value]}</option>
+              ))}
             </select>
           </label>
 
           <label class="space-y-1.5">
-            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">Sort</span>
-            <select name="sort" class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]">
+            <span class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-[#241920] sm:text-sm sm:normal-case sm:tracking-normal">
+              Sort
+            </span>
+            <select
+              name="sort"
+              class="input-shell h-11 rounded-[0.95rem] sm:h-12 sm:rounded-[1.1rem]"
+            >
+              <option value="recommended">Recommended</option>
               <option value="series-order">Series order</option>
               <option value="title">Title</option>
             </select>
           </label>
 
           <div class="col-span-2 flex items-end justify-end pt-1 lg:col-span-5 lg:pt-0">
-            <button type="button" class="button-secondary min-h-11 px-4 py-2.5 text-sm" data-clear-filters>
+            <button
+              type="button"
+              class="button-secondary min-h-11 px-4 py-2.5 text-sm"
+              data-clear-filters
+            >
               Clear filters
             </button>
           </div>
@@ -112,40 +161,47 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
       </div>
 
       <div class="mt-8">
-        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3" data-books-grid>
-          {
-            sortedBooks.map((book) => {
-              const collectionLabel = getBookCollectionLabel(book);
-              const searchText = [
-                book.title,
-                collectionLabel,
-                book.shortHook,
-                book.description,
-              ]
-                .filter(Boolean)
-                .join(' ')
-                .toLowerCase();
+        <div
+          class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          data-books-grid
+        >
+          {sortedBooks.map((book) => {
+            const collectionLabel = getBookCollectionLabel(book);
+            const searchText = [
+              book.title,
+              collectionLabel,
+              book.shortHook,
+              book.description,
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
 
-              return (
-                <div
-                  data-book-card
-                  data-title={book.title}
-                  data-series={book.seriesSlug}
-                  data-series-name={collectionLabel}
-                  data-categories={book.genres.join(',')}
-                  data-formats={book.formats.join(',')}
-                  data-series-order={book.seriesOrder}
-                  data-search={searchText}
-                >
-                  <BookCard book={book} />
-                </div>
-              );
-            })
-          }
+            return (
+              <div
+                data-book-card
+                data-title={book.title}
+                data-series={book.seriesSlug}
+                data-series-name={collectionLabel}
+                data-categories={book.genres.join(',')}
+                data-formats={book.formats.join(',')}
+                data-series-order={book.seriesOrder}
+                data-sort-priority={book.sortPriority}
+                data-search={searchText}
+              >
+                <BookCard book={book} />
+              </div>
+            );
+          })}
         </div>
 
-        <div class="card-shell mt-6 hidden rounded-[2rem] p-8 text-center" data-empty-state>
-          <p class="font-display text-3xl text-[#241920]">No titles match those filters.</p>
+        <div
+          class="card-shell mt-6 hidden rounded-[2rem] p-8 text-center"
+          data-empty-state
+        >
+          <p class="font-display text-3xl text-[#241920]">
+            No titles match those filters.
+          </p>
           <p class="mt-3 text-sm leading-7 text-[#5d4b52]">
             Try another search or clear the filters.
           </p>
@@ -162,7 +218,13 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
     const emptyState = document.querySelector('[data-empty-state]');
     const cards = Array.from(document.querySelectorAll('[data-book-card]'));
 
-    if (form instanceof HTMLFormElement && grid instanceof HTMLElement && resultCount instanceof HTMLElement && clearButton instanceof HTMLButtonElement && emptyState instanceof HTMLElement) {
+    if (
+      form instanceof HTMLFormElement &&
+      grid instanceof HTMLElement &&
+      resultCount instanceof HTMLElement &&
+      clearButton instanceof HTMLButtonElement &&
+      emptyState instanceof HTMLElement
+    ) {
       const qField = form.elements.namedItem('q');
       const seriesField = form.elements.namedItem('series');
       const categoryField = form.elements.namedItem('category');
@@ -190,9 +252,10 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
       const params = new URLSearchParams(window.location.search);
       fields.q.value = params.get('q') ?? '';
       fields.series.value = params.get('series') ?? 'all';
-      fields.category.value = params.get('category') ?? params.get('mood') ?? 'all';
+      fields.category.value =
+        params.get('category') ?? params.get('mood') ?? 'all';
       fields.format.value = params.get('format') ?? 'all';
-      fields.sort.value = params.get('sort') ?? 'series-order';
+      fields.sort.value = params.get('sort') ?? 'recommended';
 
       const applyFilters = () => {
         const query = fields.q.value.trim().toLowerCase();
@@ -206,14 +269,20 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
 
           const search = card.dataset.search ?? '';
           const series = card.dataset.series ?? '';
-          const categories = (card.dataset.categories ?? '').split(',').filter(Boolean);
-          const formats = (card.dataset.formats ?? '').split(',').filter(Boolean);
+          const categories = (card.dataset.categories ?? '')
+            .split(',')
+            .filter(Boolean);
+          const formats = (card.dataset.formats ?? '')
+            .split(',')
+            .filter(Boolean);
 
           const matchesQuery = query.length === 0 || search.includes(query);
-          const matchesSeries = selectedSeries === 'all' || series === selectedSeries;
+          const matchesSeries =
+            selectedSeries === 'all' || series === selectedSeries;
           const matchesCategory =
             selectedCategory === 'all' || categories.includes(selectedCategory);
-          const matchesFormat = selectedFormat === 'all' || formats.includes(selectedFormat);
+          const matchesFormat =
+            selectedFormat === 'all' || formats.includes(selectedFormat);
 
           const visible =
             matchesQuery && matchesSeries && matchesCategory && matchesFormat;
@@ -223,12 +292,27 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
         });
 
         const sortedVisible = [...visibleCards].sort((left, right) => {
-          if (!(left instanceof HTMLElement) || !(right instanceof HTMLElement)) {
+          if (
+            !(left instanceof HTMLElement) ||
+            !(right instanceof HTMLElement)
+          ) {
             return 0;
           }
 
           if (selectedSort === 'title') {
-            return (left.dataset.title ?? '').localeCompare(right.dataset.title ?? '');
+            return (left.dataset.title ?? '').localeCompare(
+              right.dataset.title ?? '',
+            );
+          }
+
+          if (selectedSort === 'recommended') {
+            return (
+              Number(left.dataset.sortPriority ?? 0) -
+                Number(right.dataset.sortPriority ?? 0) ||
+              (left.dataset.title ?? '').localeCompare(
+                right.dataset.title ?? '',
+              )
+            );
           }
 
           const seriesCompare = (left.dataset.seriesName ?? '').localeCompare(
@@ -239,7 +323,10 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
             return seriesCompare;
           }
 
-          return Number(left.dataset.seriesOrder ?? 0) - Number(right.dataset.seriesOrder ?? 0);
+          return (
+            Number(left.dataset.seriesOrder ?? 0) -
+            Number(right.dataset.seriesOrder ?? 0)
+          );
         });
 
         sortedVisible.forEach((card) => grid.appendChild(card));
@@ -250,12 +337,16 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
 
         if (query) nextParams.set('q', query);
         if (selectedSeries !== 'all') nextParams.set('series', selectedSeries);
-        if (selectedCategory !== 'all') nextParams.set('category', selectedCategory);
+        if (selectedCategory !== 'all')
+          nextParams.set('category', selectedCategory);
         if (selectedFormat !== 'all') nextParams.set('format', selectedFormat);
-        if (selectedSort !== 'series-order') nextParams.set('sort', selectedSort);
+        if (selectedSort !== 'recommended')
+          nextParams.set('sort', selectedSort);
 
         const nextQuery = nextParams.toString();
-        const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+        const nextUrl = nextQuery
+          ? `${window.location.pathname}?${nextQuery}`
+          : window.location.pathname;
         window.history.replaceState({}, '', nextUrl);
       };
 
@@ -266,7 +357,7 @@ const availableFormats = [...new Set(books.flatMap((book) => book.formats))];
         fields.series.value = 'all';
         fields.category.value = 'all';
         fields.format.value = 'all';
-        fields.sort.value = 'series-order';
+        fields.sort.value = 'recommended';
         applyFilters();
       });
 
