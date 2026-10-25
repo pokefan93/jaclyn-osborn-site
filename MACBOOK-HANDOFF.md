@@ -44,8 +44,8 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
 - TTS iOS 1.0.1 build 8 has been uploaded and submitted to Apple. Its current state
   is WAITING_FOR_REVIEW with release AFTER_APPROVAL. It includes the approved new
   icon, four store images from actual release-simulator screens, custom editor
-  colors/themes and current TTS service/contact copy. Android versionCode 3 built locally and is submitted with its new icon, feature
-  graphic and four real Android screenshots. Google shows Changes in review while
+  colors/themes and current TTS service/contact copy. Android versionCode 3 built
+  locally and is submitted with its new icon, feature graphic and four real Android screenshots. Google shows Changes in review while
   automated checks run. Existing publication settings and country availability
   were retained. Physical-device validation is not claimed.
 - A late rebuild omitted SITE_URL and temporarily reverted canonical links and

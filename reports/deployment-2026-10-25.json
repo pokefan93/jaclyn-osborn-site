@@ -102,7 +102,7 @@
       "feature graphic"
     ],
     "googlePlayManagedPublishing": "off; existing automatic publication behavior retained",
-    "googlePlayAiDisplayLabel": "off, as requested by user; no assertion that AI was not used was requested"
+    "googlePlayAiDisplayLabel": false
   },
   "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report",
   "customization": {
@@ -176,7 +176,7 @@
   },
   "source": {
     "branch": "codex/jaclyn-shared-editor-2026-10-22",
-    "site": "8e77c21",
+    "site": "c3e44ef",
     "webPortal": "f4882a0",
     "control": "8df7663",
     "app": "788729c",
