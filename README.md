@@ -25,6 +25,14 @@ node --test tests/site.integration.mjs
 
 Integration tests require a seeded LOCAL development server on port 4321. They temporarily edit local content and restore it. They never accept a remote hostname.
 
+## Production deployment
+
+Run `npm run deploy`. It builds with `https://authorjaclynosborn.com`, verifies
+the hostname embedded in the server bundle, then deploys the generated
+`dist/_worker.js/wrangler.json` configuration explicitly. It stops before
+deployment if the build has the wrong canonical hostname or Worker name.
+It does not migrate, seed, or replace database content.
+
 ## Author editing
 
 - **Books:** add, edit, hide, reorder, or delete books; edit full descriptions, short blurbs, genres, formats, covers, alt text, retail links, direct purchase links, prices, and availability.
@@ -32,7 +40,7 @@ Integration tests require a seeded LOCAL development server on port 4321. They t
 - **Series:** create and edit series, reading-guide text, visibility and display order. Hiding a series does not automatically hide its books.
 - **Images:** upload JPG/PNG/WebP files up to 1 MB; copy the returned URL into the cover or author photo field. Images are immutable and stored in D1. SVG/HTML uploads are rejected.
 
-Save changes to publish them to the site's database. There is no draft/publish approval layer. Book slugs stay stable after renaming to preserve links. Code/layout changes still require development and deployment; this is a content editor, not a drag-and-drop page builder.
+Save changes to publish them to the site's database. There is no draft/publish approval layer. Book slugs stay stable after renaming to preserve links. New layouts beyond the supplied choices still require development and deployment; this is a content editor, not a drag-and-drop page builder.
 
 Uploaded media is public by URL. Do not upload private documents. Local cover assets have pre-generated responsive WebP variants at 240/480/720px; originals remain as fallback. After replacing a local cover, rerun `npm run images:optimize` and commit both the generated assets and manifest. Remote or uploaded covers are served as supplied; keep them small.
 

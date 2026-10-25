@@ -15,6 +15,12 @@ if (new URLSearchParams(location.search).has('editor-preview') && parent !== win
     const root = document.documentElement;
     root.dataset.palette = input.palette;
     root.dataset.theme = event.data.theme === 'dark' ? 'dark' : 'light';
+    const isDark = root.dataset.theme === 'dark';
+    root.classList.toggle('theme-dark', isDark);
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach(button => {
+      button.setAttribute('aria-pressed', String(isDark));
+      button.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
     const attrs = {
       homeLayout: ['layout', ['cover-right', 'cover-left', 'centered']],
       displayFont: ['font', ['literary', 'classic', 'clean']],

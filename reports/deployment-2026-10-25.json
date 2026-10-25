@@ -2,7 +2,7 @@
   "date": "2026-10-25",
   "site": {
     "url": "https://authorjaclynosborn.com",
-    "version": "131b419e-d0c8-4f8b-80b9-461ec0dda135",
+    "version": "5a358ca7-688f-4df3-805e-4ab40f4afdee",
     "apiOrigin": "https://jaclyn-osborn-site.karnestaylor.workers.dev",
     "privateEditor": "https://authorjaclynosborn.com/login/"
   },
@@ -51,7 +51,11 @@
     "editorRateLimitTests": 2,
     "liveCustomColorPreviewVerified": true,
     "liveDefaultThemePreviewVerified": true,
-    "livePrivateCspSessionVerified": true
+    "livePrivateCspSessionVerified": true,
+    "productionSitemapHostnamesVerified": true,
+    "productionAliasRedirectsVerified": true,
+    "originalBookFieldsRechecked": 49,
+    "latestDeploymentPrivateLoginHeadersVerified": true
   },
   "domain": {
     "name": "authorjaclynosborn.com",
@@ -69,7 +73,7 @@
     "version": "1.0.1",
     "iosBuild": "8",
     "androidVersionCode": 3,
-    "status": "iOS waiting for Apple review; Android release build in progress",
+    "status": "iOS submitted and waiting for review; Android submitted, Google automated checks running",
     "cloudBuildsAvoidedBecauseIncludedCreditsExhausted": true,
     "baselineExpoDoctorHermesWarning": true,
     "iosSubmission": "7025f939-b2af-4469-898d-e1f6f913d872",
@@ -78,9 +82,27 @@
     "iosReleaseType": "AFTER_APPROVAL",
     "iosNewScreenshotCount": 4,
     "iosProductPageHeaderUpdated": true,
-    "googlePlayIconAndFeatureGraphic": "saved draft",
+    "googlePlayIconAndFeatureGraphic": "submitted with four real Android screenshots",
     "physicalDeviceValidation": false,
-    "nativeScreenshotEvidence": "iPhone 17 Pro iOS 26.5 release simulator; Android pending"
+    "nativeScreenshotEvidence": "iPhone 17 Pro iOS 26.5 release simulator; Android 15 ARM64 signed release emulator",
+    "androidBuildSucceeded": true,
+    "androidAabSha256": "80a8dbc3a06cf58d33a699dc92817010f44a2ab2eef4666fee04ad7296c05947",
+    "androidNativeScreensVerified": [
+      "Home",
+      "Work",
+      "Services",
+      "Account"
+    ],
+    "androidReleaseWarning": "Optional missing deobfuscation file; no release-blocking error",
+    "googlePlayReviewState": "Changes in review; automated checks running before review",
+    "googlePlayChanges": [
+      "production versionCode 3 (1.0.1), 100% of existing targeted countries",
+      "app icon",
+      "four phone screenshots",
+      "feature graphic"
+    ],
+    "googlePlayManagedPublishing": "off; existing automatic publication behavior retained",
+    "googlePlayAiDisplayLabel": "off, as requested by user; no assertion that AI was not used was requested"
   },
   "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report",
   "customization": {
@@ -157,7 +179,18 @@
     "site": "8e77c21",
     "webPortal": "f4882a0",
     "control": "8df7663",
-    "app": "c51db2a",
+    "app": "788729c",
     "pullRequests": "existing four draft pull requests retained; no merge"
+  },
+  "deploymentRecovery": {
+    "issue": "A build without SITE_URL reverted canonical metadata and public alias behavior to workers.dev. The deploy itself correctly used Astro generated configuration.",
+    "rollback": "Restored previously verified version 131b419e-d0c8-4f8b-80b9-461ec0dda135 before correcting and redeploying.",
+    "prevention": [
+      "Astro default site is now authorjaclynosborn.com",
+      "npm run deploy forces production SITE_URL",
+      "Generated server bundle hostname is checked before upload",
+      "Generated dist/_worker.js/wrangler.json is passed explicitly"
+    ],
+    "result": "56 custom-domain sitemap pages passed; apex canonical metadata and www/workers.dev redirects verified; original 49 core book records preserved"
   }
 }

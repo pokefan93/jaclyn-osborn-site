@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "wrangler types && astro dev",
     "build": "wrangler types && astro check && astro build",
+    "deploy": "node scripts/deploy.mjs",
     "preview": "wrangler types && astro preview",
     "db:seed:generate": "node scripts/generate_d1_seed.mjs",
     "db:migrate:local": "wrangler d1 migrations apply jaclyn-osborn-catalog --local",

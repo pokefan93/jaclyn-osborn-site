@@ -14,9 +14,9 @@ export default defineConfig({
   security: { checkOrigin: false },
   // SITE_URL must be set at build time so canonical URLs, Open Graph tags,
   // sitemap.xml, and robots.txt all reference the correct production hostname.
-  // The fallback keeps local dev and CI builds pointed at the current workers.dev URL.
-  // When Jaclyn's custom domain is live, set SITE_URL to that domain and rebuild.
-  site: process.env.SITE_URL ?? 'https://jaclyn-osborn-site.karnestaylor.workers.dev',
+  // The custom domain is live. A build without an override must still emit the
+  // production canonical URLs and activate the public alias redirects.
+  site: process.env.SITE_URL ?? 'https://authorjaclynosborn.com',
   trailingSlash: 'always',
   adapter: cloudflare({
     imageService: 'passthrough',

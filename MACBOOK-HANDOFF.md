@@ -27,7 +27,7 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   no-store, noindex and anti-framing headers. Firebase handles actual password
   attempts with its abuse protections and email enumeration protection enabled;
   no custom failed-password lockout or MFA has been enabled on the shared project.
-- Site Worker version: `131b419e-d0c8-4f8b-80b9-461ec0dda135`. Control version:
+- Site Worker version: `5a358ca7-688f-4df3-805e-4ab40f4afdee`. Control version:
   `909cbf7e-9349-494e-bb34-413647072508`; existing bindings and secrets preserved.
 - Firebase live version: `5a81c50c8ab5d2f7`, released 21:14:55 UTC. Only portal.html
   changed; the other 69 file hashes and three service rewrites were preserved.
@@ -44,9 +44,18 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
 - TTS iOS 1.0.1 build 8 has been uploaded and submitted to Apple. Its current state
   is WAITING_FOR_REVIEW with release AFTER_APPROVAL. It includes the approved new
   icon, four store images from actual release-simulator screens, custom editor
-  colors/themes and current TTS service/contact copy. Android versionCode 3 is
-  building locally; Play icon/feature graphics are saved as a draft. See the JSON
-  report for exact store state. Physical-device validation is not claimed.
+  colors/themes and current TTS service/contact copy. Android versionCode 3 built locally and is submitted with its new icon, feature
+  graphic and four real Android screenshots. Google shows Changes in review while
+  automated checks run. Existing publication settings and country availability
+  were retained. Physical-device validation is not claimed.
+- A late rebuild omitted SITE_URL and temporarily reverted canonical links and
+  alias redirects to workers.dev. The deploy log confirmed Astro's generated
+  configuration was used; the missing build hostname was the actual issue. The
+  verified release was restored first. Production now uses `npm run deploy`,
+  which forces the author domain, checks the hostname in the built server bundle,
+  and explicitly deploys the generated config. The corrected release passed all
+  56 public-page checks, alias redirects and private-login security checks; all
+  original core book fields were rechecked and preserved.
 - Builds are local to avoid paid EAS cloud builds because included credits are
   exhausted. No new paid plan or billing activation was enabled. The SDK 56
   Hermes doctor warning is a baseline issue, separate from the portal changes.
