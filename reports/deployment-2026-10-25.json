@@ -63,7 +63,8 @@
       "ios265SafariSimulator": "Private login rendered successfully; this does not verify the affected physical iPhone",
       "externalSslLabs": "All four IPv4/IPv6 endpoints completed and negotiated supported Safari clients. Grade B; legacy TLS 1.0/1.1 remain enabled in the existing Cloudflare defaults.",
       "serverSecuritySettingsChanged": false,
-      "nextStep": "Await physical iPhone restart and control-domain test. Stale DNS is a hypothesis, not a confirmed cause."
+      "nextStep": "Physical-phone connection failure cleared after restart. Exact cache/protocol cause was not proven.",
+      "physicalIPhone": "User-confirmed private login opens after restart; no server-side TLS setting changed."
     }
   },
   "domain": {
@@ -77,7 +78,7 @@
     "customDomainCanonicalBuildPending": false,
     "publicWorkerApiOriginPreserved": true,
     "existingDnsRecordsPreserved": true,
-    "physicalIPhoneStatus": "Unresolved: user reports Safari on Wi-Fi and Chrome on cellular fail with a TLS protocol error, while Mac Chrome works."
+    "physicalIPhoneStatus": "User confirmed Jaclyn\u2019s private login opens on the physical iPhone after restarting it."
   },
   "mobile": {
     "version": "1.0.1",
