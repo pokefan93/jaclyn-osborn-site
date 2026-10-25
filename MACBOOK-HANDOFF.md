@@ -2,41 +2,59 @@
 
 ## Mac continuation: October 25, 2026
 
-The backend and Firebase portal are now live. The sections below describe the
-original Windows handoff; use `reports/deployment-2026-10-25.json` for current
-deployment IDs and verification evidence.
+The website, private editor, backend and shared Firebase portal are live. Current
+IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
 
-- Cloudflare and Firebase access were verified on the Mac. All three production
-  databases and the existing Worker sources were backed up privately outside Git.
-- `tts-control` authorization was deployed with its bindings and secret names
-  preserved. Existing memberships were retained; no owner grant was invented.
-- Additive catalog migrations 0003 and 0004 were applied. The legacy catalog was
-  reconciled against production: all 49 existing book records and 11 series were
-  preserved. Legacy purchase details were added without changing core book fields.
-- The redesigned site is live on its existing workers.dev hostname. Live owner
-  verification passed for settings, hidden-book price persistence, invalid
-  checkout rejection, uploads, hidden-book 404s, and sitemap exclusion. Disposable
-  test records were removed. Editor/viewer permissions were tested locally; there
-  are no assigned editor/viewer accounts to use for equivalent live validation.
-- Live tests found and fixed settings fields omitted during save and cross-origin
-  multipart upload rejection. Per-route origin and authentication checks protect
-  writes; the separate Access editor remains closed without Access configuration.
-- Firebase version `37cf6410624d3667` was released after the backend checks. Only
-  `/portal.html` changed; the other 69 files and all three service rewrites were
-  preserved. The live portal HTML was compared to the saved source.
-- The original Windows-staged portal returned 404 in preview, so it was replaced
-  by a fresh, served-and-verified scoped version before activation.
-- The Free Cloudflare zone is created and pending Jaclyn's GoDaddy nameserver
-  change to `braden.ns.cloudflare.com` and `rachel.ns.cloudflare.com`. Scanned
-  records include the existing `_domainconnect` CNAME and `_dmarc` TXT record.
-  Preserve mail settings. The custom-domain build, HTTPS and redirects still need
-  the zone to become active. Canonical redirect code is guarded by the custom
-  `SITE_URL` build and deliberately leaves `/api/*` and `/admin/*` on their
-  existing origins.
-- Mobile 1.0.1 store builds are being made locally to avoid additional EAS build
-  charges because included account credits are exhausted. Store submission and
-  physical-device validation are not yet complete. The SDK 56 Hermes regression
-  warning is a baseline issue, separate from the portal changes.
+- Live site: https://authorjaclynosborn.com. Jaclyn completed the registrar
+  nameserver change; the Free Cloudflare zone is active. Existing DNS records
+  were preserved. Worker routes serve the apex and www; public aliases redirect
+  to the HTTPS apex while existing API clients retain their origin.
+- Private editor: https://authorjaclynosborn.com/login/. It is omitted from public
+  navigation and search indexing. The existing Firebase/control membership and
+  roles authorize edits; no account was impersonated or owner grant invented.
+- All 49 existing books and 11 series were preserved. Three production databases
+  and Worker sources were backed up privately. Migrations 0003 and 0004 are
+  additive; legacy purchase details were reconciled without replacing core data.
+- Arbitrary light/dark background, text and accent colors, four presets, default
+  visitor theme, three homepage layouts, catalog density, heading styles, cover
+  position and section visibility are available. Color contrast is validated.
+  A live preview shows appearance changes before saving. Existing appearance was
+  restored after verification. Homepage > Headline edits the current main line;
+  introductions, section headings, biography and other page copy are editable.
+- Editor APIs have approximate per-Cloudflare-location limits of 180 requests
+  per minute per IP and 60 changes per minute per verified account. Excess
+  requests return 429 and Retry-After. The private login has nonce-based CSP,
+  no-store, noindex and anti-framing headers. Firebase handles actual password
+  attempts with its abuse protections and email enumeration protection enabled;
+  no custom failed-password lockout or MFA has been enabled on the shared project.
+- Site Worker version: `131b419e-d0c8-4f8b-80b9-461ec0dda135`. Control version:
+  `909cbf7e-9349-494e-bb34-413647072508`; existing bindings and secrets preserved.
+- Firebase live version: `5a81c50c8ab5d2f7`, released 21:14:55 UTC. Only portal.html
+  changed; the other 69 file hashes and three service rewrites were preserved.
+  Preview and actual production HTML matched the saved portal source.
+- Local validation: five public-site, eight portal, one canonical, one appearance,
+  two rate-limit and one control authorization tests passed. Live owner tests
+  verified settings, price persistence, upload bytes, unsafe checkout rejection,
+  hidden-book exclusion and sign-out. Test books were removed. Real editor and
+  viewer accounts were unavailable; those roles were tested locally.
+- Technical SEO covers the author's existing identity, genres, books and reading
+  guides, with 49 book pages and 56 sitemap URLs. Search Console DNS verification
+  is prepared but unsaved, pending explicit confirmation of persistent Google
+  ownership access. Sitemap submission and indexing/ranking verification remain.
+- TTS iOS 1.0.1 build 8 has been uploaded and submitted to Apple. Its current state
+  is WAITING_FOR_REVIEW with release AFTER_APPROVAL. It includes the approved new
+  icon, four store images from actual release-simulator screens, custom editor
+  colors/themes and current TTS service/contact copy. Android versionCode 3 is
+  building locally; Play icon/feature graphics are saved as a draft. See the JSON
+  report for exact store state. Physical-device validation is not claimed.
+- Builds are local to avoid paid EAS cloud builds because included credits are
+  exhausted. No new paid plan or billing activation was enabled. The SDK 56
+  Hermes doctor warning is a baseline issue, separate from the portal changes.
+
+## Original Windows handoff (historical)
+
+The remaining sections preserve the original handoff. Pending-state descriptions
+below refer to the Windows work; use the Mac section and current report above.
 
 Continue the existing redesign and deployment from the MacBook. The code is saved in four GitHub draft pull requests. The new Firebase portal is staged but unreleased. The Cloudflare backend, custom domain, and mobile app release are still pending. This is a deployment handoff, not a request to rebuild the site.
 

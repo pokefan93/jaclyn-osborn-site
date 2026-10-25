@@ -1,8 +1,10 @@
 {
   "date": "2026-10-25",
   "site": {
-    "url": "https://jaclyn-osborn-site.karnestaylor.workers.dev",
-    "version": "7bc85579-e46f-4930-9f4b-20bee19600f2"
+    "url": "https://authorjaclynosborn.com",
+    "version": "131b419e-d0c8-4f8b-80b9-461ec0dda135",
+    "apiOrigin": "https://jaclyn-osborn-site.karnestaylor.workers.dev",
+    "privateEditor": "https://authorjaclynosborn.com/login/"
   },
   "control": {
     "version": "909cbf7e-9349-494e-bb34-413647072508",
@@ -20,8 +22,8 @@
     "legacyBackendRetained": true
   },
   "firebase": {
-    "version": "sites/taylorstechsite-5982d/versions/37cf6410624d3667",
-    "releaseTime": "2026-10-25T19:59:27.131Z",
+    "version": "sites/taylorstechsite-5982d/versions/5a81c50c8ab5d2f7",
+    "releaseTime": "2026-10-25T21:14:55.623Z",
     "changedFiles": [
       "/portal.html"
     ],
@@ -31,7 +33,7 @@
   },
   "verification": {
     "localSiteIntegrationTests": 5,
-    "localPortalIntegrationTests": 6,
+    "localPortalIntegrationTests": 8,
     "canonicalRedirectTests": 1,
     "controlAuthorizationTests": 1,
     "productionPublicPagesVerified": 56,
@@ -44,26 +46,118 @@
     "liveHiddenBookSitemapExclusion": true,
     "testRecordsRemoved": true,
     "realEditorAndViewerAccountsTested": false,
-    "unassignedRolesTestedLocally": true
+    "unassignedRolesTestedLocally": true,
+    "appearanceContrastTests": 1,
+    "editorRateLimitTests": 2,
+    "liveCustomColorPreviewVerified": true,
+    "liveDefaultThemePreviewVerified": true,
+    "livePrivateCspSessionVerified": true
   },
   "domain": {
     "name": "authorjaclynosborn.com",
     "plan": "Free Website",
-    "status": "pending registrar nameserver update",
+    "status": "active; HTTPS public site served through Cloudflare Worker routes",
     "assignedNameservers": [
       "braden.ns.cloudflare.com",
       "rachel.ns.cloudflare.com"
     ],
-    "customDomainCanonicalBuildPending": true,
-    "publicWorkerApiOriginWillBePreserved": true
+    "customDomainCanonicalBuildPending": false,
+    "publicWorkerApiOriginPreserved": true,
+    "existingDnsRecordsPreserved": true
   },
   "mobile": {
     "version": "1.0.1",
-    "iosBuild": "7",
+    "iosBuild": "8",
     "androidVersionCode": 3,
-    "status": "local store builds in progress; no store submission yet",
+    "status": "iOS waiting for Apple review; Android release build in progress",
     "cloudBuildsAvoidedBecauseIncludedCreditsExhausted": true,
-    "baselineExpoDoctorHermesWarning": true
+    "baselineExpoDoctorHermesWarning": true,
+    "iosSubmission": "7025f939-b2af-4469-898d-e1f6f913d872",
+    "iosReviewSubmission": "345a49c9-7d68-4858-a79c-306459a63594",
+    "iosReviewState": "WAITING_FOR_REVIEW",
+    "iosReleaseType": "AFTER_APPROVAL",
+    "iosNewScreenshotCount": 4,
+    "iosProductPageHeaderUpdated": true,
+    "googlePlayIconAndFeatureGraphic": "saved draft",
+    "physicalDeviceValidation": false,
+    "nativeScreenshotEvidence": "iPhone 17 Pro iOS 26.5 release simulator; Android pending"
   },
-  "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report"
+  "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report",
+  "customization": {
+    "presets": 4,
+    "customHexColors": "separate background, text and accent for light and dark modes",
+    "defaultTheme": [
+      "system",
+      "light",
+      "dark"
+    ],
+    "layouts": [
+      "cover-right",
+      "cover-left",
+      "centered"
+    ],
+    "catalogDensity": [
+      "airy",
+      "compact"
+    ],
+    "headingFonts": [
+      "literary",
+      "classic",
+      "clean"
+    ],
+    "coverPosition": [
+      "angled",
+      "straight"
+    ],
+    "sectionVisibility": [
+      "series",
+      "author",
+      "newsletter"
+    ],
+    "livePreviewBeforeSave": true,
+    "editableCopy": [
+      "homepage headline and introduction",
+      "announcements",
+      "section headings",
+      "biography",
+      "books and page introductions",
+      "newsletter text",
+      "FAQ and reading guides"
+    ],
+    "originalAppearanceRestoredAfterVerification": true
+  },
+  "security": {
+    "emailEnumerationProtection": true,
+    "firebaseAdaptiveAbuseProtection": "actual password sign-in is handled by Firebase; no custom fixed failed-login lockout",
+    "mfa": "disabled; shared-project policy unchanged",
+    "editorApiRequestsPerIpPer60Seconds": 180,
+    "editorWritesPerVerifiedUserPer60Seconds": 60,
+    "rateLimitScope": "approximate per Cloudflare location",
+    "excessRequests": "429 with Retry-After: 60",
+    "protectionUnavailable": "503; fail closed",
+    "privateLogin": "nonce script CSP, no-store, noindex, anti-framing",
+    "publicApiUnauthenticatedStatus": 401
+  },
+  "seo": {
+    "foundation": [
+      "server-rendered author and book content",
+      "canonical URLs on authorjaclynosborn.com",
+      "social metadata",
+      "Book structured data",
+      "56 public sitemap URLs",
+      "49 individual book pages",
+      "reading guides and internal links"
+    ],
+    "searchConsole": "DNS verification prepared; pending explicit ownership confirmation",
+    "sitemapSubmittedToSearchConsole": false,
+    "indexingAndRankingsVerified": false
+  },
+  "source": {
+    "branch": "codex/jaclyn-shared-editor-2026-10-22",
+    "site": "8e77c21",
+    "webPortal": "f4882a0",
+    "control": "8df7663",
+    "app": "c51db2a",
+    "pullRequests": "existing four draft pull requests retained; no merge"
+  }
 }
