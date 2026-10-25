@@ -6,6 +6,7 @@ const siteMeta = { ...defaults, ...Astro.locals.content };
 import { withBase } from '../utils/withBase';
 import '../styles/global.css';
 import '../styles/editorial.css';
+import { appearanceCss } from '../lib/appearance';
 import displayFont from '@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url';
 
 interface Props {
@@ -39,9 +40,10 @@ const schema = structuredData ?? {
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-palette={Astro.locals.content.palette} data-layout={Astro.locals.content.homeLayout} data-density={Astro.locals.content.catalogDensity}>
   <head>
     <meta charset="utf-8" />
+    <style is:inline set:html={appearanceCss(Astro.locals.content.palette)} />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {privatePage && <meta name="robots" content="noindex, nofollow" />}

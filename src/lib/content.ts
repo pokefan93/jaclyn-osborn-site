@@ -58,6 +58,12 @@ export const contentSchema = z.object({
   discoverTitle: text(150),
   authorTitle: text(150),
   socialCopy: text(),
+  palette: z.enum(['olive', 'ink', 'plum', 'clay']).default('olive'),
+  homeLayout: z.enum(['cover-right', 'cover-left', 'centered']).default('cover-right'),
+  catalogDensity: z.enum(['airy', 'compact']).default('airy'),
+  showSeries: z.enum(['show', 'hide']).default('show'),
+  showAuthor: z.enum(['show', 'hide']).default('show'),
+  showNewsletter: z.enum(['show', 'hide']).default('show'),
   faqs: z
     .array(z.object({ question: text(200).min(1), answer: text(1500).min(1) }))
     .max(30),
@@ -91,6 +97,12 @@ export const defaultContent: SiteContent = {
   socialCopy:
     'Book news, coffee, anime, and a glimpse of life between chapters.',
   faqs: faqItems,
+  palette: 'olive',
+  homeLayout: 'cover-right',
+  catalogDensity: 'airy',
+  showSeries: 'show',
+  showAuthor: 'show',
+  showNewsletter: 'show',
 };
 
 export async function getSiteContent(): Promise<SiteContent> {

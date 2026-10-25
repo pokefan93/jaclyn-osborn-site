@@ -13,4 +13,6 @@ test('custom-domain redirects preserve page paths and queries while keeping API 
   assert.equal(canonicalRedirectUrl(request('/books/', 'POST'), site), undefined);
   assert.equal(canonicalRedirectUrl(request('/books/'), new URL('https://jaclyn-osborn-site.karnestaylor.workers.dev')), undefined);
   assert.equal(canonicalRedirectUrl(new Request('https://authorjaclynosborn.com/books/'), site), undefined);
+  assert.equal(canonicalRedirectUrl(new Request('http://authorjaclynosborn.com/login/'), site), 'https://authorjaclynosborn.com/login/');
+  assert.equal(canonicalRedirectUrl(new Request('http://authorjaclynosborn.com/api/portal/settings/', { method: 'PUT' }), site), 'https://authorjaclynosborn.com/api/portal/settings/');
 });

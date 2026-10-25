@@ -4,6 +4,34 @@ import { readFile } from 'node:fs/promises';
 // Built production worker + LOCAL test control service. Never accepts a remote URL.
 const base = 'http://127.0.0.1:8787';
 
+test('private login is unlinked and uncached; appearance settings validate and survive saves', async () => {
+  const login = await fetch(base + '/login/');
+  assert.equal(login.status, 200);
+  assert.equal(login.headers.get('Cache-Control'), 'no-store');
+  assert.equal(login.headers.get('X-Robots-Tag'), 'noindex, nofollow');
+  assert.match(login.headers.get('Content-Security-Policy'), /frame-ancestors 'none'/);
+  const html = await login.text();
+  assert.match(html, /data-site-editor="jaclyn"/);
+  assert.match(html, /Sign in to update your books and website/);
+  assert.doesNotMatch(await (await fetch(base + '/sitemap.xml')).text(), /\/login/);
+  const settings = await (await call('settings')).json();
+  try {
+    const result = await call('settings', 'PUT', { palette:'plum', homeLayout:'cover-left', catalogDensity:'compact', showAuthor:'hide' });
+    assert.equal(result.status, 200, await result.text());
+    const saved = await (await call('settings')).json();
+    assert.equal(saved.palette, 'plum');
+    assert.equal(saved.heroTitle, settings.heroTitle);
+    assert.deepEqual(saved.directSales, settings.directSales);
+    const page = await (await fetch(base + '/')).text();
+    assert.match(page, /data-palette="plum"/);
+    assert.match(page, /data-layout="cover-left"/);
+    assert.doesNotMatch(page, /<section class="author-section/);
+    assert.doesNotMatch(page, /href="\/login/);
+    assert.equal((await call('settings', 'PUT', { palette:'red;display:none' })).status, 400);
+    assert.equal((await call('settings', 'PUT', { homeLayout:'unknown' })).status, 400);
+  } finally { assert.equal((await call('settings', 'PUT', settings)).status, 200); }
+});
+
 test('portal image uploads accept authorized TTS origins and reject other origins and missing identity', async () => {
   const bytes = await readFile('public/images/social.jpg');
   const upload = async (origin, authorization) => {

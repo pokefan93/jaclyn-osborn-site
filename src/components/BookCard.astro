@@ -2,7 +2,6 @@
 import { getBookCollectionLabel } from '../data/catalog';
 import type { Book } from '../types/catalog';
 import BookCover from './BookCover.astro';
-import PurchaseActions from './PurchaseActions.astro';
 
 interface Props {
   book: Book;
@@ -89,7 +88,10 @@ const readingOrderCard = showOrder;
       {book.shortHook}
     </p>
 
-    <PurchaseActions book={book} compact />
+    <div class="book-card-actions">
+      {book.purchase.displayPrice && <span class="book-card-price">{book.purchase.displayPrice}</span>}
+      <a class="text-link" href={`/books/${book.slug}/`}>View book <span aria-hidden="true">↗</span></a>
+    </div>
 
     <div class:list={[readingOrderCard ? 'mt-auto pt-4 text-xs text-[#6e5961] sm:text-sm' : 'mt-auto pt-6 text-sm text-[#6e5961]']}>
       {

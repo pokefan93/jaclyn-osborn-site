@@ -77,7 +77,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const response = await next();
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  if (privateRoute) {
+  if (privateRoute || /^\/login(?:\/|$)/.test(path)) {
     response.headers.set('Cache-Control', 'no-store');
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
     response.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
