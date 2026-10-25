@@ -56,14 +56,12 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   and explicitly deploys the generated config. The corrected release passed all
   56 public-page checks, alias redirects and private-login security checks; all
   original core book fields were rechecked and preserved.
-- Follow-up: the user's physical iPhone reports a TLS connection error in Safari
-  on Wi-Fi and Chrome on cellular; Mac Chrome works. The edge certificate is
-  active, all four public IPv4/IPv6 endpoints pass external TLS checks, and the
-  private login rendered in iOS 26.5 Safari on the test simulator. The user then
-  restarted the physical iPhone and confirmed Jaclyn's login opens. No server TLS
-  setting was changed; a specific cache/protocol cause was not proven. Physical
-  phone resolution is based on the user's confirmation, separate from Mac and
-  simulator checks.
+- Follow-up: the physical iPhone TLS issue is UNRESOLVED. The user corrected
+  the earlier success report: restarting did not fix Safari/Chrome on Wi-Fi or
+  cellular. Mac Chrome, the iOS 26.5 simulator and independent IPv4/IPv6 TLS tests
+  work. Do not treat those checks as physical-phone proof. HTTP/3 compatibility
+  and device VPN/filtering/DNS behavior are being investigated; HTTPS and TLS 1.3
+  remain enabled.
 - Builds are local to avoid paid EAS cloud builds because included credits are
   exhausted. No new paid plan or billing activation was enabled. The SDK 56
   Hermes doctor warning is a baseline issue, separate from the portal changes.

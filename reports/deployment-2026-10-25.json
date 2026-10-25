@@ -63,8 +63,8 @@
       "ios265SafariSimulator": "Private login rendered successfully; this does not verify the affected physical iPhone",
       "externalSslLabs": "All four IPv4/IPv6 endpoints completed and negotiated supported Safari clients. Grade B; legacy TLS 1.0/1.1 remain enabled in the existing Cloudflare defaults.",
       "serverSecuritySettingsChanged": false,
-      "nextStep": "Physical-phone connection failure cleared after restart. Exact cache/protocol cause was not proven.",
-      "physicalIPhone": "User-confirmed private login opens after restart; no server-side TLS setting changed."
+      "nextStep": "Investigate HTTP/3 compatibility while preserving HTTPS/TLS 1.3; collect control-domain and VPN/filter results.",
+      "physicalIPhone": "Earlier success confirmation was withdrawn by the user; actual phone still fails on Wi-Fi and cellular."
     }
   },
   "domain": {
@@ -78,7 +78,7 @@
     "customDomainCanonicalBuildPending": false,
     "publicWorkerApiOriginPreserved": true,
     "existingDnsRecordsPreserved": true,
-    "physicalIPhoneStatus": "User confirmed Jaclyn\u2019s private login opens on the physical iPhone after restarting it."
+    "physicalIPhoneStatus": "Unresolved: user corrected the earlier report; restarting did not fix Safari/Chrome ERR_SSL_PROTOCOL_ERROR on the physical iPhone."
   },
   "mobile": {
     "version": "1.0.1",
