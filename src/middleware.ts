@@ -2,9 +2,24 @@ import { defineMiddleware } from 'astro:middleware';
 import { env } from 'cloudflare:workers';
 import { verifyAccess } from './lib/auth';
 import { getSiteContent } from './lib/content';
+import { canonicalRedirectUrl } from './lib/canonical';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const path = context.url.pathname;
+  const canonical = canonicalRedirectUrl(context.request, context.site);
+  if (canonical) return Response.redirect(canonical, 308);
+  const portalRoute = /^\/api\/portal(?:\/|$)/.test(path);
+  const unsafeMethod = !['GET', 'HEAD', 'OPTIONS'].includes(context.request.method);
+  if (unsafeMethod && !portalRoute) {
+    const origin = context.request.headers.get('Origin');
+    const fetchSite = context.request.headers.get('Sec-Fetch-Site');
+    if (
+      (origin && origin !== context.url.origin) ||
+      (fetchSite && !['same-origin', 'none'].includes(fetchSite))
+    ) {
+      return new Response('This request must come from the site editor.', { status: 403 });
+    }
+  }
   const privateRoute = /^\/(?:admin|api\/admin)(?:\/|$)/.test(path);
   if (privateRoute) {
     const config = env as unknown as Record<string, string>;

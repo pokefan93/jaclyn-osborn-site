@@ -8,6 +8,10 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+  // The portal intentionally accepts authenticated uploads from TTS. The
+  // middleware protects other writes; portal routes enforce exact origins and
+  // Firebase bearer authentication before reading or storing an upload.
+  security: { checkOrigin: false },
   // SITE_URL must be set at build time so canonical URLs, Open Graph tags,
   // sitemap.xml, and robots.txt all reference the correct production hostname.
   // The fallback keeps local dev and CI builds pointed at the current workers.dev URL.

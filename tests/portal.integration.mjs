@@ -1,7 +1,27 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 // Built production worker + LOCAL test control service. Never accepts a remote URL.
 const base = 'http://127.0.0.1:8787';
+
+test('portal image uploads accept authorized TTS origins and reject other origins and missing identity', async () => {
+  const bytes = await readFile('public/images/social.jpg');
+  const upload = async (origin, authorization) => {
+    const form = new FormData();
+    form.set('image', new File([bytes], 'portal-verification.jpg', { type: 'image/jpeg' }));
+    return fetch(base + '/api/portal/uploads/image/', {
+      method: 'POST',
+      headers: { Origin: origin, ...(authorization ? { Authorization: authorization } : {}) },
+      body: form,
+    });
+  };
+  const saved = await upload('https://taylorstechsolutions.com', 'Bearer local-test-owner');
+  assert.equal(saved.status, 201);
+  const { imageUrl } = await saved.json();
+  assert.deepEqual(Buffer.from(await (await fetch(base + imageUrl)).arrayBuffer()), bytes);
+  assert.equal((await upload('https://unrelated.invalid', 'Bearer local-test-owner')).status, 403);
+  assert.equal((await upload('https://taylorstechsolutions.com')).status, 401);
+});
 async function call(
   path,
   method = 'GET',

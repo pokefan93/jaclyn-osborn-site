@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-25",
+  "site": {
+    "url": "https://jaclyn-osborn-site.karnestaylor.workers.dev",
+    "version": "7bc85579-e46f-4930-9f4b-20bee19600f2"
+  },
+  "control": {
+    "version": "909cbf7e-9349-494e-bb34-413647072508",
+    "existingBindingsAndSecretsPreserved": true
+  },
+  "database": {
+    "existingBooks": 49,
+    "existingSeries": 11,
+    "appliedMigrations": [
+      "0003_media.sql",
+      "0004_portal_details.sql"
+    ],
+    "legacyReconciled": true,
+    "existingCoreBookFieldsUnchanged": true,
+    "legacyBackendRetained": true
+  },
+  "firebase": {
+    "version": "sites/taylorstechsite-5982d/versions/37cf6410624d3667",
+    "releaseTime": "2026-10-25T19:59:27.131Z",
+    "changedFiles": [
+      "/portal.html"
+    ],
+    "otherFilesPreserved": 69,
+    "existingServiceRewritesPreserved": 3,
+    "livePortalBytesVerified": true
+  },
+  "verification": {
+    "localSiteIntegrationTests": 5,
+    "localPortalIntegrationTests": 6,
+    "canonicalRedirectTests": 1,
+    "controlAuthorizationTests": 1,
+    "productionPublicPagesVerified": 56,
+    "productionBookPagesVerified": 49,
+    "liveAssignedOwnerVerified": true,
+    "liveSettingsPersistence": true,
+    "liveHiddenBookPricePersistence": true,
+    "liveUploadExactBytes": true,
+    "liveUnsafeCheckoutRejected": true,
+    "liveHiddenBookSitemapExclusion": true,
+    "testRecordsRemoved": true,
+    "realEditorAndViewerAccountsTested": false,
+    "unassignedRolesTestedLocally": true
+  },
+  "domain": {
+    "name": "authorjaclynosborn.com",
+    "plan": "Free Website",
+    "status": "pending registrar nameserver update",
+    "assignedNameservers": [
+      "braden.ns.cloudflare.com",
+      "rachel.ns.cloudflare.com"
+    ],
+    "customDomainCanonicalBuildPending": true,
+    "publicWorkerApiOriginWillBePreserved": true
+  },
+  "mobile": {
+    "version": "1.0.1",
+    "iosBuild": "7",
+    "androidVersionCode": 3,
+    "status": "local store builds in progress; no store submission yet",
+    "cloudBuildsAvoidedBecauseIncludedCreditsExhausted": true,
+    "baselineExpoDoctorHermesWarning": true
+  },
+  "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report"
+}

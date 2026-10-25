@@ -56,7 +56,7 @@ This release requires changes in four repositories:
 
 For the optional standalone `/admin` editor, configure an Access application protecting `/admin` and `/api/admin` on every hostname, with runtime `ACCESS_TEAM_DOMAIN` and `ACCESS_AUD`. Without those it stays closed in production; the TTS portal does not require them.
 
-No production database writes, account provisioning, hosting deployment, or store release have been performed. The Firebase connection was suggested; Cloudflare CLI is not authenticated. These remain release gates, not completed steps.
+The Mac deployment on October 25, 2026 activated the shared backend and Firebase portal after live owner verification. Existing content, memberships, service bindings and Hosting files were preserved. See `MACBOOK-HANDOFF.md` and `reports/deployment-2026-10-25.json` for current deployment evidence and remaining domain/mobile release steps.
 
 ### Portal integration tests
 

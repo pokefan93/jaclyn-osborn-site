@@ -1,5 +1,43 @@
 # Jaclyn Osborn MacBook handoff
 
+## Mac continuation: October 25, 2026
+
+The backend and Firebase portal are now live. The sections below describe the
+original Windows handoff; use `reports/deployment-2026-10-25.json` for current
+deployment IDs and verification evidence.
+
+- Cloudflare and Firebase access were verified on the Mac. All three production
+  databases and the existing Worker sources were backed up privately outside Git.
+- `tts-control` authorization was deployed with its bindings and secret names
+  preserved. Existing memberships were retained; no owner grant was invented.
+- Additive catalog migrations 0003 and 0004 were applied. The legacy catalog was
+  reconciled against production: all 49 existing book records and 11 series were
+  preserved. Legacy purchase details were added without changing core book fields.
+- The redesigned site is live on its existing workers.dev hostname. Live owner
+  verification passed for settings, hidden-book price persistence, invalid
+  checkout rejection, uploads, hidden-book 404s, and sitemap exclusion. Disposable
+  test records were removed. Editor/viewer permissions were tested locally; there
+  are no assigned editor/viewer accounts to use for equivalent live validation.
+- Live tests found and fixed settings fields omitted during save and cross-origin
+  multipart upload rejection. Per-route origin and authentication checks protect
+  writes; the separate Access editor remains closed without Access configuration.
+- Firebase version `37cf6410624d3667` was released after the backend checks. Only
+  `/portal.html` changed; the other 69 files and all three service rewrites were
+  preserved. The live portal HTML was compared to the saved source.
+- The original Windows-staged portal returned 404 in preview, so it was replaced
+  by a fresh, served-and-verified scoped version before activation.
+- The Free Cloudflare zone is created and pending Jaclyn's GoDaddy nameserver
+  change to `braden.ns.cloudflare.com` and `rachel.ns.cloudflare.com`. Scanned
+  records include the existing `_domainconnect` CNAME and `_dmarc` TXT record.
+  Preserve mail settings. The custom-domain build, HTTPS and redirects still need
+  the zone to become active. Canonical redirect code is guarded by the custom
+  `SITE_URL` build and deliberately leaves `/api/*` and `/admin/*` on their
+  existing origins.
+- Mobile 1.0.1 store builds are being made locally to avoid additional EAS build
+  charges because included account credits are exhausted. Store submission and
+  physical-device validation are not yet complete. The SDK 56 Hermes regression
+  warning is a baseline issue, separate from the portal changes.
+
 Continue the existing redesign and deployment from the MacBook. The code is saved in four GitHub draft pull requests. The new Firebase portal is staged but unreleased. The Cloudflare backend, custom domain, and mobile app release are still pending. This is a deployment handoff, not a request to rebuild the site.
 
 ## User requirements and authorization

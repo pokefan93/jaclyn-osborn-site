@@ -61,6 +61,9 @@ test('content save persists, renders safely, and rejects unsafe URLs and cross-o
     const save = await request('/api/admin/content/', 'PUT', payload);
     assert.equal(save.status, 200);
     assert.equal((await save.json()).data.heroTitle, payload.heroTitle);
+    const reopened = (await (await request('/api/admin/content/')).json()).data;
+    assert.equal(reopened.arcEmail, original.arcEmail);
+    assert.deepEqual(reopened.directSales, original.directSales);
     const home = await (await request('/')).text();
     assert.match(home, /Local test &lt;script&gt;/);
     assert.doesNotMatch(home, /<script>alert\(1\)<\/script>/);
