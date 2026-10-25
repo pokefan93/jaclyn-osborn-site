@@ -7,6 +7,7 @@ import {
   type ControlFetcher,
 } from '../../../lib/portal/auth';
 import { savePortalBook } from '../../../lib/portal/books';
+import { enforceEditorLimit, editorActorKey, type EditorRateLimiter } from '../../../lib/portal/rate-limit';
 import { listBooks, listSeries } from '../../../lib/catalog/repository';
 import { resolveCoverImagePath } from '../../../lib/catalog/covers';
 import { contentSchema, getSiteContent } from '../../../lib/content';
@@ -59,12 +60,16 @@ export const ALL: APIRoute = async (context) => {
       return finish(json({ error: 'This origin is not allowed.' }, 403));
     if (request.method === 'OPTIONS')
       return finish(new Response(null, { status: 204 }));
+    const limits=env as unknown as {EDITOR_REQUEST_LIMITER?:EditorRateLimiter;EDITOR_WRITE_LIMITER?:EditorRateLimiter};
+    const ip=request.headers.get('CF-Connecting-IP') || 'local';
+    await enforceEditorLimit(limits.EDITOR_REQUEST_LIMITER,await editorActorKey('ip',ip));
     const user = await authorizePortal(
       request,
       (env as unknown as { CONTROL?: ControlFetcher }).CONTROL,
     );
     const path = (context.params.path ?? '').replace(/\/+$/, '');
     const method = request.method;
+    if (!['GET','HEAD'].includes(method)) await enforceEditorLimit(limits.EDITOR_WRITE_LIMITER,await editorActorKey('user',user.uid));
     if (path === 'me' && method === 'GET')
       return finish(
         json({
@@ -191,8 +196,12 @@ export const ALL: APIRoute = async (context) => {
     }
     return finish(json({ error: 'This operation is not supported.' }, 404));
   } catch (error) {
-    if (error instanceof Response)
-      return finish(json({ error: await error.text() }, error.status));
+    if (error instanceof Response) {
+      const response=json({ error: await error.text() }, error.status);
+      const retry=error.headers.get('Retry-After');
+      if(retry) response.headers.set('Retry-After',retry);
+      return finish(response);
+    }
     if (error instanceof z.ZodError)
       return finish(
         json(

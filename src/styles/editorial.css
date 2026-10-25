@@ -399,20 +399,20 @@ html {
   grid-template-columns: 1fr 1fr;
   gap: 10%;
   background: var(--newsletter-bg, #344735);
-  color: #f9f8ec;
+  color: var(--newsletter-ink, #f9f8ec);
   padding: 52px;
 }
 .newsletter-panel .eyebrow {
-  color: #f9f8ec;
+  color: var(--newsletter-ink, #f9f8ec);
 }
 .newsletter-panel p:not(.eyebrow) {
   font-size: 0.9rem;
   line-height: 1.9;
-  color: #e2e7d7;
+  color: var(--newsletter-copy, #e2e7d7);
 }
 .newsletter-panel .button-primary {
   margin-top: 24px;
-  background: #f9f8ec;
+  background: var(--newsletter-ink, #f9f8ec);
   color: var(--newsletter-bg, #253724);
 }
 .newsletter-panel small {
@@ -420,7 +420,7 @@ html {
   font-size: 0.65rem;
   line-height: 1.8;
   margin-top: 14px;
-  color: #d1dbc6;
+  color: var(--newsletter-copy, #d1dbc6);
 }
 .newsletter-wrap {
   padding-bottom: 20px;
@@ -781,3 +781,10 @@ html {
 .book-card-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:20px; }
 .book-card-price { font-weight:600; color:var(--surface-strong); }
 .book-card-actions .text-link { font-size:.8rem; }
+
+html[data-font='classic'] { --font-display: Georgia, 'Times New Roman', serif; }
+html[data-font='clean'] { --font-display: 'Manrope Variable', sans-serif; }
+html[data-cover-style='straight'] .feature-frame > a { transform:none; }
+
+.theme-toggle { background:var(--surface-soft);color:var(--ink);border-color:var(--glass-border); }
+.input-shell:focus { border-color:var(--surface-accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--surface-accent) 15%, transparent); }

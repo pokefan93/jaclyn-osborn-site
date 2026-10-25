@@ -30,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, siteUrl).toString();
 const socialTitle = title.includes(siteMeta.name)
   ? title
   : `${title} | ${siteMeta.name}`;
-const privatePage = noindex || /^\/(admin|thank-you)(\/|$)/.test(Astro.url.pathname);
+const privatePage = noindex || Astro.url.searchParams.has('editor-preview') || /^\/(admin|thank-you)(\/|$)/.test(Astro.url.pathname);
 const socialImage = new URL(image, siteUrl).href;
 const schema = structuredData ?? {
   '@context': 'https://schema.org', '@type': 'WebSite', name: siteMeta.name,
@@ -40,10 +40,10 @@ const schema = structuredData ?? {
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" data-palette={Astro.locals.content.palette} data-layout={Astro.locals.content.homeLayout} data-density={Astro.locals.content.catalogDensity}>
+<html lang="en" data-theme="light" data-default-theme={Astro.locals.content.defaultTheme} data-font={Astro.locals.content.displayFont} data-cover-style={Astro.locals.content.coverStyle} data-palette={Astro.locals.content.palette} data-layout={Astro.locals.content.homeLayout} data-density={Astro.locals.content.catalogDensity}>
   <head>
     <meta charset="utf-8" />
-    <style is:inline set:html={appearanceCss(Astro.locals.content.palette)} />
+    <style id="site-appearance" is:inline set:html={appearanceCss(Astro.locals.content.palette, Astro.locals.content)} />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {privatePage && <meta name="robots" content="noindex, nofollow" />}
@@ -65,14 +65,14 @@ const schema = structuredData ?? {
           : 'light';
         const theme = storedTheme === 'dark' || storedTheme === 'light'
           ? storedTheme
-          : systemTheme;
+          : ['light', 'dark'].includes(document.documentElement.dataset.defaultTheme || '') ? document.documentElement.dataset.defaultTheme : systemTheme;
 
         document.documentElement.dataset.theme = theme;
         document.documentElement.classList.toggle('theme-dark', theme === 'dark');
 
         const metaTheme = document.querySelector('meta[data-theme-color]');
         if (metaTheme instanceof HTMLMetaElement) {
-          metaTheme.content = theme === 'dark' ? '#120e15' : '#241920';
+          metaTheme.content = getComputedStyle(document.documentElement).getPropertyValue('--page-bg').trim() || (theme === 'dark' ? '#191f1b' : '#f5f2eb');
         }
       })();
     </script>
@@ -98,5 +98,6 @@ const schema = structuredData ?? {
       <slot />
     </main>
     <SiteFooter />
+    <script src="../scripts/appearance-preview.ts"></script>
   </body>
 </html>

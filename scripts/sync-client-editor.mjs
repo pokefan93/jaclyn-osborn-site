@@ -14,7 +14,7 @@ function replace(from, to) {
 replace('<html lang="en">', '<html lang="en" data-site-editor="jaclyn">');
 replace('<title>Client Portal | Taylor\'s Tech Solutions</title>', '<title>Site editor | Jaclyn Osborn</title>');
 replace('Taylor&apos;s Tech Solutions</a>', 'Jaclyn Osborn</a>');
-replace('<span class="pill">Client Portal</span>', '<span class="pill">Site editor</span>');
+html = html.replaceAll('<span class="pill">Client Portal</span>', '<span class="pill">Site editor</span>');
 replace('Sign in to your Taylor&apos;s Tech Solutions client account.', 'Sign in to update your books and website. Use your existing client account.');
 replace('Client login for Taylor\'s Tech Solutions.', 'Private website editor for Jaclyn Osborn.');
 html = html.replaceAll('href="images/logo-icon.png"', 'href="/favicon.svg"');

@@ -63,7 +63,7 @@ The Mac deployment on October 25, 2026 activated the shared backend and Firebase
 After `npm run build` and local migrations, run the built site and its **local-only** control-service test double in one process:
 
 ```sh
-npx wrangler dev --config dist/_worker.js/wrangler.json --config tests/fixtures/wrangler.jsonc --local --port 8787 --persist-to .wrangler/state
+npx wrangler dev --config dist/_worker.js/wrangler.json --config tests/fixtures/wrangler.jsonc --local --local-upstream 127.0.0.1 --port 8787 --persist-to .wrangler/state
 node --test tests/portal.integration.mjs
 ```
 

@@ -1,8 +1,10 @@
 import { env } from 'cloudflare:workers';
 import { z } from 'zod';
 import { siteMeta, faqItems } from '../data/site';
+import { customColorContrast } from './appearance';
 
 const text = (max = 600) => z.string().trim().max(max);
+const color = z.string().trim().regex(/^(?:#[0-9a-fA-F]{6})?$/, 'Choose a color or enter a six-digit hex color, such as #354434.').default('');
 const https = z
   .string()
   .trim()
@@ -59,6 +61,15 @@ export const contentSchema = z.object({
   authorTitle: text(150),
   socialCopy: text(),
   palette: z.enum(['olive', 'ink', 'plum', 'clay']).default('olive'),
+  customBackground: color,
+  customText: color,
+  customAccent: color,
+  customDarkBackground: color,
+  customDarkText: color,
+  customDarkAccent: color,
+  defaultTheme: z.enum(['system', 'light', 'dark']).default('system'),
+  displayFont: z.enum(['literary', 'classic', 'clean']).default('literary'),
+  coverStyle: z.enum(['angled', 'straight']).default('angled'),
   homeLayout: z.enum(['cover-right', 'cover-left', 'centered']).default('cover-right'),
   catalogDensity: z.enum(['airy', 'compact']).default('airy'),
   showSeries: z.enum(['show', 'hide']).default('show'),
@@ -67,6 +78,11 @@ export const contentSchema = z.object({
   faqs: z
     .array(z.object({ question: text(200).min(1), answer: text(1500).min(1) }))
     .max(30),
+}).superRefine((content, ctx) => {
+  if ([content.customBackground,content.customText,content.customAccent,content.customDarkBackground,content.customDarkText,content.customDarkAccent].some(value => !/^(?:#[0-9a-fA-F]{6})?$/.test(value))) return;
+  for (const check of customColorContrast(content.palette, content)) {
+    if (check.ratio < 4.5) ctx.addIssue({code:'custom',path:[check.field],message:check.label + ': choose a text color that is easier to read against the background.'});
+  }
 });
 export type SiteContent = z.infer<typeof contentSchema>;
 export const defaultContent: SiteContent = {
@@ -98,6 +114,9 @@ export const defaultContent: SiteContent = {
     'Book news, coffee, anime, and a glimpse of life between chapters.',
   faqs: faqItems,
   palette: 'olive',
+  customBackground: '', customText: '', customAccent: '',
+  customDarkBackground: '', customDarkText: '', customDarkAccent: '',
+  defaultTheme: 'system', displayFont: 'literary', coverStyle: 'angled',
   homeLayout: 'cover-right',
   catalogDensity: 'airy',
   showSeries: 'show',

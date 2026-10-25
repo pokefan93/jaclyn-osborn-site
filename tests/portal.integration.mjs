@@ -13,6 +13,9 @@ test('private login is unlinked and uncached; appearance settings validate and s
   const html = await login.text();
   assert.match(html, /data-site-editor="jaclyn"/);
   assert.match(html, /Sign in to update your books and website/);
+  const nonce=html.match(/<script type="module" nonce="([^"]+)"/)[1];
+  assert(login.headers.get('Content-Security-Policy').includes("'nonce-"+nonce+"'"));
+  assert.doesNotMatch(html,/onerror=/);
   assert.doesNotMatch(await (await fetch(base + '/sitemap.xml')).text(), /\/login/);
   const settings = await (await call('settings')).json();
   try {
@@ -29,6 +32,19 @@ test('private login is unlinked and uncached; appearance settings validate and s
     assert.doesNotMatch(page, /href="\/login/);
     assert.equal((await call('settings', 'PUT', { palette:'red;display:none' })).status, 400);
     assert.equal((await call('settings', 'PUT', { homeLayout:'unknown' })).status, 400);
+    const custom = {customBackground:'#fff6ed',customText:'#2f192b',customAccent:'#eedc00',customDarkBackground:'#171121',customDarkText:'#efe8f6',customDarkAccent:'#bf95d3',defaultTheme:'dark',displayFont:'classic',coverStyle:'straight'};
+    assert.equal((await call('settings', 'PUT', custom)).status,200);
+    const reopened = await (await call('settings')).json();
+    for(const [key,value] of Object.entries(custom)) assert.equal(reopened[key],value);
+    const customPage=await(await fetch(base+'/')).text();
+    assert.match(customPage,/data-default-theme="dark"/);
+    assert.match(customPage,/data-font="classic"/);
+    assert.match(customPage,/--page-bg:#fff6ed/);
+    assert.match(customPage,/--button-primary-bg:#eedc00;--button-primary-text:#000000/);
+    assert.equal((await call('settings','PUT',{customText:'#fff6ed'})).status,400);
+    assert.equal((await call('settings','PUT',{customAccent:'#'})).status,400);
+    assert.equal((await call('settings','PUT',{customAccent:'red;display:none'})).status,400);
+    assert.equal((await(await call('settings')).json()).customAccent,custom.customAccent);
   } finally { assert.equal((await call('settings', 'PUT', settings)).status, 200); }
 });
 
@@ -276,4 +292,18 @@ test('portal series updates reach the reading guide', async () => {
   } finally {
     assert.equal((await call('series', 'PUT', original)).status, 200);
   }
+});
+
+test('the Workers rate-limit binding throttles repeated unauthenticated editor requests',async()=>{
+  let throttled;
+  for(let i=0;i<220;i++) {
+    const response=await fetch(base+'/api/portal/me/',{headers:{Origin:'https://taylorstechsolutions.com','CF-Connecting-IP':'203.0.113.181',Connection:'close'}});
+    const status=response.status;
+    await response.text();
+    assert([401,429].includes(status),'unexpected status '+status);
+    if(status===429){throttled=response;break;}
+  }
+  assert(throttled,'Expected the request budget to return 429.');
+  assert.equal(throttled.headers.get('Retry-After'),'60');
+  assert.equal(throttled.headers.get('Cache-Control'),'no-store');
 });

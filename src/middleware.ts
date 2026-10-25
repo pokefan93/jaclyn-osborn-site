@@ -17,6 +17,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
       (origin && origin !== context.url.origin) ||
       (fetchSite && !['same-origin', 'none'].includes(fetchSite))
     ) {
+      // Rejected uploads still need bounded draining before the underlying
+      // connection is reused by the Workers proxy or another request.
+      const reader = context.request.body?.getReader();
+      if (reader) {
+        let size = 0;
+        while (true) {
+          const chunk = await reader.read();
+          if (chunk.done) break;
+          size += chunk.value.byteLength;
+          if (size > 1_100_000) { await reader.cancel(); break; }
+        }
+      }
       return new Response('This request must come from the site editor.', { status: 403 });
     }
   }
@@ -77,10 +89,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const response = await next();
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000');
   if (privateRoute || /^\/login(?:\/|$)/.test(path)) {
     response.headers.set('Cache-Control', 'no-store');
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
-    response.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
+    if(!response.headers.has('Content-Security-Policy')) response.headers.set('Content-Security-Policy', "frame-ancestors 'none'");
   }
   return response;
 });

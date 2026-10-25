@@ -177,6 +177,11 @@
       html[data-site-editor='jaclyn'] h2 { font:26px Georgia,serif; }
       html[data-site-editor='jaclyn'] .pill, html[data-site-editor='jaclyn'] .role-badge { border-radius:3px;letter-spacing:.04em; }
       html[data-site-editor='jaclyn'] .btn-primary, html[data-site-editor='jaclyn'] .btn-ghost, html[data-site-editor='jaclyn'] input, html[data-site-editor='jaclyn'] textarea { border-radius:4px; }
+      .color-control { display:grid;grid-template-columns:48px minmax(90px,1fr) auto;gap:10px;align-items:center; }
+      .color-control input[type=color] { width:48px;height:46px;padding:3px;cursor:pointer; }
+      .color-control .btn-ghost { width:auto;margin:0; }
+      [data-site-preview] { display:block;width:100%;height:580px;border:1px solid var(--border);border-radius:4px;background:#f5f2eb;pointer-events:none; }
+      .appearance-actions { border-top:1px solid var(--border);margin-top:24px;padding-top:12px; }
     </style>
   </head>
   <body>
@@ -208,7 +213,7 @@
       <!-- Logged-in: the editor -->
       <section id="member-view" class="hidden">
         <div class="topbar">
-          <span class="pill">Client Portal</span>
+          <span class="pill">Site editor</span>
           <div class="head-actions">
             <span class="who">Signed in as <span id="member-email"></span> · <a href="#" id="signout-link">Sign out</a></span>
             <button id="admin-btn" class="btn-ghost btn-sm hidden">Admin</button>
@@ -243,6 +248,7 @@
       };
 
       const auth = getAuth(initializeApp(firebaseConfig));
+      document.addEventListener('error',event=>{const image=event.target;if(image instanceof HTMLImageElement){if(image.classList.contains('img-preview'))image.style.display='none';else image.style.visibility='hidden';}},true);
       const $ = (id) => document.getElementById(id);
 
       /* ---------- control plane ---------- */
@@ -296,6 +302,7 @@
 {
   "group": "Colors & layout",
   "fields": [
+{"key": "defaultTheme", "label": "Default appearance", "helper": "Used for visitors who have not chosen their own preference.", "options": [["system", "Match visitor’s device"], ["light", "Light mode"], ["dark", "Dark mode"]]},{"key": "displayFont", "label": "Heading style", "options": [["literary", "Literary serif"], ["classic", "Classic serif"], ["clean", "Clean sans serif"]]},{"key": "coverStyle", "label": "Featured cover position", "options": [["angled", "Gently angled"], ["straight", "Straight"]]},{"key": "customBackground", "label": "Background · light mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customText", "label": "Text · light mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customAccent", "label": "Accent · light mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customDarkBackground", "label": "Background · dark mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customDarkText", "label": "Text · dark mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customDarkAccent", "label": "Accent · dark mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},
     {
       "key": "palette",
       "label": "Colors",
@@ -733,6 +740,8 @@
       // Owner of this site, or a super-admin, may manage members.
       const canManageMembers = (site) => !jaclynOnly && (site.role === 'owner' || (me && me.isSuperAdmin));
 
+      const colorFieldOrder=['customBackground','customText','customAccent','customDarkBackground','customDarkText','customDarkAccent'];
+      const colorPresetValues={olive:['#f5f2eb','#242a25','#354434','#191f1b','#efeee4','#d9e0c4'],ink:['#f4f3ef','#252b33','#293f57','#191e25','#f1f2ee','#d3e2ef'],plum:['#f5f0ed','#352930','#674454','#251b22','#f5eaf0','#eed3e1'],clay:['#f7f1e9','#372d28','#794b38','#251e19','#f4ede1','#ecd4b6']};
       function renderEditor(site, settings, el) {
         const state = { settings: { ...settings } };
         // Viewers get a read-only editor: no Save / Add / Delete controls. The server
@@ -756,13 +765,15 @@
           for (const f of g.fields) {
             const val = state.settings[f.key] ?? '';
             const help = f.helper ? '<span class="helper">' + esc(f.helper) + '</span>' : '';
-            if (f.options) {
+            if (f.color) {
+              html += '<div class="field"><label for="setting-'+esc(f.key)+'">'+esc(f.label)+'</label>'+help+'<div class="color-control"><input type="color" data-color-for="'+esc(f.key)+'" aria-label="Choose '+esc(f.label)+'" value="'+esc(/^#[0-9a-f]{6}$/i.test(val)?val:(colorPresetValues[state.settings.palette]||colorPresetValues.olive)[colorFieldOrder.indexOf(f.key)])+'"><input id="setting-'+esc(f.key)+'" type="text" data-key="'+esc(f.key)+'" value="'+esc(val)+'" placeholder="Use preset" maxlength="7" spellcheck="false"><button type="button" class="btn-ghost btn-sm" data-reset-color="'+esc(f.key)+'">Use preset</button></div></div>';
+            } else if (f.options) {
               html += '<div class="field"><label for="setting-'+esc(f.key)+'">'+esc(f.label)+'</label>'+help+'<select id="setting-'+esc(f.key)+'" data-key="'+esc(f.key)+'">'+f.options.map(([key,label])=>'<option value="'+esc(key)+'"'+(val===key?' selected':'')+'>'+esc(label)+'</option>').join('')+'</select></div>';
             } else if (f.image) {
               const src = val ? (val.startsWith('http') ? val : site.apiBase + val) : '';
               html +=
                 '<div class="field"><label>' + esc(f.label) + '</label>' + help +
-                '<img class="img-preview" data-prev="' + f.key + '" src="' + esc(src) + '"' + (src ? '' : ' style="display:none;"') + ' onerror="this.style.display=\'none\'" alt="" />' +
+                '<img class="img-preview" data-prev="' + f.key + '" src="' + esc(src) + '"' + (src ? '' : ' style="display:none;"') + ' alt="" />' +
                 '<input type="hidden" data-key="' + f.key + '" value="' + esc(val) + '" />' +
                 '<input type="file" accept="image/*" data-file="' + f.key + '" style="display:none;" />' +
                 '<button type="button" class="btn-ghost" data-pick="' + f.key + '">Choose photo</button></div>';
@@ -772,6 +783,7 @@
               html += '<div class="field"><label>' + esc(f.label) + '</label>' + help + '<input type="text" data-key="' + f.key + '" value="' + esc(val) + '" /></div>';
             }
           }
+          if (g.group === 'Colors & layout') html += '<div class="appearance-actions"><button type="button" class="btn-ghost" data-reset-colors>Reset all custom colors</button><label for="preview-theme">Preview mode</label><select id="preview-theme" data-preview-theme><option value="light">Light</option><option value="dark">Dark</option></select><p class="muted">Preview color, type, and layout changes here before saving. Homepage section visibility updates after saving.</p><p class="toast" data-preview-status role="status"></p><iframe title="Website appearance preview" src="'+esc(site.liveUrl)+'/?editor-preview=1" data-site-preview loading="lazy"></iframe></div>';
           html += site.id === 'jaclyn' ? '</details>' : '</div>';
         }
         // Save bar + Add buttons are hidden entirely for view-only members.
@@ -796,6 +808,29 @@
           paletteChoice.addEventListener('change',preview);preview();
         }
         el.querySelectorAll('.editor-shortcuts a').forEach(link=>link.addEventListener('click',()=>{const target=el.querySelector(link.getAttribute('href'));if(target?.tagName==='DETAILS')target.open=true;}));
+        el.querySelectorAll('[data-color-for]').forEach(picker=>picker.addEventListener('input',()=>{const field=el.querySelector('[data-key="'+picker.dataset.colorFor+'"]');field.value=picker.value;field.dispatchEvent(new Event('input',{bubbles:true}));}));
+        el.querySelectorAll('[data-reset-color]').forEach(btn=>btn.onclick=()=>{const field=el.querySelector('[data-key="'+btn.dataset.resetColor+'"]');field.value='';field.dispatchEvent(new Event('input',{bubbles:true}));});
+        const colorKeys=['customBackground','customText','customAccent','customDarkBackground','customDarkText','customDarkAccent'];
+        const resetColors=el.querySelector('[data-reset-colors]');
+        if(resetColors) resetColors.onclick=()=>{colorKeys.forEach(key=>{el.querySelector('[data-key="'+key+'"]').value='';});sendPreview();};
+        const frame=el.querySelector('[data-site-preview]');
+        function sendPreview(){
+          if(!frame)return;
+          const keys=['palette','homeLayout','catalogDensity','displayFont','coverStyle',...colorKeys];
+          const appearance=Object.fromEntries(keys.map(key=>[key,el.querySelector('[data-key="'+key+'"]').value]));
+          const valid=colorKeys.every(key=>/^(?:#[0-9a-f]{6})?$/i.test(appearance[key]));
+          const status=el.querySelector('[data-preview-status]');
+          if(!valid){status.textContent='Enter a six-digit hex color, such as #354434, or leave the field blank.';return;}
+          const luminance=hex=>{const a=hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return a[0]*.2126+a[1]*.7152+a[2]*.0722;};
+          const defaults=colorPresetValues[appearance.palette]||colorPresetValues.olive;
+          if(palettePreview){const dark=el.querySelector('[data-preview-theme]').value==='dark';const offset=dark?3:0;palettePreview.style.background=appearance[colorFieldOrder[offset]]||defaults[offset];palettePreview.style.color=appearance[colorFieldOrder[offset+1]]||defaults[offset+1];palettePreview.querySelectorAll('i').forEach((dot,i)=>dot.style.background=appearance[colorFieldOrder[offset+i]]||defaults[offset+i]);}
+          el.querySelectorAll('[data-color-for]').forEach(picker=>{const key=picker.dataset.colorFor;picker.value=appearance[key]||defaults[colorFieldOrder.indexOf(key)];});
+          const ratios=[['customBackground','customText'],['customDarkBackground','customDarkText']].map(pair=>{const a=luminance(appearance[pair[0]]||defaults[colorFieldOrder.indexOf(pair[0])]),b=luminance(appearance[pair[1]]||defaults[colorFieldOrder.indexOf(pair[1])]);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);});
+          if(ratios.some(r=>r<4.5)){status.textContent='Choose a text color that is easier to read against the background before saving.';return;}
+          status.textContent='Preview only. Save changes when you are ready.';
+          frame.contentWindow.postMessage({type:'jaclyn-appearance-preview',appearance,theme:el.querySelector('[data-preview-theme]').value},new URL(site.liveUrl).origin);
+        }
+        if(frame){el.querySelector('[data-key=defaultTheme]').addEventListener('change',event=>{if(event.target.value!=='system')el.querySelector('[data-preview-theme]').value=event.target.value;});frame.addEventListener('load',sendPreview);el.querySelectorAll('[data-key], [data-preview-theme]').forEach(input=>{input.addEventListener('input',sendPreview);input.addEventListener('change',sendPreview);});}
         wireImages(site, el);
 
         const saveBtn = el.querySelector('[data-save]');
@@ -864,7 +899,7 @@
       function imageFieldHtml(key, label, val, site) {
         const src = val ? (val.startsWith('http') ? val : site.apiBase + val) : '';
         return '<div class="field"><label>' + esc(label) + '</label>' +
-          '<img class="img-preview" data-prev="' + key + '" src="' + esc(src) + '"' + (src ? '' : ' style="display:none;"') + ' onerror="this.style.display=\'none\'" alt="" />' +
+          '<img class="img-preview" data-prev="' + key + '" src="' + esc(src) + '"' + (src ? '' : ' style="display:none;"') + ' alt="" />' +
           '<input type="hidden" data-key="' + key + '" value="' + esc(val) + '" />' +
           '<input type="file" accept="image/*" data-file="' + key + '" style="display:none;" />' +
           '<button type="button" class="btn-ghost" data-pick="' + key + '">Choose photo</button></div>';
@@ -896,7 +931,7 @@
           (p.available ? '' : '<span class="pill" style="background:var(--border);color:var(--ink-soft);">Unavailable</span> ') +
           (p.featured ? '<span class="pill">Featured</span>' : '');
         return '<div data-edit="' + p.id + '" style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border);cursor:pointer;">' +
-          '<img src="' + esc(img) + '" onerror="this.style.visibility=\'hidden\'" style="width:54px;height:54px;border-radius:10px;object-fit:cover;background:var(--bg);flex:none;" />' +
+          '<img src="' + esc(img) + '" style="width:54px;height:54px;border-radius:10px;object-fit:cover;background:var(--bg);flex:none;" />' +
           '<div style="flex:1;min-width:0;"><div style="font-weight:700;">' + esc(p.name) + '</div>' +
           '<div style="color:var(--blue);font-weight:600;font-size:13px;">' + esc(p.priceLabel) + '</div>' +
           (badges ? '<div style="margin-top:5px;">' + badges + '</div>' : '') + '</div>' +
@@ -1041,7 +1076,7 @@
           (avail === 'in_stock' ? '' : '<span class="pill" style="background:var(--border);color:var(--ink-soft);">Unavailable</span> ') +
           (b.featured ? '<span class="pill">Featured</span>' : '');
         return '<div data-edit="' + esc(b.id) + '" style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border);cursor:pointer;">' +
-          '<img src="' + esc(cover) + '" onerror="this.style.visibility=\'hidden\'" style="width:48px;height:72px;border-radius:8px;object-fit:cover;background:var(--bg);flex:none;" />' +
+          '<img src="' + esc(cover) + '" style="width:48px;height:72px;border-radius:8px;object-fit:cover;background:var(--bg);flex:none;" />' +
           '<div style="flex:1;min-width:0;"><div style="font-weight:700;">' + esc(b.title) + '</div>' +
           '<div style="color:var(--blue);font-weight:600;font-size:13px;">' + esc(series) + '</div>' +
           (badges ? '<div style="margin-top:5px;">' + badges + '</div>' : '') + '</div>' +
