@@ -56,6 +56,12 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   and explicitly deploys the generated config. The corrected release passed all
   56 public-page checks, alias redirects and private-login security checks; all
   original core book fields were rechecked and preserved.
+- Follow-up: the user's physical iPhone reports a TLS connection error in Safari
+  on Wi-Fi and Chrome on cellular; Mac Chrome works. The edge certificate is
+  active, all four public IPv4/IPv6 endpoints pass external TLS checks, and the
+  private login rendered in iOS 26.5 Safari on the test simulator. The physical
+  iPhone issue remains unresolved pending a restart/control-domain test. Do not
+  treat simulator or Mac success as proof that this user's phone is fixed.
 - Builds are local to avoid paid EAS cloud builds because included credits are
   exhausted. No new paid plan or billing activation was enabled. The SDK 56
   Hermes doctor warning is a baseline issue, separate from the portal changes.

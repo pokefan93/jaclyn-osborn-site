@@ -55,7 +55,16 @@
     "productionSitemapHostnamesVerified": true,
     "productionAliasRedirectsVerified": true,
     "originalBookFieldsRechecked": 49,
-    "latestDeploymentPrivateLoginHeadersVerified": true
+    "latestDeploymentPrivateLoginHeadersVerified": true,
+    "tlsFollowUp": {
+      "certificate": "Active Universal SSL for apex and wildcard; valid until January 23, 2027",
+      "macIPv4AndIPv6": 200,
+      "macTls12": 200,
+      "ios265SafariSimulator": "Private login rendered successfully; this does not verify the affected physical iPhone",
+      "externalSslLabs": "All four IPv4/IPv6 endpoints completed and negotiated supported Safari clients. Grade B; legacy TLS 1.0/1.1 remain enabled in the existing Cloudflare defaults.",
+      "serverSecuritySettingsChanged": false,
+      "nextStep": "Await physical iPhone restart and control-domain test. Stale DNS is a hypothesis, not a confirmed cause."
+    }
   },
   "domain": {
     "name": "authorjaclynosborn.com",
@@ -67,7 +76,8 @@
     ],
     "customDomainCanonicalBuildPending": false,
     "publicWorkerApiOriginPreserved": true,
-    "existingDnsRecordsPreserved": true
+    "existingDnsRecordsPreserved": true,
+    "physicalIPhoneStatus": "Unresolved: user reports Safari on Wi-Fi and Chrome on cellular fail with a TLS protocol error, while Mac Chrome works."
   },
   "mobile": {
     "version": "1.0.1",
