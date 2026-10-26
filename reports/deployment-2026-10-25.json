@@ -63,8 +63,9 @@
       "ios265SafariSimulator": "Private login rendered successfully; this does not verify the affected physical iPhone",
       "externalSslLabs": "All four IPv4/IPv6 endpoints completed and negotiated supported Safari clients. Grade B; legacy TLS 1.0/1.1 remain enabled in the existing Cloudflare defaults.",
       "serverSecuritySettingsChanged": false,
-      "nextStep": "Investigate HTTP/3 compatibility while preserving HTTPS/TLS 1.3; collect control-domain and VPN/filter results.",
-      "physicalIPhone": "Earlier success confirmation was withdrawn by the user; actual phone still fails on Wi-Fi and cellular."
+      "nextStep": "Keep HTTP/3 disabled following the successful physical iPhone retry; investigate separately if symptoms return.",
+      "physicalIPhone": "User confirmed the iPhone site opened after HTTP/3 was disabled; earlier restart-only success report remains retracted.",
+      "http3": "Disabled in Cloudflare for compatibility. Dashboard persisted off; no Alt-Svc h3 advertisement. HTTPS and TLS 1.3 retained."
     }
   },
   "domain": {
@@ -78,18 +79,18 @@
     "customDomainCanonicalBuildPending": false,
     "publicWorkerApiOriginPreserved": true,
     "existingDnsRecordsPreserved": true,
-    "physicalIPhoneStatus": "Unresolved: user corrected the earlier report; restarting did not fix Safari/Chrome ERR_SSL_PROTOCOL_ERROR on the physical iPhone."
+    "physicalIPhoneStatus": "Resolved in the user retry after disabling HTTP/3; HTTPS/TLS 1.3 remain enabled."
   },
   "mobile": {
     "version": "1.0.1",
     "iosBuild": "8",
     "androidVersionCode": 3,
-    "status": "iOS submitted and waiting for review; Android submitted, Google automated checks running",
+    "status": "iOS build 8 rejected for launch crash on iOS/iPadOS 27; supported scene-lifecycle fix in progress. Android submission unchanged.",
     "cloudBuildsAvoidedBecauseIncludedCreditsExhausted": true,
     "baselineExpoDoctorHermesWarning": true,
     "iosSubmission": "7025f939-b2af-4469-898d-e1f6f913d872",
     "iosReviewSubmission": "345a49c9-7d68-4858-a79c-306459a63594",
-    "iosReviewState": "WAITING_FOR_REVIEW",
+    "iosReviewState": "REJECTED",
     "iosReleaseType": "AFTER_APPROVAL",
     "iosNewScreenshotCount": 4,
     "iosProductPageHeaderUpdated": true,
@@ -113,7 +114,17 @@
       "feature graphic"
     ],
     "googlePlayManagedPublishing": "off; existing automatic publication behavior retained",
-    "googlePlayAiDisplayLabel": false
+    "googlePlayAiDisplayLabel": false,
+    "iosRejection": {
+      "guideline": "2.1(a) App Completeness",
+      "build": "1.0.1 (8)",
+      "devices": [
+        "iPhone 17 Pro Max, iOS 27.0",
+        "iPad Air 11-inch (M3), iPadOS 27.0"
+      ],
+      "cause": "UIKit traps in _UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption; archived app was built with iOS 27.1 SDK and has no scene manifest. Both supplied crash reports match.",
+      "remediation": "Adopt supported Expo scene lifecycle; rebuild and validate iOS 27 before resubmission."
+    }
   },
   "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report",
   "customization": {

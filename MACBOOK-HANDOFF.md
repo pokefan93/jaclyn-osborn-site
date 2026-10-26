@@ -41,8 +41,11 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   guides, with 49 book pages and 56 sitemap URLs. Search Console DNS verification
   is prepared but unsaved, pending explicit confirmation of persistent Google
   ownership access. Sitemap submission and indexing/ranking verification remain.
-- TTS iOS 1.0.1 build 8 has been uploaded and submitted to Apple. Its current state
-  is WAITING_FOR_REVIEW with release AFTER_APPROVAL. It includes the approved new
+- TTS iOS 1.0.1 build 8 has been uploaded and submitted to Apple. It was rejected for
+  crashing on launch on iOS/iPadOS 27. Both Apple crash logs identify the missing
+  scene-based lifecycle. A supported Expo scene migration and replacement build
+  are in progress; no replacement has been submitted yet. Release AFTER_APPROVAL
+  remains configured. It includes the approved new
   icon, four store images from actual release-simulator screens, custom editor
   colors/themes and current TTS service/contact copy. Android versionCode 3 built
   locally and is submitted with its new icon, feature graphic and four real Android screenshots. Google shows Changes in review while
@@ -56,12 +59,11 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   and explicitly deploys the generated config. The corrected release passed all
   56 public-page checks, alias redirects and private-login security checks; all
   original core book fields were rechecked and preserved.
-- Follow-up: the physical iPhone TLS issue is UNRESOLVED. The user corrected
-  the earlier success report: restarting did not fix Safari/Chrome on Wi-Fi or
-  cellular. Mac Chrome, the iOS 26.5 simulator and independent IPv4/IPv6 TLS tests
-  work. Do not treat those checks as physical-phone proof. HTTP/3 compatibility
-  and device VPN/filtering/DNS behavior are being investigated; HTTPS and TLS 1.3
-  remain enabled.
+- Follow-up: the user confirmed the physical iPhone site opened after Cloudflare
+  HTTP/3 was disabled. The dashboard persisted that setting; IPv4/IPv6 HTTPS with
+  TLS 1.3 and the private login still work. Keep HTTP/3 off for compatibility.
+  This confirmation follows the earlier restart-only success report that the
+  user withdrew; the protocol change is the successful retry being recorded.
 - Builds are local to avoid paid EAS cloud builds because included credits are
   exhausted. No new paid plan or billing activation was enabled. The SDK 56
   Hermes doctor warning is a baseline issue, separate from the portal changes.
