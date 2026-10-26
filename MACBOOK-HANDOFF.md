@@ -41,16 +41,19 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   guides, with 49 book pages and 56 sitemap URLs. Search Console DNS verification
   is prepared but unsaved, pending explicit confirmation of persistent Google
   ownership access. Sitemap submission and indexing/ranking verification remain.
-- TTS iOS 1.0.1 build 8 has been uploaded and submitted to Apple. It was rejected for
-  crashing on launch on iOS/iPadOS 27. Both Apple crash logs identify the missing
-  scene-based lifecycle. A supported Expo scene migration and replacement build
-  are in progress; no replacement has been submitted yet. Release AFTER_APPROVAL
-  remains configured. It includes the approved new
-  icon, four store images from actual release-simulator screens, custom editor
-  colors/themes and current TTS service/contact copy. Android versionCode 3 built
-  locally and is submitted with its new icon, feature graphic and four real Android screenshots. Google shows Changes in review while
-  automated checks run. Existing publication settings and country availability
-  were retained. Physical-device validation is not claimed.
+- TTS iOS 1.0.1 build 9 has been resubmitted and is WAITING_FOR_REVIEW with
+  release AFTER_APPROVAL. Build 8 crashed at the iOS 27 required scene-lifecycle
+  check. The replacement uses Expo 57.0.31 with supported scene startup, and a
+  compiled-artifact guard now rejects a missing scene configuration. iPhone
+  17 Pro Max and iPad Air 11-inch M3 simulators on iOS/iPadOS 27 passed launch
+  checks; iOS 26.5 launch also passed. The iPhone simulator verified native review
+  login, editor reads, saved login, background/foreground, links and sign-out.
+  The user confirmed build 9 opens and Account > Sign In works on their physical
+  iPhone. No physical iPad/Android test is claimed. Build 9 is also in TestFlight;
+  the existing account-holder tester was assigned to the existing dev group.
+  Android versionCode 3 and its submitted artwork are unchanged by this iOS fix;
+  its last recorded Google review state was not rechecked here. The approved
+  icon, four store images and current TTS service/contact copy are retained.
 - A late rebuild omitted SITE_URL and temporarily reverted canonical links and
   alias redirects to workers.dev. The deploy log confirmed Astro's generated
   configuration was used; the missing build hostname was the actual issue. The
@@ -65,8 +68,8 @@ IDs and validation evidence are in `reports/deployment-2026-10-25.json`.
   This confirmation follows the earlier restart-only success report that the
   user withdrew; the protocol change is the successful retry being recorded.
 - Builds are local to avoid paid EAS cloud builds because included credits are
-  exhausted. No new paid plan or billing activation was enabled. The SDK 56
-  Hermes doctor warning is a baseline issue, separate from the portal changes.
+  exhausted. No new paid plan or billing activation was enabled. The app now uses
+  SDK 57, and all 21 Expo Doctor checks pass.
 
 ## Original Windows handoff (historical)
 
