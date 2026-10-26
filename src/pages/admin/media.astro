@@ -1,0 +1,97 @@
+---
+import { env } from 'cloudflare:workers';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EditorNav from '../../components/EditorNav.astro';
+const { results } = await env.DB.prepare(
+  'SELECT id,filename FROM media ORDER BY created_at DESC LIMIT 100',
+).all<{ id: string; filename: string }>();
+---
+
+<BaseLayout title="Images" noindex>
+  <section class="editorial-width" style="padding-top:32px">
+    <EditorNav />
+    <h1 style="font-size:3rem">Your image library</h1>
+    <p style="margin-block:20px">
+      Upload a JPG, PNG, or WebP under 1 MB. Copy its URL into a book’s cover
+      field or the author photo field.
+    </p>
+    <form id="upload-form">
+      <label>
+        Choose image{' '}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          name="image"
+          required
+        />
+      </label>
+      <button class="button-primary" type="submit">
+        Upload image
+      </button>
+      <p role="status" id="upload-status" style="margin-block:20px"></p>
+    </form>
+    <div class="discovery-grid" id="media-library">
+      {results.map((file) => (
+        <div>
+          <img
+            src={`/api/media/${file.id}/`}
+            alt={file.filename}
+            width="240"
+            height="320"
+            loading="lazy"
+            style="height:200px;object-fit:contain"
+          />
+          <p>{file.filename}</p>
+          <input
+            class="input-shell"
+            aria-label={`URL for ${file.filename}`}
+            readonly
+            value={`/api/media/${file.id}/`}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+<script>
+  const form = document.querySelector<HTMLFormElement>('#upload-form')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.querySelector('#upload-status')!;
+    const button = form.querySelector('button')!;
+    button.disabled = true;
+    status.textContent = 'Uploading…';
+    try {
+      const res = await fetch('/api/admin/media/', {
+        method: 'POST',
+        body: new FormData(form),
+      });
+      const data = (await res.json()) as { url: string; error?: string };
+      if (!res.ok) throw new Error(data.error || 'Upload failed.');
+      status.textContent = `Uploaded. Image URL: ${data.url}`;
+      const row = document.createElement('div');
+      const img = document.createElement('img');
+      img.src = data.url;
+      img.alt = 'Uploaded image';
+      img.style.height = '200px';
+      const input = document.createElement('input');
+      input.className = 'input-shell';
+      input.readOnly = true;
+      input.value = data.url;
+      input.setAttribute('aria-label', 'Uploaded image URL');
+      row.appendChild(img);
+      row.appendChild(input);
+      document
+        .querySelector('#media-library')!
+        .insertBefore(
+          row,
+          document.querySelector('#media-library')!.firstChild,
+        );
+      form.reset();
+    } catch (e) {
+      status.textContent = e instanceof Error ? e.message : 'Upload failed.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

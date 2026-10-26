@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+Astro.response.status = 404;
+---
+
+<BaseLayout title="Page not found" noindex>
+  <section class="editorial-width" style="padding-block:80px">
+    <p class="eyebrow">404</p>
+    <h1 style="font-size:3rem">This page has turned.</h1>
+    <p style="margin-block:24px">
+      The page may have moved, or this book is no longer listed.
+    </p>
+    <a class="button-primary" href="/books/">
+      Back to the bookshelf
+    </a>
+  </section>
+</BaseLayout>

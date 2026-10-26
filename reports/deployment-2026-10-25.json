@@ -1,0 +1,239 @@
+{
+  "date": "2026-10-25",
+  "site": {
+    "url": "https://authorjaclynosborn.com",
+    "version": "5a358ca7-688f-4df3-805e-4ab40f4afdee",
+    "apiOrigin": "https://jaclyn-osborn-site.karnestaylor.workers.dev",
+    "privateEditor": "https://authorjaclynosborn.com/login/"
+  },
+  "control": {
+    "version": "909cbf7e-9349-494e-bb34-413647072508",
+    "existingBindingsAndSecretsPreserved": true
+  },
+  "database": {
+    "existingBooks": 49,
+    "existingSeries": 11,
+    "appliedMigrations": [
+      "0003_media.sql",
+      "0004_portal_details.sql"
+    ],
+    "legacyReconciled": true,
+    "existingCoreBookFieldsUnchanged": true,
+    "legacyBackendRetained": true
+  },
+  "firebase": {
+    "version": "sites/taylorstechsite-5982d/versions/5a81c50c8ab5d2f7",
+    "releaseTime": "2026-10-25T21:14:55.623Z",
+    "changedFiles": [
+      "/portal.html"
+    ],
+    "otherFilesPreserved": 69,
+    "existingServiceRewritesPreserved": 3,
+    "livePortalBytesVerified": true
+  },
+  "verification": {
+    "localSiteIntegrationTests": 5,
+    "localPortalIntegrationTests": 8,
+    "canonicalRedirectTests": 1,
+    "controlAuthorizationTests": 1,
+    "productionPublicPagesVerified": 56,
+    "productionBookPagesVerified": 49,
+    "liveAssignedOwnerVerified": true,
+    "liveSettingsPersistence": true,
+    "liveHiddenBookPricePersistence": true,
+    "liveUploadExactBytes": true,
+    "liveUnsafeCheckoutRejected": true,
+    "liveHiddenBookSitemapExclusion": true,
+    "testRecordsRemoved": true,
+    "realEditorAndViewerAccountsTested": false,
+    "unassignedRolesTestedLocally": true,
+    "appearanceContrastTests": 1,
+    "editorRateLimitTests": 2,
+    "liveCustomColorPreviewVerified": true,
+    "liveDefaultThemePreviewVerified": true,
+    "livePrivateCspSessionVerified": true,
+    "productionSitemapHostnamesVerified": true,
+    "productionAliasRedirectsVerified": true,
+    "originalBookFieldsRechecked": 49,
+    "latestDeploymentPrivateLoginHeadersVerified": true,
+    "tlsFollowUp": {
+      "certificate": "Active Universal SSL for apex and wildcard; valid until January 23, 2027",
+      "macIPv4AndIPv6": 200,
+      "macTls12": 200,
+      "ios265SafariSimulator": "Private login rendered successfully; this does not verify the affected physical iPhone",
+      "externalSslLabs": "All four IPv4/IPv6 endpoints completed and negotiated supported Safari clients. Grade B; legacy TLS 1.0/1.1 remain enabled in the existing Cloudflare defaults.",
+      "serverSecuritySettingsChanged": false,
+      "nextStep": "Keep HTTP/3 disabled following the successful physical iPhone retry; investigate separately if symptoms return.",
+      "physicalIPhone": "User confirmed the iPhone site opened after HTTP/3 was disabled; earlier restart-only success report remains retracted.",
+      "http3": "Disabled in Cloudflare for compatibility. Dashboard persisted off; no Alt-Svc h3 advertisement. HTTPS and TLS 1.3 retained."
+    }
+  },
+  "domain": {
+    "name": "authorjaclynosborn.com",
+    "plan": "Free Website",
+    "status": "active; HTTPS public site served through Cloudflare Worker routes",
+    "assignedNameservers": [
+      "braden.ns.cloudflare.com",
+      "rachel.ns.cloudflare.com"
+    ],
+    "customDomainCanonicalBuildPending": false,
+    "publicWorkerApiOriginPreserved": true,
+    "existingDnsRecordsPreserved": true,
+    "physicalIPhoneStatus": "Resolved in the user retry after disabling HTTP/3; HTTPS/TLS 1.3 remain enabled."
+  },
+  "mobile": {
+    "version": "1.0.1",
+    "iosBuild": "9",
+    "androidVersionCode": 3,
+    "status": "iOS 1.0.1 (9) resubmitted and WAITING_FOR_REVIEW, with automatic release after approval. Android review state below is retained from the earlier submission and was not rechecked during this iOS fix.",
+    "cloudBuildsAvoidedBecauseIncludedCreditsExhausted": true,
+    "baselineExpoDoctorHermesWarning": false,
+    "iosSubmission": "c70d880c-ee10-4381-a032-1282fe0b0fd7",
+    "iosReviewSubmission": "345a49c9-7d68-4858-a79c-306459a63594",
+    "iosReviewState": "WAITING_FOR_REVIEW",
+    "iosReleaseType": "AFTER_APPROVAL",
+    "iosNewScreenshotCount": 4,
+    "iosProductPageHeaderUpdated": true,
+    "googlePlayIconAndFeatureGraphic": "submitted with four real Android screenshots",
+    "physicalDeviceValidation": true,
+    "nativeScreenshotEvidence": "iPhone 17 Pro iOS 26.5 release simulator; Android 15 ARM64 signed release emulator",
+    "androidBuildSucceeded": true,
+    "androidAabSha256": "80a8dbc3a06cf58d33a699dc92817010f44a2ab2eef4666fee04ad7296c05947",
+    "androidNativeScreensVerified": [
+      "Home",
+      "Work",
+      "Services",
+      "Account"
+    ],
+    "androidReleaseWarning": "Optional missing deobfuscation file; no release-blocking error",
+    "googlePlayReviewState": "Changes in review; automated checks running before review",
+    "googlePlayChanges": [
+      "production versionCode 3 (1.0.1), 100% of existing targeted countries",
+      "app icon",
+      "four phone screenshots",
+      "feature graphic"
+    ],
+    "googlePlayManagedPublishing": "off; existing automatic publication behavior retained",
+    "googlePlayAiDisplayLabel": false,
+    "iosRejection": {
+      "guideline": "2.1(a) App Completeness",
+      "build": "1.0.1 (8)",
+      "devices": [
+        "iPhone 17 Pro Max, iOS 27.0",
+        "iPad Air 11-inch (M3), iPadOS 27.0"
+      ],
+      "cause": "UIKit traps in _UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption; archived app was built with iOS 27.1 SDK and has no scene manifest. Both supplied crash reports match.",
+      "remediation": "Upgraded to Expo 57.0.31 and enabled supported expo-build-properties scene lifecycle. Both generated project and signed artifact verified; old build rejected by guard.",
+      "resolvedInBuild": "9",
+      "result": "Reproduced build 8 failure, validated build 9, and resubmitted successfully."
+    },
+    "iosBuildProcessingState": "VALID",
+    "iosBuildId": "02d0b215-bbda-4701-be81-78518f62e8cc",
+    "iosTestFlightState": "IN_BETA_TESTING",
+    "iosArtifactSha256": "211e8f885f6c0aa539c764d4e137658caf674201926de1ad067b0924b66a804f",
+    "iosBuildSource": "e584461",
+    "expoVersion": "57.0.31",
+    "reactNativeVersion": "0.86.3",
+    "expoDoctor": "21/21 checks passed",
+    "physicalDeviceValidationScope": "User confirmed TestFlight build 9 opens and Account > Sign In works on their physical iPhone. Physical iPad and Android validation are not claimed.",
+    "ios9Validation": {
+      "iPhone17ProMaxSimulator": "iOS 27.0 launch, public navigation, native review-account sign-in, assigned editor read, background/foreground, saved login, cold/warm links and sign-out passed",
+      "iPadAir11M3Simulator": "iPadOS 27.0 launch, relaunch, Account and sign-in form passed; existing iPhone compatibility presentation retained",
+      "olderIosSimulator": "iOS 26.5 launch passed",
+      "physicalIPhone": "User confirmed TestFlight 1.0.1 (9) launch and Account > Sign In",
+      "staticChecks": "dependency alignment, TypeScript, portal URL regression and compiled-artifact checks passed",
+      "signatureVerified": true,
+      "noContentWrittenDuringReviewAccountQa": true
+    },
+    "testFlightAccess": "Existing app-specific account-holder tester added to existing dev group; no new user or backend role created."
+  },
+  "privateBackupLocation": "Stored outside Git in the deployment-private folder on the deployment Mac; credentials are not included in this report",
+  "customization": {
+    "presets": 4,
+    "customHexColors": "separate background, text and accent for light and dark modes",
+    "defaultTheme": [
+      "system",
+      "light",
+      "dark"
+    ],
+    "layouts": [
+      "cover-right",
+      "cover-left",
+      "centered"
+    ],
+    "catalogDensity": [
+      "airy",
+      "compact"
+    ],
+    "headingFonts": [
+      "literary",
+      "classic",
+      "clean"
+    ],
+    "coverPosition": [
+      "angled",
+      "straight"
+    ],
+    "sectionVisibility": [
+      "series",
+      "author",
+      "newsletter"
+    ],
+    "livePreviewBeforeSave": true,
+    "editableCopy": [
+      "homepage headline and introduction",
+      "announcements",
+      "section headings",
+      "biography",
+      "books and page introductions",
+      "newsletter text",
+      "FAQ and reading guides"
+    ],
+    "originalAppearanceRestoredAfterVerification": true
+  },
+  "security": {
+    "emailEnumerationProtection": true,
+    "firebaseAdaptiveAbuseProtection": "actual password sign-in is handled by Firebase; no custom fixed failed-login lockout",
+    "mfa": "disabled; shared-project policy unchanged",
+    "editorApiRequestsPerIpPer60Seconds": 180,
+    "editorWritesPerVerifiedUserPer60Seconds": 60,
+    "rateLimitScope": "approximate per Cloudflare location",
+    "excessRequests": "429 with Retry-After: 60",
+    "protectionUnavailable": "503; fail closed",
+    "privateLogin": "nonce script CSP, no-store, noindex, anti-framing",
+    "publicApiUnauthenticatedStatus": 401
+  },
+  "seo": {
+    "foundation": [
+      "server-rendered author and book content",
+      "canonical URLs on authorjaclynosborn.com",
+      "social metadata",
+      "Book structured data",
+      "56 public sitemap URLs",
+      "49 individual book pages",
+      "reading guides and internal links"
+    ],
+    "searchConsole": "DNS verification prepared; pending explicit ownership confirmation",
+    "sitemapSubmittedToSearchConsole": false,
+    "indexingAndRankingsVerified": false
+  },
+  "source": {
+    "branch": "codex/jaclyn-shared-editor-2026-10-22",
+    "site": "c3e44ef",
+    "webPortal": "f4882a0",
+    "control": "8df7663",
+    "app": "67d430d",
+    "pullRequests": "existing four draft pull requests retained; no merge"
+  },
+  "deploymentRecovery": {
+    "issue": "A build without SITE_URL reverted canonical metadata and public alias behavior to workers.dev. The deploy itself correctly used Astro generated configuration.",
+    "rollback": "Restored previously verified version 131b419e-d0c8-4f8b-80b9-461ec0dda135 before correcting and redeploying.",
+    "prevention": [
+      "Astro default site is now authorjaclynosborn.com",
+      "npm run deploy forces production SITE_URL",
+      "Generated server bundle hostname is checked before upload",
+      "Generated dist/_worker.js/wrangler.json is passed explicitly"
+    ],
+    "result": "56 custom-domain sitemap pages passed; apex canonical metadata and www/workers.dev redirects verified; original 49 core book records preserved"
+  }
+}

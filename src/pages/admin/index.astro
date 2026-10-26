@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 
+import EditorNav from '../../components/EditorNav.astro';
 import PageHero from '../../components/PageHero.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAdminCatalogSnapshot } from '../../lib/catalog/repository';
@@ -54,6 +55,7 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
   title="Admin"
   description="Protected catalog dashboard for managing Jaclyn Osborn books."
 >
+  <div class="editorial-width" style="padding-top:24px"><EditorNav /></div>
   <PageHero
     eyebrow="Admin"
     title="Catalog dashboard"
@@ -488,6 +490,10 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
                         >{initialCatalog.books[0]?.shortBlurb ?? ''}</textarea>
                         <span class="admin-field-error" data-field-error="shortBlurb"></span>
                       </label>
+                      <label class="admin-field"><span class="admin-field-label">Full book description</span><textarea name="description" class="input-shell min-h-48 py-3" rows="9" maxlength="5000">{initialCatalog.books[0]?.description ?? ''}</textarea></label>
+                      <label class="admin-field"><span class="admin-field-label">Genres (comma separated)</span><input name="genres" class="input-shell" value={initialCatalog.books[0]?.genres.join(', ') ?? ''} placeholder="fantasy, paranormal" /></label>
+                      <label class="admin-field"><span class="admin-field-label">Formats (comma separated)</span><input name="formats" class="input-shell" value={initialCatalog.books[0]?.formats.join(', ') ?? ''} placeholder="ebook, paperback, hardcover, audiobook" /></label>
+
                     </div>
                   </div>
                 </div>
@@ -534,6 +540,7 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
                   <div class="grid gap-4 sm:grid-cols-2">
                     <label class="admin-field">
                       <span class="admin-field-label">Display price</span>
+                      <span class="admin-field-help">This changes the website label. Update the checkout price with your payment provider too, and paste the matching payment link.</span>
                       <input
                         type="text"
                         name="displayPrice"
@@ -721,6 +728,9 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
       coverImageUrl: form.elements.namedItem('coverImageUrl'),
       coverAlt: form.elements.namedItem('coverAlt'),
       shortBlurb: form.elements.namedItem('shortBlurb'),
+      description: form.elements.namedItem('description'),
+      genres: form.elements.namedItem('genres'),
+      formats: form.elements.namedItem('formats'),
       availabilityStatus: form.elements.namedItem('availabilityStatus'),
       availabilityLabel: form.elements.namedItem('availabilityLabel'),
       amazonLink: form.elements.namedItem('amazonLink'),
@@ -742,6 +752,9 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
       !(fields.coverImageUrl instanceof HTMLInputElement) ||
       !(fields.coverAlt instanceof HTMLInputElement) ||
       !(fields.shortBlurb instanceof HTMLTextAreaElement) ||
+      !(fields.description instanceof HTMLTextAreaElement) ||
+      !(fields.genres instanceof HTMLInputElement) ||
+      !(fields.formats instanceof HTMLInputElement) ||
       !(fields.availabilityStatus instanceof HTMLSelectElement) ||
       !(fields.availabilityLabel instanceof HTMLInputElement) ||
       !(fields.amazonLink instanceof HTMLInputElement) ||
@@ -1145,6 +1158,9 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
         coverImageUrl: fields.coverImageUrl.value.trim(),
         coverAlt: fields.coverAlt.value.trim(),
         shortBlurb: fields.shortBlurb.value.trim(),
+        description: fields.description.value.trim(),
+        genres: fields.genres.value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+        formats: fields.formats.value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
         availabilityStatus: fields.availabilityStatus.value,
         availabilityLabel: fields.availabilityLabel.value.trim(),
         amazonLink: fields.amazonLink.value.trim(),
@@ -1384,6 +1400,9 @@ function getBookCoverSource(book: (typeof initialCatalog.books)[number]) {
       fields.coverImageUrl.value = book.coverImageUrl ?? '';
       fields.coverAlt.value = book.coverAlt ?? '';
       fields.shortBlurb.value = book.shortBlurb ?? '';
+      fields.description.value = book.description ?? '';
+      fields.genres.value = (book.genres ?? []).join(', ');
+      fields.formats.value = (book.formats ?? []).join(', ');
       fields.availabilityStatus.value = book.availabilityStatus ?? 'in_stock';
       fields.availabilityLabel.value = book.availabilityLabel ?? '';
       fields.amazonLink.value = book.amazonLink ?? '';

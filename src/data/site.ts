@@ -76,7 +76,7 @@ export const faqItems = [
   {
     question: 'How do I sign up for the newsletter?',
     answer:
-      'Visit the newsletter page and add your email to get release news, cover reveals, and signed copy updates.',
+      'Visit the newsletter page for the current signup option or to ask Jaclyn about receiving updates.',
   },
   {
     question: 'Where can I buy the books?',

@@ -23,6 +23,7 @@ export type MerchandisingFlag =
   | 'preorder';
 
 export type PurchaseMode =
+  | 'payhip'
   | 'external_retailer'
   | 'stripe_payment_link'
   | 'stripe_buy_button'
@@ -55,7 +56,7 @@ export interface RetailerLink {
 export interface DirectSaleFormat {
   id: string;
   label: string;
-  purchaseMode: 'stripe_payment_link' | 'stripe_buy_button' | 'unavailable';
+  purchaseMode: 'payhip' | 'external_retailer' | 'stripe_payment_link' | 'stripe_buy_button' | 'unavailable';
   purchaseUrl?: string;
   stripeBuyButtonId?: string;
   format?: FormatKey;

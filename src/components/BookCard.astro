@@ -2,7 +2,6 @@
 import { getBookCollectionLabel } from '../data/catalog';
 import type { Book } from '../types/catalog';
 import BookCover from './BookCover.astro';
-import PurchaseActions from './PurchaseActions.astro';
 
 interface Props {
   book: Book;
@@ -42,7 +41,7 @@ const readingOrderCard = showOrder;
         </span>
       )
     }
-    <BookCover book={book} className={readingOrderCard ? 'rounded-[0.85rem]' : ''} />
+    <a href={`/books/${book.slug}/`} aria-label={`Read about ${book.title}`}><BookCover book={book} /></a>
   </div>
 
   <div
@@ -69,7 +68,7 @@ const readingOrderCard = showOrder;
           : 'mt-4 text-[1.72rem] leading-[1.02] sm:text-[2rem]',
       ]}
     >
-      {book.title}
+      <a href={`/books/${book.slug}/`}>{book.title}</a>
     </h3>
     {
       releaseYear && (
@@ -83,13 +82,16 @@ const readingOrderCard = showOrder;
         'text-sm text-[#5d4b52]',
         readingOrderCard
           ? 'mt-2 line-clamp-4 leading-[1.35] sm:text-[0.92rem]'
-          : 'mt-3 leading-6 sm:text-[0.96rem] sm:leading-7',
+          : 'mt-3 line-clamp-3 leading-6 sm:text-[0.96rem] sm:leading-7',
       ]}
     >
       {book.shortHook}
     </p>
 
-    <PurchaseActions book={book} compact />
+    <div class="book-card-actions">
+      {book.purchase.displayPrice && <span class="book-card-price">{book.purchase.displayPrice}</span>}
+      <a class="text-link" href={`/books/${book.slug}/`}>View book <span aria-hidden="true">↗</span></a>
+    </div>
 
     <div class:list={[readingOrderCard ? 'mt-auto pt-4 text-xs text-[#6e5961] sm:text-sm' : 'mt-auto pt-6 text-sm text-[#6e5961]']}>
       {

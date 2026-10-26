@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const urlPattern = /^(https?:\/\/|\/)/i;
+const urlPattern = /^(https:\/\/[^\s]+|\/(?!\/)[^\\\s]*)$/i;
 
 function trimString(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -78,6 +78,8 @@ export const adminBookInputSchema = z.object({
     z.number().int().min(-999999).max(999999),
   ),
   description: z.preprocess(trimString, z.string().max(5000)).optional(),
+  genres: z.array(z.string().trim().min(1).max(80)).max(12).optional(),
+  formats: z.array(z.enum(['ebook','paperback','hardcover','audiobook'])).max(4).optional(),
 });
 
 export const reorderBookSchema = z.object({

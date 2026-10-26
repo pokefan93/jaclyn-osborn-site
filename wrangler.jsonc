@@ -1,9 +1,28 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "jaclyn-osborn-site",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "authorjaclynosborn.com/*",
+      "zone_name": "authorjaclynosborn.com"
+    },
+    {
+      "pattern": "www.authorjaclynosborn.com/*",
+      "zone_name": "authorjaclynosborn.com"
+    }
+  ],
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-03-29",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "services": [
+    {
+      "binding": "CONTROL",
+      "service": "tts-control"
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -32,6 +51,24 @@
     {
       "binding": "SESSION",
       "id": "d666c7acd8bc4f4f97ebcb1b94c42b6a"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "EDITOR_REQUEST_LIMITER",
+      "namespace_id": "2026102501",
+      "simple": {
+        "limit": 180,
+        "period": 60
+      }
+    },
+    {
+      "name": "EDITOR_WRITE_LIMITER",
+      "namespace_id": "2026102502",
+      "simple": {
+        "limit": 60,
+        "period": 60
+      }
     }
   ]
 }

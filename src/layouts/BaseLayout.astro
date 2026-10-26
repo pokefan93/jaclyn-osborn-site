@@ -1,18 +1,28 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { siteMeta } from '../data/site';
+import { siteMeta as defaults } from '../data/site';
+const siteMeta = { ...defaults, ...Astro.locals.content };
 import { withBase } from '../utils/withBase';
 import '../styles/global.css';
+import '../styles/editorial.css';
+import { appearanceCss } from '../lib/appearance';
+import displayFont from '@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  structuredData?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 const {
   title = siteMeta.title,
   description = siteMeta.description,
+  image = '/images/social.jpg',
+  structuredData,
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
@@ -20,14 +30,23 @@ const canonical = new URL(Astro.url.pathname, siteUrl).toString();
 const socialTitle = title.includes(siteMeta.name)
   ? title
   : `${title} | ${siteMeta.name}`;
+const privatePage = noindex || Astro.url.searchParams.has('editor-preview') || /^\/(admin|thank-you)(\/|$)/.test(Astro.url.pathname);
+const socialImage = new URL(image, siteUrl).href;
+const schema = structuredData ?? {
+  '@context': 'https://schema.org', '@type': 'WebSite', name: siteMeta.name,
+  url: siteUrl.href, description: siteMeta.description,
+  author: {'@type':'Person', name:siteMeta.name, url:new URL('/about/',siteUrl).href, sameAs:siteMeta.instagramUrl ? [siteMeta.instagramUrl] : []},
+};
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-default-theme={Astro.locals.content.defaultTheme} data-font={Astro.locals.content.displayFont} data-cover-style={Astro.locals.content.coverStyle} data-palette={Astro.locals.content.palette} data-layout={Astro.locals.content.homeLayout} data-density={Astro.locals.content.catalogDensity}>
   <head>
     <meta charset="utf-8" />
+    <style id="site-appearance" is:inline set:html={appearanceCss(Astro.locals.content.palette, Astro.locals.content)} />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
+    {privatePage && <meta name="robots" content="noindex, nofollow" />}
     <meta name="description" content={description} />
     <meta name="theme-color" content="#241920" data-theme-color />
     <link rel="canonical" href={canonical} />
@@ -46,14 +65,14 @@ const socialTitle = title.includes(siteMeta.name)
           : 'light';
         const theme = storedTheme === 'dark' || storedTheme === 'light'
           ? storedTheme
-          : systemTheme;
+          : ['light', 'dark'].includes(document.documentElement.dataset.defaultTheme || '') ? document.documentElement.dataset.defaultTheme : systemTheme;
 
         document.documentElement.dataset.theme = theme;
         document.documentElement.classList.toggle('theme-dark', theme === 'dark');
 
         const metaTheme = document.querySelector('meta[data-theme-color]');
         if (metaTheme instanceof HTMLMetaElement) {
-          metaTheme.content = theme === 'dark' ? '#120e15' : '#241920';
+          metaTheme.content = getComputedStyle(document.documentElement).getPropertyValue('--page-bg').trim() || (theme === 'dark' ? '#191f1b' : '#f5f2eb');
         }
       })();
     </script>
@@ -62,9 +81,15 @@ const socialTitle = title.includes(siteMeta.name)
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteMeta.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content={socialTitle} />
+    <meta name="twitter:image" content={socialImage} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={socialTitle} />
     <meta name="twitter:description" content={description} />
+    {!privatePage && <script type="application/ld+json" is:inline set:html={JSON.stringify(schema).replace(/</g, '\\u003c')} />}
   </head>
   <body class="min-h-screen">
     <a href="#main-content" class="skip-link">Skip to content</a>
@@ -73,5 +98,6 @@ const socialTitle = title.includes(siteMeta.name)
       <slot />
     </main>
     <SiteFooter />
+    <script src="../scripts/appearance-preview.ts"></script>
   </body>
 </html>

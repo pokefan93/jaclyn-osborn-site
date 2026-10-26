@@ -1,0 +1,145 @@
+---
+import { env } from 'cloudflare:workers';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EditorNav from '../../components/EditorNav.astro';
+type Row = {
+  id?: number;
+  name: string;
+  lane: string;
+  tagline: string;
+  description: string;
+  entry_point: string;
+  visible: number;
+  sort_priority: number;
+};
+const { results } = await env.DB.prepare(
+  'SELECT * FROM series ORDER BY sort_priority,name',
+).all<Row>();
+const rows: Row[] = [
+  {
+    name: '',
+    lane: '',
+    tagline: '',
+    description: '',
+    entry_point: '',
+    visible: 1,
+    sort_priority: 0,
+  },
+  ...results,
+];
+---
+
+<BaseLayout title="Manage series" noindex>
+  <section class="editorial-width" style="padding-top:32px">
+    <EditorNav />
+    <h1 style="font-size:3rem;margin-bottom:20px">Your series</h1>
+    <p style="margin-bottom:24px">
+      Create a series, change its introduction, or hide it from the series page.
+      Books retain their individual visibility settings.
+    </p>
+    {rows.map((row) => (
+      <details class="editor-fieldset">
+        <summary style="font-size:1.3rem;cursor:pointer">
+          {row.id ? row.name : '+ Add a series'}
+        </summary>
+        <form data-series-form data-id={row.id} style="padding-top:24px">
+          <div class="editor-grid">
+            <label>
+              Name
+              <input
+                class="input-shell"
+                name="name"
+                value={row.name}
+                required
+                maxlength="200"
+              />
+            </label>
+            <label>
+              Genre / category
+              <input class="input-shell" name="lane" value={row.lane} />
+            </label>
+            <label>
+              Tagline
+              <input class="input-shell" name="tagline" value={row.tagline} />
+            </label>
+            <label>
+              Start with this book
+              <input
+                class="input-shell"
+                name="entryPoint"
+                value={row.entry_point}
+              />
+            </label>
+            <label class="editor-wide">
+              Description
+              <textarea
+                class="input-shell"
+                name="description"
+              >{row.description}</textarea>
+            </label>
+            <label>
+              Display order
+              <input
+                class="input-shell"
+                type="number"
+                name="sortPriority"
+                value={row.sort_priority}
+              />
+            </label>
+            <label>
+              <span>
+                <input
+                  type="checkbox"
+                  name="visible"
+                  checked={Boolean(row.visible)}
+                />{' '}
+                Show on series page
+              </span>
+            </label>
+          </div>
+          <button type="submit" class="button-primary" style="margin-top:24px">
+            Save series
+          </button>
+          <p role="status" class="editor-status"></p>
+        </form>
+      </details>
+    ))}
+  </section>
+</BaseLayout>
+<script>
+  document
+    .querySelectorAll<HTMLFormElement>('[data-series-form]')
+    .forEach((form) => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const button = form.querySelector('button')!;
+        const status = form.querySelector('[role="status"]')!;
+        const data = Object.fromEntries(new FormData(form));
+        button.disabled = true;
+        status.textContent = 'Saving…';
+        try {
+          const res = await fetch('/api/admin/series/', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...data,
+              id: form.dataset.id ? Number(form.dataset.id) : undefined,
+              visible: data.visible === 'on',
+              sortPriority: Number(data.sortPriority),
+            }),
+          });
+          const result = (await res.json()) as { ok: boolean; error?: string };
+          if (!res.ok) throw new Error(result.error || 'Save failed.');
+          if (!form.dataset.id) {
+            window.location.reload();
+            return;
+          }
+          status.textContent = 'Series saved.';
+        } catch (e) {
+          status.textContent = e instanceof Error ? e.message : 'Save failed.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+</script>

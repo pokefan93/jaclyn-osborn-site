@@ -1,5 +1,6 @@
 ---
-import { navItems, siteMeta } from '../data/site';
+import { navItems, siteMeta as defaults } from '../data/site';
+const siteMeta = { ...defaults, ...Astro.locals.content };
 import { withBase } from '../utils/withBase';
 
 const normalizedPath = (() => {
@@ -12,30 +13,19 @@ const normalizedPath = (() => {
 const isActive = (href: string) => normalizedPath === href;
 ---
 
-<header class="sticky top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4 lg:px-8">
+<header class="site-header sticky top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4 lg:px-8">
   <div class="mx-auto max-w-7xl">
     <div class="glass-panel flex items-center justify-between gap-3 rounded-[1.7rem] px-3 py-2.5 sm:gap-4 sm:rounded-[2rem] sm:px-5 sm:py-3">
       <a
         href={withBase('')}
         class="group inline-flex max-w-[calc(100%-3.5rem)] min-w-0 items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#241920] sm:gap-3 md:max-w-[22rem] lg:max-w-[25rem] xl:max-w-none"
       >
-        <span
-          class="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-white/55 bg-[#f4e6e0] shadow-[0_16px_30px_rgba(111,66,94,0.22)] sm:h-12 sm:w-12"
-        >
-          <img
-            src={withBase('photos/jaclynosbornpicture.jpg')}
-            alt="Portrait of Jaclyn Osborn"
-            class="h-full w-full scale-[1.38] object-cover object-[50%_26%]"
-            loading="eager"
-            decoding="async"
-          />
-        </span>
         <span class="min-w-0 pr-1">
           <span class="site-brand-title block overflow-visible whitespace-nowrap pr-[0.08em] pt-[0.08em] pb-[0.08em] font-display text-[1.18rem] font-semibold leading-[1.02] tracking-[-0.02em] sm:text-[1.56rem] sm:tracking-[-0.025em]">
             {siteMeta.name}
           </span>
           <span class="site-brand-subtitle mt-1 block truncate text-[0.62rem] uppercase tracking-[0.18em] sm:text-xs sm:tracking-[0.28em]">
-            BESTSELLING M/M ROMANCE AUTHOR
+            M/M ROMANCE AUTHOR
           </span>
         </span>
       </a>

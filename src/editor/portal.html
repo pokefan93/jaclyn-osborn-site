@@ -1,0 +1,1670 @@
+<!doctype html>
+<html lang="en" data-site-editor="jaclyn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Private website editor for Jaclyn Osborn." />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#586cbd" />
+    <title>Site editor | Jaclyn Osborn</title>
+    <link rel="icon" type="image/png" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --blue: #586cbd;
+        --blue-dark: #4558ad;
+        --ink: #1f2d42;
+        --ink-soft: #4d627c;
+        --muted: #6f8099;
+        --bg: #f2f6ff;
+        --surface: #ffffff;
+        --border: rgba(88, 108, 189, 0.18);
+        --danger: #d8483f;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #f6f7fb;
+          --ink-soft: #c7ccd4;
+          --muted: #8d96a4;
+          --bg: #0a0c0f;
+          --surface: #12161c;
+          --border: rgba(146, 181, 255, 0.18);
+          --blue: #78a7ff;
+          --blue-dark: #9ec1ff;
+        }
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Manrope', system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px;
+      }
+      header { width: 100%; max-width: 680px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+      .brand { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; }
+      .home-link { color: var(--ink-soft); text-decoration: none; font-size: 14px; font-weight: 600; }
+      main { width: 100%; display: flex; flex-direction: column; align-items: center; }
+      .card {
+        width: 100%;
+        max-width: 460px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 14px 40px rgba(16, 24, 40, 0.08);
+      }
+      h1 { font-family: 'Chakra Petch', sans-serif; font-size: 26px; margin: 0 0 6px; }
+      .sub { color: var(--ink-soft); margin: 0 0 20px; font-size: 15px; line-height: 1.5; }
+      label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+      .helper { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); margin: -2px 0 6px; font-weight: 500; }
+      input, textarea, select {
+        width: 100%;
+        font-family: 'Manrope', sans-serif;
+        font-size: 15px;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 13px 14px;
+        min-height: 48px;
+      }
+      textarea { min-height: 92px; resize: vertical; line-height: 1.5; }
+      select { width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px; }
+      input:focus, textarea:focus, select:focus { outline: none; border-color: var(--blue); }
+      button {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        border-radius: 999px;
+        border: 1px solid var(--blue);
+        padding: 12px 18px;
+        width: 100%;
+        margin-top: 18px;
+        transition: transform 0.05s ease;
+      }
+      button:active { transform: scale(0.98); }
+      button:disabled { opacity: 0.6; cursor: default; }
+      .btn-primary { background: var(--blue); color: #fff; }
+      .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); margin-top: 10px; }
+      .link-btn { background: none; border: none; color: var(--blue); font-weight: 600; width: auto; padding: 8px 0; margin: 6px 0 0; }
+      .msg { font-size: 14px; margin-top: 14px; line-height: 1.4; }
+      .msg.error { color: var(--danger); }
+      .msg.notice { color: var(--blue); }
+      .hidden { display: none; }
+      .pill { display: inline-block; background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; border-radius: 999px; }
+
+      /* Editor */
+      #member-view { width: 100%; max-width: 680px; }
+      .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+      .topbar .who { color: var(--ink-soft); font-size: 14px; }
+      .topbar .who a { color: var(--blue); font-weight: 600; text-decoration: none; }
+      .site-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+      .site-head h1 { margin: 0; }
+      .site-head a { color: var(--blue); font-weight: 600; font-size: 14px; text-decoration: none; }
+      .group { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 16px; }
+      .group h2 { font-family: 'Chakra Petch', sans-serif; font-size: 18px; margin: 0 0 12px; }
+      .field { margin-bottom: 14px; }
+      .field:last-child { margin-bottom: 0; }
+      .img-preview { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); margin-bottom: 10px; }
+      .save-bar { position: sticky; bottom: 16px; }
+      .toast { font-size: 14px; margin-top: 10px; line-height: 1.4; }
+      .toast.ok { color: var(--blue); }
+      .toast.err { color: var(--danger); }
+      .muted { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+      /* Sort + filter bar (Products / Books lists) */
+      .sf-bar { border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; background: var(--bg); }
+      .sf-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+      .sf-row:last-child { margin-bottom: 0; }
+      .sf-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 2px; }
+      .sf-pill { width: auto; margin: 0; padding: 7px 13px; font-size: 13px; font-weight: 600; min-height: 0; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft); transition: none; }
+      .sf-pill[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+      .sf-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
+      .sf-count { color: var(--muted); font-size: 13px; font-weight: 600; }
+      .sf-clear { width: auto; margin: 0; padding: 0; background: none; border: none; color: var(--blue); font-weight: 600; font-size: 13px; }
+
+      /* Role badge + small action buttons */
+      .role-badge { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--ink-soft); vertical-align: middle; }
+      .role-badge.owner { background: var(--blue); color: #fff; border-color: var(--blue); }
+      .role-badge.editor { background: rgba(88, 108, 189, 0.14); color: var(--blue); }
+      .role-badge.viewer { background: var(--bg); color: var(--muted); }
+      .site-head .head-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+      .btn-sm { width: auto; margin: 0; padding: 8px 14px; font-size: 13px; min-height: 0; }
+      .topbar .head-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+      /* Member rows (Manage users / Admin) */
+      .member-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+      .member-row:first-of-type { border-top: none; }
+      .member-row .m-main { flex: 1; min-width: 160px; }
+      .member-row .m-email { font-weight: 700; word-break: break-word; }
+      .member-row .m-meta { color: var(--muted); font-size: 13px; margin-top: 2px; }
+      .member-row .m-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .member-row select { width: auto; min-height: 0; padding: 8px 10px; font-size: 13px; }
+      .row-add { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
+      .inline-note { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); margin: 8px 0 0; font-weight: 500; }
+      .temp-pass { background: rgba(88, 108, 189, 0.10); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-top: 12px; }
+      .temp-pass code { display: block; font-family: ui-monospace, Menlo, monospace; font-size: 16px; font-weight: 700; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin: 6px 0; word-break: break-all; user-select: all; }
+      .temp-pass .tp-label { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+      footer { margin-top: 26px; color: var(--muted); font-size: 13px; text-align: center; }
+      footer a { color: var(--ink-soft); }
+      .editor-shortcuts { display:flex; flex-wrap:wrap; gap:8px 20px; padding:12px 0 24px; }
+      .editor-shortcuts a { color:var(--ink-soft); font-size:14px; text-underline-offset:5px; }
+      .editor-group { scroll-margin-top:20px; }
+      .editor-group summary { cursor:pointer; font-size:18px; font-weight:700; }
+      .editor-group[open] summary { margin-bottom:18px; }
+      .palette-preview { display:grid; gap:12px; padding:24px; margin:16px 0; border:1px solid var(--border); }
+      .palette-preview strong { font:32px Georgia,serif; }
+      .palette-preview div { display:flex; gap:8px; }
+      .palette-preview i { display:block; width:32px; height:32px; border:1px solid #0002; border-radius:50%; }
+      html[data-site-editor='jaclyn'] { --bg:#f5f2eb;--surface:#faf8f2;--ink:#242a25;--ink-soft:#53594f;--muted:#666d61;--blue:#354434;--border:#d9d9cd; color-scheme:light; }
+      html[data-site-editor='jaclyn'] body { background:var(--bg); }
+      html[data-site-editor='jaclyn'] header { border-bottom:1px solid var(--border);padding-bottom:22px; }
+      html[data-site-editor='jaclyn'] .brand { font:30px Georgia,serif; font-weight:normal; }
+      html[data-site-editor='jaclyn'] .card, html[data-site-editor='jaclyn'] .group { border-radius:4px;box-shadow:none; }
+      html[data-site-editor='jaclyn'] h1 { font:38px Georgia,serif;letter-spacing:-.03em; }
+      html[data-site-editor='jaclyn'] h2 { font:26px Georgia,serif; }
+      html[data-site-editor='jaclyn'] .pill, html[data-site-editor='jaclyn'] .role-badge { border-radius:3px;letter-spacing:.04em; }
+      html[data-site-editor='jaclyn'] .btn-primary, html[data-site-editor='jaclyn'] .btn-ghost, html[data-site-editor='jaclyn'] input, html[data-site-editor='jaclyn'] textarea { border-radius:4px; }
+      .color-control { display:grid;grid-template-columns:48px minmax(90px,1fr) auto;gap:10px;align-items:center; }
+      .color-control input[type=color] { width:48px;height:46px;padding:3px;cursor:pointer; }
+      .color-control .btn-ghost { width:auto;margin:0; }
+      [data-site-preview] { display:block;width:100%;height:580px;border:1px solid var(--border);border-radius:4px;background:#f5f2eb;pointer-events:none; }
+      .appearance-actions { border-top:1px solid var(--border);margin-top:24px;padding-top:12px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">Jaclyn Osborn</a>
+      <a class="home-link" href="/">← Back to site</a>
+    </header>
+
+    <main>
+      <!-- Logged-out: auth form -->
+      <section id="auth-view" class="card">
+        <span class="pill">Site editor</span>
+        <h1 id="auth-title" style="margin-top:14px;">Welcome back</h1>
+        <p class="sub" id="auth-sub">Sign in to update your books and website. Use your existing client account.</p>
+
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" />
+
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" />
+
+        <div id="msg" class="msg hidden" role="status" aria-live="polite"></div>
+
+        <button id="submit-btn" class="btn-primary">Sign In</button>
+        <button id="forgot-btn" class="link-btn">Forgot password?</button>
+        <p class="muted" style="margin:16px 0 0;">Accounts are set up by Taylor&apos;s Tech Solutions. Need access? Contact Taylor.</p>
+      </section>
+
+      <!-- Logged-in: the editor -->
+      <section id="member-view" class="hidden">
+        <div class="topbar">
+          <span class="pill">Site editor</span>
+          <div class="head-actions">
+            <span class="who">Signed in as <span id="member-email"></span> · <a href="#" id="signout-link">Sign out</a></span>
+            <button id="admin-btn" class="btn-ghost btn-sm hidden">Admin</button>
+          </div>
+        </div>
+        <div id="sites"></div>
+      </section>
+    </main>
+
+    <footer>
+      Need help? Email <a href="mailto:taylorstechsolutions@icloud.com">taylorstechsolutions@icloud.com</a>
+      or call <a href="tel:+19183156487">(918) 315-6487</a>.
+    </footer>
+
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js';
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signInWithEmailAndPassword,
+        sendPasswordResetEmail,
+        signOut,
+      } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+
+      const firebaseConfig = {
+        apiKey: 'AIzaSyCPoxEsQCbmXWhfjGFmrmc24a8_pWGNAww',
+        authDomain: 'taylorstechsite-5982d.firebaseapp.com',
+        projectId: 'taylorstechsite-5982d',
+        storageBucket: 'taylorstechsite-5982d.firebasestorage.app',
+        messagingSenderId: '236739975647',
+        appId: '1:236739975647:web:9cec49764257f198904c6a',
+      };
+
+      const auth = getAuth(initializeApp(firebaseConfig));
+      document.addEventListener('error',event=>{const image=event.target;if(image instanceof HTMLImageElement){if(image.classList.contains('img-preview'))image.style.display='none';else image.style.visibility='hidden';}},true);
+      const $ = (id) => document.getElementById(id);
+
+      /* ---------- control plane ---------- */
+      // The site list + the signed-in user's role on each site now come from the
+      // control plane (GET /api/control/me) instead of a hardcoded list. `me` is
+      // cached after sign-in so the per-site editor + admin tools can reuse it.
+      const CONTROL_BASE = 'https://tts-control.karnestaylor.workers.dev/api/control';
+      const jaclynOnly = document.documentElement.dataset.siteEditor === 'jaclyn';
+      let me = null; // { uid, email, isSuperAdmin, memberships:[...] }
+
+      // Turn a control-plane membership into the `site` object the editor expects.
+      // siteId is reused as `id` so GROUPS_BY_SITE (keyed by hixon/jaclyn) keeps working.
+      const siteFromMembership = (m) => ({
+        id: m.siteId,
+        name: m.siteName,
+        apiBase: m.siteId === 'jaclyn' ? (jaclynOnly ? location.origin : 'https://jaclyn-osborn-site.karnestaylor.workers.dev') : m.apiBase,
+        liveUrl: m.siteId === 'jaclyn' ? 'https://authorjaclynosborn.com' : m.liveUrl,
+        hasProducts: !!(m.capabilities && m.capabilities.hasProducts),
+        hasBooks: !!(m.capabilities && m.capabilities.hasBooks),
+        role: m.role,
+      });
+
+      /* ---------- editable client field definitions (by site id) ---------- */
+      const GROUPS_BY_SITE = {
+        hixon: [
+          { group: 'Business', fields: [
+            { key: 'bakeryName', label: 'Site name' },
+            { key: 'contactEmail', label: 'Contact email' },
+            { key: 'facebookUrl', label: 'Facebook URL' },
+            { key: 'footerNote', label: 'Footer note', multiline: true },
+          ]},
+          { group: 'Home hero', fields: [
+            { key: 'homeEyebrow', label: 'Eyebrow' },
+            { key: 'homeHeading', label: 'Heading' },
+            { key: 'homeHeroNote', label: 'Intro note', multiline: true },
+          ]},
+          { group: 'Story', fields: [
+            { key: 'storyHeading', label: 'Heading' },
+            { key: 'storyBody', label: 'Body', multiline: true },
+          ]},
+          { group: 'About', fields: [
+            { key: 'aboutHeadline', label: 'Headline' },
+            { key: 'aboutBody', label: 'Body', multiline: true },
+          ]},
+          { group: 'Photos', fields: [
+            { key: 'heroImageUrl', label: 'Home hero photo', image: true },
+            { key: 'aboutImageUrl', label: 'About photo', image: true },
+          ]},
+        ],
+        jaclyn: [
+{
+  "group": "Colors & layout",
+  "fields": [
+{"key": "defaultTheme", "label": "Default appearance", "helper": "Used for visitors who have not chosen their own preference.", "options": [["system", "Match visitor’s device"], ["light", "Light mode"], ["dark", "Dark mode"]]},{"key": "displayFont", "label": "Heading style", "options": [["literary", "Literary serif"], ["classic", "Classic serif"], ["clean", "Clean sans serif"]]},{"key": "coverStyle", "label": "Featured cover position", "options": [["angled", "Gently angled"], ["straight", "Straight"]]},{"key": "customBackground", "label": "Background · light mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customText", "label": "Text · light mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customAccent", "label": "Accent · light mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customDarkBackground", "label": "Background · dark mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customDarkText", "label": "Text · dark mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},{"key": "customDarkAccent", "label": "Accent · dark mode", "color": true, "helper": "Optional. Choose any color or enter #RRGGBB. Leave blank to use the preset."},
+    {
+      "key": "palette",
+      "label": "Colors",
+      "helper": "Each palette includes coordinated light and dark colors with readable text.",
+      "options": [
+        [
+          "olive",
+          "Olive & cream"
+        ],
+        [
+          "ink",
+          "Ink & paper"
+        ],
+        [
+          "plum",
+          "Plum & linen"
+        ],
+        [
+          "clay",
+          "Clay & ivory"
+        ]
+      ]
+    },
+    {
+      "key": "homeLayout",
+      "label": "Homepage layout",
+      "options": [
+        [
+          "cover-right",
+          "Featured book on the right"
+        ],
+        [
+          "cover-left",
+          "Featured book on the left"
+        ],
+        [
+          "centered",
+          "Centered introduction"
+        ]
+      ]
+    },
+    {
+      "key": "catalogDensity",
+      "label": "Books page layout",
+      "options": [
+        [
+          "airy",
+          "Roomy book cards"
+        ],
+        [
+          "compact",
+          "Compact bookshelf"
+        ]
+      ]
+    },
+    {
+      "key": "showSeries",
+      "label": "Homepage series section",
+      "options": [
+        [
+          "show",
+          "Show"
+        ],
+        [
+          "hide",
+          "Hide"
+        ]
+      ]
+    },
+    {
+      "key": "showAuthor",
+      "label": "Homepage author section",
+      "options": [
+        [
+          "show",
+          "Show"
+        ],
+        [
+          "hide",
+          "Hide"
+        ]
+      ]
+    },
+    {
+      "key": "showNewsletter",
+      "label": "Homepage newsletter section",
+      "options": [
+        [
+          "show",
+          "Show"
+        ],
+        [
+          "hide",
+          "Hide"
+        ]
+      ]
+    }
+  ]
+},
+  {
+    "group": "Profile",
+    "fields": [
+      {
+        "key": "name",
+        "label": "Name"
+      },
+      {
+        "key": "title",
+        "label": "Search title"
+      },
+      {
+        "key": "description",
+        "label": "Search description",
+        "multiline": true
+      },
+      {
+        "key": "shortTagline",
+        "label": "Short tagline"
+      },
+      {
+        "key": "longBio",
+        "label": "Biography",
+        "multiline": true
+      },
+      {
+        "key": "authorPhoto",
+        "label": "Author photo",
+        "image": true
+      }
+    ]
+  },
+  {
+    "group": "Homepage",
+    "fields": [
+      {
+        "key": "heroTitle",
+        "label": "Headline"
+      },
+      {
+        "key": "heroCopy",
+        "label": "Introduction",
+        "multiline": true
+      },
+      {
+        "key": "featuredBookSlug",
+        "label": "Featured book address",
+        "helper": "For example: galen. Clear this to use the first featured book."
+      },
+      {
+        "key": "announcement",
+        "label": "Announcement"
+      },
+      {
+        "key": "announcementUrl",
+        "label": "Announcement link"
+      },
+      {
+        "key": "discoverTitle",
+        "label": "Series section heading"
+      },
+      {
+        "key": "authorTitle",
+        "label": "Author section heading"
+      }
+    ]
+  },
+  {
+    "group": "Pages",
+    "fields": [
+      {
+        "key": "booksTitle",
+        "label": "Books heading"
+      },
+      {
+        "key": "booksCopy",
+        "label": "Books introduction",
+        "multiline": true
+      },
+      {
+        "key": "seriesTitle",
+        "label": "Series heading"
+      },
+      {
+        "key": "seriesCopy",
+        "label": "Series introduction",
+        "multiline": true
+      },
+      {
+        "key": "aboutTitle",
+        "label": "About heading"
+      },
+      {
+        "key": "contactTitle",
+        "label": "Contact heading"
+      },
+      {
+        "key": "contactCopy",
+        "label": "Contact introduction",
+        "multiline": true
+      }
+    ]
+  },
+  {
+    "group": "Newsletter & contact",
+    "fields": [
+      {
+        "key": "newsletterUrl",
+        "label": "Newsletter signup link"
+      },
+      {
+        "key": "newsletterTitle",
+        "label": "Newsletter heading"
+      },
+      {
+        "key": "newsletterCopy",
+        "label": "Newsletter introduction",
+        "multiline": true
+      },
+      {
+        "key": "instagramUrl",
+        "label": "Instagram link"
+      },
+      {
+        "key": "socialCopy",
+        "label": "Social introduction",
+        "multiline": true
+      },
+      {
+        "key": "email",
+        "label": "Reader email"
+      },
+      {
+        "key": "mediaEmail",
+        "label": "Media email"
+      },
+      {
+        "key": "rightsEmail",
+        "label": "Rights email"
+      },
+      {
+        "key": "arcEmail",
+        "label": "Advance copy email"
+      }
+    ]
+  }
+],
+      };
+
+      /* ---------- login form ---------- */
+      const authView = $('auth-view');
+      const memberView = $('member-view');
+      const msg = $('msg');
+
+      const showMsg = (text, kind) => { msg.textContent = text; msg.className = 'msg ' + kind; };
+      const clearMsg = () => { msg.textContent = ''; msg.className = 'msg hidden'; };
+
+      function friendly(error) {
+        switch (error?.code) {
+          case 'auth/invalid-email': return 'That email address looks invalid.';
+          case 'auth/missing-password': return 'Please enter your password.';
+          case 'auth/weak-password': return 'Password should be at least 6 characters.';
+          case 'auth/email-already-in-use': return 'An account with that email already exists. Try signing in.';
+          case 'auth/invalid-credential':
+          case 'auth/wrong-password':
+          case 'auth/user-not-found': return 'Email or password is incorrect.';
+          case 'auth/too-many-requests': return 'Too many attempts. Please wait a moment and try again.';
+          case 'auth/network-request-failed': return 'Network error. Check your connection and try again.';
+          default: return 'Something went wrong. Please try again.';
+        }
+      }
+
+      $('password').addEventListener('keydown', event => { if(event.key === 'Enter') { event.preventDefault(); $('submit-btn').click(); } });
+      $('submit-btn').addEventListener('click', async () => {
+        clearMsg();
+        const submit = $('submit-btn');
+        if (submit.disabled) return;
+        submit.disabled = true; submit.textContent = 'Signing in…';
+        const email = $('email').value.trim();
+        const password = $('password').value;
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+        } catch (e) { showMsg(friendly(e), 'error'); }
+        finally { submit.disabled = false; submit.textContent = 'Sign in'; }
+      });
+      $('forgot-btn').addEventListener('click', async () => {
+        clearMsg();
+        const email = $('email').value.trim();
+        if (!email) { showMsg('Enter your email above first, then tap “Forgot password”.', 'error'); return; }
+        try { await sendPasswordResetEmail(auth, email); showMsg('Password reset email sent — check your inbox.', 'notice'); }
+        catch (e) { showMsg(friendly(e), 'error'); }
+      });
+      $('signout-link').addEventListener('click', (e) => { e.preventDefault(); signOut(auth); });
+
+      /* ---------- portal API ---------- */
+      const esc = (s) => (s == null ? '' : String(s)).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const token = () => auth.currentUser.getIdToken();
+
+      function portalEndpoint(site, path) {
+        const url = new URL('/api/portal' + path, site.apiBase);
+        if (site.id === 'jaclyn') url.pathname = url.pathname.replace(/\/+$/, '') + '/';
+        return url.toString();
+      }
+
+      async function api(site, path, opts = {}) {
+        const res = await fetch(portalEndpoint(site, path), {
+          ...opts,
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (await token()), ...(opts.headers || {}) },
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) throw new Error((data && data.error) || ('Request failed (' + res.status + ').'));
+        return data;
+      }
+
+      // Same shape as api(), but hits the central control plane. Authorization is
+      // enforced server-side; a 403 just surfaces as a thrown Error we show in the UI.
+      async function controlApi(path, opts = {}) {
+        if (jaclynOnly) {
+          if (path !== '/me' || (opts.method && opts.method !== 'GET')) throw new Error('Manage account access through Taylor’s Tech Solutions.');
+          const who = await api({id:'jaclyn',apiBase:location.origin}, '/me');
+          return {email:who.email,uid:who.uid,isSuperAdmin:false,memberships:[{siteId:'jaclyn',siteName:'Jaclyn Osborn',role:who.role,liveUrl:location.origin,capabilities:{hasBooks:true}}]};
+        }
+        const res = await fetch(CONTROL_BASE + path, {
+          ...opts,
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (await token()), ...(opts.headers || {}) },
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) {
+          const err = new Error((data && data.error) || ('Request failed (' + res.status + ').'));
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      }
+
+      async function compressImage(file) {
+        const img = await createImageBitmap(file);
+        const scale = Math.min(1, 1600 / img.width);
+        const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        return await new Promise((r) => canvas.toBlob(r, 'image/jpeg', 0.7));
+      }
+
+      async function uploadImage(site, blob, slug) {
+        const form = new FormData();
+        form.append('image', blob, 'photo.jpg');
+        // A slug gives the upload a stable storage key (re-uploads replace the same cover).
+        if (slug) form.append('slug', slug);
+        const res = await fetch(portalEndpoint(site, '/uploads/image'), {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + (await token()) },
+          body: form,
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) throw new Error((data && data.error) || 'Upload failed.');
+        return data.imageUrl;
+      }
+
+      /* ---------- editor rendering ---------- */
+      // Loads the signed-in user's sites + roles from the control plane, then renders
+      // one card per membership. The admin button is shown only to super-admins.
+      async function renderSites() {
+        const wrap = $('sites');
+        const adminBtn = $('admin-btn');
+        adminBtn.classList.add('hidden');
+        wrap.innerHTML = '<div class="group"><div class="muted">Loading your sites…</div></div>';
+        try {
+          me = await controlApi('/me');
+        } catch (err) {
+          wrap.innerHTML = '<div class="group"><h2>Something went wrong</h2><p class="toast err">' + esc(err.message) + '</p><button class="btn-ghost" data-retry>Try again</button></div>';
+          wrap.querySelector('[data-retry]').onclick = () => renderSites();
+          return;
+        }
+
+        if (me.isSuperAdmin) {
+          adminBtn.classList.remove('hidden');
+          adminBtn.onclick = () => openAdminConsole();
+        }
+
+        const memberships = me.memberships || [];
+        wrap.innerHTML = '';
+        if (!memberships.length) {
+          wrap.innerHTML =
+            '<div class="group"><h2>No sites yet</h2><p class="muted">No sites are assigned to your account yet. Contact Taylor to get access.</p></div>';
+          return;
+        }
+        memberships.forEach((m) => {
+          const el = document.createElement('section');
+          wrap.appendChild(el);
+          loadSite(siteFromMembership(m), el);
+        });
+      }
+
+      // Renders the editor for one site. The role rides on the `site` object, so no
+      // per-site probing is needed — the control plane already told us the role.
+      async function loadWebsiteExtras(site, el, readOnly) {
+        el.textContent = 'Loading FAQs and series…';
+        try {
+          let [faqs, series] = await Promise.all([api(site,'/faqs'),api(site,'/series')]);
+          function render() {
+            el.innerHTML = '<h2>Frequently asked questions</h2><div data-faqs>' + faqs.map((f,i) =>
+              '<fieldset data-faq><legend>Question '+(i+1)+'</legend><label>Question<input data-question value="'+esc(f.question)+'"></label><label>Answer<textarea data-answer>'+esc(f.answer)+'</textarea></label>'+(readOnly?'':'<button type="button" class="btn-ghost" data-remove="'+i+'">Remove question</button>')+'</fieldset>'
+            ).join('') + '</div>'+(readOnly?'':'<button class="btn-ghost" data-add-faq>Add question</button><button class="btn-primary" data-save-faq>Save FAQs</button>')+
+              '<p data-status role="status"></p><h2>Series & reading guides</h2><p class="muted">Lower display-order numbers appear first. Hiding a series keeps its books available.</p><div data-series-list>'+series.map((s,i)=>
+                '<fieldset data-series="'+i+'"><legend>'+esc(s.name||'New series')+'</legend>'+[
+                  ['name','Series name'],['lane','Genre'],['tagline','Tagline'],['description','Reading-guide description'],['entryPoint','Start with']
+                ].map(([key,label])=>'<label>'+label+'<textarea data-series-key="'+key+'">'+esc(s[key])+'</textarea></label>').join('')+
+                '<label>Display order<input type="number" data-series-key="sortPriority" value="'+s.sortPriority+'"></label><label><input type="checkbox" data-series-key="visible" '+(s.visible?'checked':'')+'>Show series</label>'+(readOnly?'':'<button type="button" class="btn-primary" data-save-series>Save series</button>')+'<p data-series-status role="status"></p></fieldset>'
+              ).join('')+'</div>'+(readOnly?'':'<button class="btn-ghost" data-add-series>Add series</button>');
+            if(readOnly){el.querySelectorAll('input,textarea').forEach(i=>i.disabled=true);return;}
+            const capture=()=>{faqs=Array.from(el.querySelectorAll('[data-faq]')).map(row=>({question:row.querySelector('[data-question]').value,answer:row.querySelector('[data-answer]').value}));series=Array.from(el.querySelectorAll('[data-series]')).map((row,i)=>{const item={...series[i]};row.querySelectorAll('[data-series-key]').forEach(field=>{item[field.dataset.seriesKey]=field.type==='checkbox'?field.checked:field.type==='number'?Number(field.value):field.value;});return item;});};
+            el.querySelector('[data-add-faq]').onclick=()=>{capture();if(faqs.length<30){faqs.push({question:'',answer:''});render();}};
+            el.querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{capture();faqs.splice(Number(btn.dataset.remove),1);render();});
+            el.querySelector('[data-save-faq]').onclick=async(ev)=>{capture();const btn=ev.target;btn.disabled=true;const status=el.querySelector('[data-status]');try{faqs=await api(site,'/faqs',{method:'PUT',body:JSON.stringify(faqs)});status.textContent='FAQs saved. Refresh the live site to see them.';}catch(e){status.textContent=e.message;}finally{btn.disabled=false;}};
+            el.querySelector('[data-add-series]').onclick=()=>{capture();series.push({name:'',lane:'',tagline:'',description:'',entryPoint:'',visible:true,sortPriority:0});render();};
+            el.querySelectorAll('[data-save-series]').forEach(btn=>btn.onclick=async()=>{capture();const row=btn.closest('[data-series]');const i=Number(row.dataset.series);btn.disabled=true;const status=row.querySelector('[data-series-status]');try{await api(site,'/series',{method:'PUT',body:JSON.stringify(series[i])});const saved=await api(site,'/series');const match=saved.find(s=>series[i].id?s.id===series[i].id:s.name===series[i].name);if(match)series[i]={...series[i],id:match.id};status.textContent='Series saved.';}catch(e){status.textContent=e.message;}finally{btn.disabled=false;}});
+          }
+          render();
+        } catch(e){el.textContent=e.message;}
+      }
+
+      async function loadSite(site, el) {
+        el.innerHTML = '<div class="group"><div class="muted">Loading ' + esc(site.name) + '…</div></div>';
+        try {
+          renderEditor(site, await api(site, '/settings'), el);
+        } catch (err) {
+          el.innerHTML = '<div class="group"><h2>' + esc(site.name) + '</h2><p class="toast err">' + esc(err.message) + '</p><button class="btn-ghost" data-retry>Try again</button></div>';
+          el.querySelector('[data-retry]').onclick = () => loadSite(site, el);
+        }
+      }
+
+      // Small helpers shared by the editor + admin tools.
+      const roleBadge = (role) => '<span class="role-badge ' + esc(role) + '">' + esc(role === 'owner' ? 'Owner' : role === 'editor' ? 'Editor' : 'Viewer') + '</span>';
+      // Owner of this site, or a super-admin, may manage members.
+      const canManageMembers = (site) => !jaclynOnly && (site.role === 'owner' || (me && me.isSuperAdmin));
+
+      const colorFieldOrder=['customBackground','customText','customAccent','customDarkBackground','customDarkText','customDarkAccent'];
+      const colorPresetValues={olive:['#f5f2eb','#242a25','#354434','#191f1b','#efeee4','#d9e0c4'],ink:['#f4f3ef','#252b33','#293f57','#191e25','#f1f2ee','#d3e2ef'],plum:['#f5f0ed','#352930','#674454','#251b22','#f5eaf0','#eed3e1'],clay:['#f7f1e9','#372d28','#794b38','#251e19','#f4ede1','#ecd4b6']};
+      function renderEditor(site, settings, el) {
+        const state = { settings: { ...settings } };
+        // Viewers get a read-only editor: no Save / Add / Delete controls. The server
+        // also returns 403 on writes — this just keeps the UI honest.
+        const readOnly = site.role === 'viewer';
+        const manageBtn = canManageMembers(site)
+          ? '<button type="button" class="btn-ghost btn-sm" data-manage>Manage users</button>'
+          : '';
+        let html =
+          '<div class="site-head"><h1>' + esc(site.name) + ' ' + roleBadge(site.role) + '</h1>' +
+          '<div class="head-actions">' + manageBtn +
+          '<a href="' + esc(site.liveUrl) + '" target="_blank" rel="noreferrer">View live ↗</a></div></div>';
+        if (readOnly) html += '<p class="muted" style="margin:-4px 0 14px;">You have view-only access to this site. Ask the site owner or Taylor for editing access.</p>';
+
+        if (site.id === 'jaclyn') html += '<nav class="editor-shortcuts" aria-label="Editor sections">' + (GROUPS_BY_SITE.jaclyn || []).map((g,i)=>'<a href="#jaclyn-group-'+i+'">'+esc(g.group)+'</a>').join('') + '<a href="#jaclyn-books">Books</a><a href="#jaclyn-extras">FAQs & series</a></nav>';
+        let groupIndex = 0;
+        for (const g of (GROUPS_BY_SITE[site.id] || [])) {
+          const folding = site.id === 'jaclyn';
+          html += folding ? '<details class="group editor-group" id="jaclyn-group-'+(groupIndex++)+'"'+(g.group==='Profile'?' open':'')+'><summary>'+esc(g.group)+'</summary>' : '<div class="group"><h2>' + esc(g.group) + '</h2>';
+          if (g.group === 'Colors & layout') html += '<p class="muted">Choose an arrangement, then save. Your books and page text stay in place.</p><div class="palette-preview" aria-label="Selected color palette"><span>Jaclyn Osborn</span><strong>The bookshelf</strong><div><i></i><i></i><i></i></div></div>';
+          for (const f of g.fields) {
+            const val = state.settings[f.key] ?? '';
+            const help = f.helper ? '<span class="helper">' + esc(f.helper) + '</span>' : '';
+            if (f.color) {
+              html += '<div class="field"><label for="setting-'+esc(f.key)+'">'+esc(f.label)+'</label>'+help+'<div class="color-control"><input type="color" data-color-for="'+esc(f.key)+'" aria-label="Choose '+esc(f.label)+'" value="'+esc(/^#[0-9a-f]{6}$/i.test(val)?val:(colorPresetValues[state.settings.palette]||colorPresetValues.olive)[colorFieldOrder.indexOf(f.key)])+'"><input id="setting-'+esc(f.key)+'" type="text" data-key="'+esc(f.key)+'" value="'+esc(val)+'" placeholder="Use preset" maxlength="7" spellcheck="false"><button type="button" class="btn-ghost btn-sm" data-reset-color="'+esc(f.key)+'">Use preset</button></div></div>';
+            } else if (f.options) {
+              html += '<div class="field"><label for="setting-'+esc(f.key)+'">'+esc(f.label)+'</label>'+help+'<select id="setting-'+esc(f.key)+'" data-key="'+esc(f.key)+'">'+f.options.map(([key,label])=>'<option value="'+esc(key)+'"'+(val===key?' selected':'')+'>'+esc(label)+'</option>').join('')+'</select></div>';
+            } else if (f.image) {
+              const src = val ? (val.startsWith('http') ? val : site.apiBase + val) : '';
+              html +=
+                '<div class="field"><label>' + esc(f.label) + '</label>' + help +
+                '<img class="img-preview" data-prev="' + f.key + '" src="' + esc(src) + '"' + (src ? '' : ' style="display:none;"') + ' alt="" />' +
+                '<input type="hidden" data-key="' + f.key + '" value="' + esc(val) + '" />' +
+                '<input type="file" accept="image/*" data-file="' + f.key + '" style="display:none;" />' +
+                '<button type="button" class="btn-ghost" data-pick="' + f.key + '">Choose photo</button></div>';
+            } else if (f.multiline) {
+              html += '<div class="field"><label>' + esc(f.label) + '</label>' + help + '<textarea data-key="' + f.key + '">' + esc(val) + '</textarea></div>';
+            } else {
+              html += '<div class="field"><label>' + esc(f.label) + '</label>' + help + '<input type="text" data-key="' + f.key + '" value="' + esc(val) + '" /></div>';
+            }
+          }
+          if (g.group === 'Colors & layout') html += '<div class="appearance-actions"><button type="button" class="btn-ghost" data-reset-colors>Reset all custom colors</button><label for="preview-theme">Preview mode</label><select id="preview-theme" data-preview-theme><option value="light">Light</option><option value="dark">Dark</option></select><p class="muted">Preview color, type, and layout changes here before saving. Homepage section visibility updates after saving.</p><p class="toast" data-preview-status role="status"></p><iframe title="Website appearance preview" src="'+esc(site.liveUrl)+'/?editor-preview=1" data-site-preview loading="lazy"></iframe></div>';
+          html += site.id === 'jaclyn' ? '</details>' : '</div>';
+        }
+        // Save bar + Add buttons are hidden entirely for view-only members.
+        if (!readOnly) html += '<div class="group"><div class="save-bar"><button class="btn-primary" data-save>Save changes</button></div><div class="toast" data-toast></div></div>';
+        if (site.hasProducts) html += '<div class="group"><h2>Products</h2>' + (readOnly ? '' : '<button class="btn-primary" data-add-product>+ Add product</button>') + '<div data-plist style="margin-top: 14px;"></div></div>';
+        if (site.hasBooks) html += '<div class="group" id="jaclyn-books"><h2>Books</h2>' + (readOnly ? '' : '<button class="btn-primary" data-add-book>+ Add book</button>') + '<div data-blist style="margin-top: 14px;"></div></div>';
+        if (site.id === 'jaclyn') html += '<div class="group" id="jaclyn-extras" data-website-extras></div>';
+        el.innerHTML = html;
+        if (site.id === 'jaclyn') loadWebsiteExtras(site, el.querySelector('[data-website-extras]'), readOnly);
+
+        // For view-only members, lock every input + hide the per-field photo pickers.
+        if (readOnly) {
+          el.querySelectorAll('input, textarea, select').forEach((i) => { i.disabled = true; });
+          el.querySelectorAll('[data-pick]').forEach((b) => { b.style.display = 'none'; });
+        }
+
+        const paletteChoice = el.querySelector('[data-key="palette"]');
+        const palettePreview = el.querySelector('.palette-preview');
+        if (paletteChoice && palettePreview) {
+          const previewColors = {olive:['#f5f2eb','#354434','#dce0cf'],ink:['#f4f3ef','#293f57','#dce4e9'],plum:['#f5f0ed','#674454','#e8d9df'],clay:['#f7f1e9','#794b38','#e9d9c6']};
+          const preview = () => { const colors=previewColors[paletteChoice.value] || previewColors.olive; palettePreview.style.background=colors[0];palettePreview.style.color=colors[1];palettePreview.querySelectorAll('i').forEach((dot,i)=>dot.style.background=colors[i]); };
+          paletteChoice.addEventListener('change',preview);preview();
+        }
+        el.querySelectorAll('.editor-shortcuts a').forEach(link=>link.addEventListener('click',()=>{const target=el.querySelector(link.getAttribute('href'));if(target?.tagName==='DETAILS')target.open=true;}));
+        el.querySelectorAll('[data-color-for]').forEach(picker=>picker.addEventListener('input',()=>{const field=el.querySelector('[data-key="'+picker.dataset.colorFor+'"]');field.value=picker.value;field.dispatchEvent(new Event('input',{bubbles:true}));}));
+        el.querySelectorAll('[data-reset-color]').forEach(btn=>btn.onclick=()=>{const field=el.querySelector('[data-key="'+btn.dataset.resetColor+'"]');field.value='';field.dispatchEvent(new Event('input',{bubbles:true}));});
+        const colorKeys=['customBackground','customText','customAccent','customDarkBackground','customDarkText','customDarkAccent'];
+        const resetColors=el.querySelector('[data-reset-colors]');
+        if(resetColors) resetColors.onclick=()=>{colorKeys.forEach(key=>{el.querySelector('[data-key="'+key+'"]').value='';});sendPreview();};
+        const frame=el.querySelector('[data-site-preview]');
+        function sendPreview(){
+          if(!frame)return;
+          const keys=['palette','homeLayout','catalogDensity','displayFont','coverStyle',...colorKeys];
+          const appearance=Object.fromEntries(keys.map(key=>[key,el.querySelector('[data-key="'+key+'"]').value]));
+          const valid=colorKeys.every(key=>/^(?:#[0-9a-f]{6})?$/i.test(appearance[key]));
+          const status=el.querySelector('[data-preview-status]');
+          if(!valid){status.textContent='Enter a six-digit hex color, such as #354434, or leave the field blank.';return;}
+          const luminance=hex=>{const a=hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return a[0]*.2126+a[1]*.7152+a[2]*.0722;};
+          const defaults=colorPresetValues[appearance.palette]||colorPresetValues.olive;
+          if(palettePreview){const dark=el.querySelector('[data-preview-theme]').value==='dark';const offset=dark?3:0;palettePreview.style.background=appearance[colorFieldOrder[offset]]||defaults[offset];palettePreview.style.color=appearance[colorFieldOrder[offset+1]]||defaults[offset+1];palettePreview.querySelectorAll('i').forEach((dot,i)=>dot.style.background=appearance[colorFieldOrder[offset+i]]||defaults[offset+i]);}
+          el.querySelectorAll('[data-color-for]').forEach(picker=>{const key=picker.dataset.colorFor;picker.value=appearance[key]||defaults[colorFieldOrder.indexOf(key)];});
+          const ratios=[['customBackground','customText'],['customDarkBackground','customDarkText']].map(pair=>{const a=luminance(appearance[pair[0]]||defaults[colorFieldOrder.indexOf(pair[0])]),b=luminance(appearance[pair[1]]||defaults[colorFieldOrder.indexOf(pair[1])]);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);});
+          if(ratios.some(r=>r<4.5)){status.textContent='Choose a text color that is easier to read against the background before saving.';return;}
+          status.textContent='Preview only. Save changes when you are ready.';
+          frame.contentWindow.postMessage({type:'jaclyn-appearance-preview',appearance,theme:el.querySelector('[data-preview-theme]').value},new URL(site.liveUrl).origin);
+        }
+        if(frame){el.querySelector('[data-key=defaultTheme]').addEventListener('change',event=>{if(event.target.value!=='system')el.querySelector('[data-preview-theme]').value=event.target.value;});frame.addEventListener('load',sendPreview);el.querySelectorAll('[data-key], [data-preview-theme]').forEach(input=>{input.addEventListener('input',sendPreview);input.addEventListener('change',sendPreview);});}
+        wireImages(site, el);
+
+        const saveBtn = el.querySelector('[data-save]');
+        const toast = el.querySelector('[data-toast]');
+        if (saveBtn) saveBtn.onclick = async () => {
+          saveBtn.disabled = true; const orig = saveBtn.textContent; saveBtn.textContent = 'Saving…';
+          toast.textContent = ''; toast.className = 'toast';
+          const obj = { ...state.settings };
+          el.querySelectorAll('[data-key]').forEach((i) => { obj[i.dataset.key] = i.value; });
+          try {
+            state.settings = await api(site, '/settings', { method: 'PUT', body: JSON.stringify(obj) });
+            toast.textContent = 'Saved. Refresh the live site to see your changes.'; toast.className = 'toast ok';
+          } catch (err) { toast.textContent = err.message; toast.className = 'toast err'; }
+          finally { saveBtn.disabled = false; saveBtn.textContent = orig; }
+        };
+
+        const manage = el.querySelector('[data-manage]');
+        if (manage) manage.onclick = () => openManageUsers(site, el);
+
+        if (site.hasProducts) {
+          const addP = el.querySelector('[data-add-product]');
+          if (addP) addP.onclick = () => openProductForm(site, null, el);
+          loadProducts(site, el.querySelector('[data-plist]'), el, readOnly);
+        }
+        if (site.hasBooks) {
+          const addB = el.querySelector('[data-add-book]');
+          if (addB) addB.onclick = () => openBookForm(site, null, el);
+          loadBooks(site, el.querySelector('[data-blist]'), el, readOnly);
+        }
+      }
+
+      /* ---------- reusable image picker wiring ---------- */
+      function wireImages(site, el) {
+        el.querySelectorAll('[data-pick]').forEach((btn) => {
+          const key = btn.dataset.pick;
+          const fileInput = el.querySelector('[data-file="' + key + '"]');
+          btn.onclick = () => fileInput.click();
+          fileInput.onchange = async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Uploading…';
+            try {
+              // Book covers get a stable storage key from the book slug/title; other images stay unique.
+              let slug;
+              if (key === 'coverUrl') {
+                const slugEl = el.querySelector('[data-key="slug"]');
+                const titleEl = el.querySelector('[data-key="title"]');
+                slug = (slugEl && slugEl.value) || (titleEl && titleEl.value) || '';
+              }
+              const url = await uploadImage(site, await compressImage(file), slug);
+              el.querySelector('[data-key="' + key + '"]').value = url;
+              const prev = el.querySelector('[data-prev="' + key + '"]');
+              prev.src = site.apiBase + url; prev.style.display = '';
+            } catch (err) { alert('Upload failed: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = orig; fileInput.value = ''; }
+          };
+        });
+      }
+
+      /* ---------- field html builders ---------- */
+      const helpHtml = (help) => (help ? '<span class="helper">' + esc(help) + '</span>' : '');
+      const fieldHtml = (key, label, val, help) => '<div class="field"><label>' + esc(label) + '</label>' + helpHtml(help) + '<input type="text" data-key="' + key + '" value="' + esc(val) + '" /></div>';
+      const areaHtml = (key, label, val, help) => '<div class="field"><label>' + esc(label) + '</label>' + helpHtml(help) + '<textarea data-key="' + key + '">' + esc(val) + '</textarea></div>';
+      const selectHtml = (key, label, val, opts, help) => '<div class="field"><label>' + esc(label) + '</label>' + helpHtml(help) + '<select data-key="' + key + '">' + opts.map((o) => '<option' + (o === val ? ' selected' : '') + '>' + esc(o) + '</option>').join('') + '</select></div>';
+      const checkHtml = (key, label, val) => '<label style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:var(--ink);margin:12px 0 0;">' + esc(label) + '<input type="checkbox" data-key="' + key + '"' + (val ? ' checked' : '') + ' style="width:auto;" /></label>';
+      function imageFieldHtml(key, label, val, site) {
+        const src = val ? (val.startsWith('http') ? val : site.apiBase + val) : '';
+        return '<div class="field"><label>' + esc(label) + '</label>' +
+          '<img class="img-preview" data-prev="' + key + '" src="' + esc(src) + '"' + (src ? '' : ' style="display:none;"') + ' alt="" />' +
+          '<input type="hidden" data-key="' + key + '" value="' + esc(val) + '" />' +
+          '<input type="file" accept="image/*" data-file="' + key + '" style="display:none;" />' +
+          '<button type="button" class="btn-ghost" data-pick="' + key + '">Choose photo</button></div>';
+      }
+
+      /* ---------- shared sort + filter bar -----------
+         Builds a compact, plain-language control bar above a list. Sorting/filtering
+         happens entirely client-side over the already-loaded array — no extra requests. */
+      // A row of "segmented" pill buttons. options = [{ value, label }]; `active` is the selected value.
+      const sfPillRow = (labelText, group, options, active) =>
+        '<div class="sf-row"><span class="sf-label">' + esc(labelText) + '</span>' +
+        options.map((o) =>
+          '<button type="button" class="sf-pill" data-sf="' + esc(group) + '" data-val="' + esc(o.value) +
+          '" aria-pressed="' + (o.value === active ? 'true' : 'false') + '">' + esc(o.label) + '</button>'
+        ).join('') + '</div>';
+
+      // Wire a whole bar: clicking a pill sets that group's state and re-renders.
+      function wireSortFilterBar(barEl, state, onChange) {
+        barEl.querySelectorAll('[data-sf]').forEach((btn) => {
+          btn.onclick = () => { state[btn.dataset.sf] = btn.dataset.val; onChange(); };
+        });
+      }
+
+      /* ---------- products ---------- */
+      // Renders a single product row (markup unchanged from before).
+      function productRowHtml(site, p) {
+        const img = p.imageUrl ? (p.imageUrl.startsWith('http') ? p.imageUrl : site.apiBase + p.imageUrl) : '';
+        const badges =
+          (p.available ? '' : '<span class="pill" style="background:var(--border);color:var(--ink-soft);">Unavailable</span> ') +
+          (p.featured ? '<span class="pill">Featured</span>' : '');
+        return '<div data-edit="' + p.id + '" style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border);cursor:pointer;">' +
+          '<img src="' + esc(img) + '" style="width:54px;height:54px;border-radius:10px;object-fit:cover;background:var(--bg);flex:none;" />' +
+          '<div style="flex:1;min-width:0;"><div style="font-weight:700;">' + esc(p.name) + '</div>' +
+          '<div style="color:var(--blue);font-weight:600;font-size:13px;">' + esc(p.priceLabel) + '</div>' +
+          (badges ? '<div style="margin-top:5px;">' + badges + '</div>' : '') + '</div>' +
+          '<div style="color:var(--muted);font-size:20px;">›</div></div>';
+      }
+
+      const PRODUCT_SORTS = [
+        { value: 'name', label: 'Name (A–Z)' },
+        { value: 'newest', label: 'Newest' },
+        { value: 'featured', label: 'Featured first' },
+      ];
+      const PRODUCT_AVAIL = [
+        { value: 'all', label: 'All' },
+        { value: 'available', label: 'Available' },
+        { value: 'hidden', label: 'Hidden' },
+      ];
+
+      async function loadProducts(site, listEl, sectionEl, readOnly) {
+        listEl.innerHTML = '<div class="muted">Loading products…</div>';
+        let products;
+        try {
+          products = await api(site, '/products');
+        } catch (e) { listEl.innerHTML = '<div class="toast err">' + esc(e.message) + '</div>'; return; }
+        if (!products.length) { listEl.innerHTML = '<div class="muted">No products yet — add your first one.</div>'; return; }
+
+        // Sort + filter state lives in this closure; the bar reads/writes it and re-renders.
+        const state = { sort: 'name', category: 'all', avail: 'all' };
+        // Distinct categories actually present, in first-seen order.
+        const cats = [];
+        products.forEach((p) => { if (p.category && !cats.includes(p.category)) cats.push(p.category); });
+        const catOpts = [{ value: 'all', label: 'All' }].concat(cats.map((c) => ({ value: c, label: c })));
+
+        function compute() {
+          let v = products.filter((p) =>
+            (state.category === 'all' || p.category === state.category) &&
+            (state.avail === 'all' || (state.avail === 'available' ? p.available === true : p.available === false))
+          );
+          const byName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''));
+          if (state.sort === 'name') v.sort(byName);
+          else if (state.sort === 'newest') v.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')) || byName(a, b));
+          else if (state.sort === 'featured') v.sort((a, b) => (b.featured === true) - (a.featured === true) || byName(a, b));
+          return v;
+        }
+
+        function render() {
+          const visible = compute();
+          const filtered = state.category !== 'all' || state.avail !== 'all';
+          let bar = '<div class="sf-bar">' +
+            sfPillRow('Sort', 'sort', PRODUCT_SORTS, state.sort) +
+            sfPillRow('Category', 'category', catOpts, state.category) +
+            sfPillRow('Show', 'avail', PRODUCT_AVAIL, state.avail) +
+            '<div class="sf-foot"><span class="sf-count">Showing ' + visible.length + ' of ' + products.length + '</span>' +
+            (filtered ? '<button type="button" class="sf-clear" data-sf-clear>Clear</button>' : '') + '</div></div>';
+          const rows = visible.length
+            ? visible.map((p) => productRowHtml(site, p)).join('')
+            : '<div class="muted" style="padding:12px 0;">No items match. Try clearing the filters.</div>';
+          listEl.innerHTML = bar + rows;
+
+          const barEl = listEl.querySelector('.sf-bar');
+          wireSortFilterBar(barEl, state, render);
+          const clearBtn = listEl.querySelector('[data-sf-clear]');
+          if (clearBtn) clearBtn.onclick = () => { state.category = 'all'; state.avail = 'all'; render(); };
+          // Viewers can browse the list but not open the edit form.
+          if (!readOnly) listEl.querySelectorAll('[data-edit]').forEach((row) => { row.onclick = () => openProductForm(site, row.dataset.edit, sectionEl); });
+          else listEl.querySelectorAll('[data-edit]').forEach((row) => { row.style.cursor = 'default'; });
+        }
+        render();
+      }
+
+      const CATS = ['Cookies', 'Rolls & Pastries', 'Homestead Staples', 'Sandwich Cookies & Cream Pies', 'Seasonal Specials'];
+
+      async function openProductForm(site, productId, sectionEl) {
+        sectionEl.innerHTML = '<div class="group"><div class="muted">Loading…</div></div>';
+        let p = { name: '', slug: '', category: CATS[0], summary: '', description: '', priceLabel: '', leadTimeLabel: '', imageUrl: '', imageAlt: '', featured: false, available: true, sortOrder: 0, highlights: [], occasions: [] };
+        if (productId) {
+          try { p = await api(site, '/products/' + productId); }
+          catch (e) {
+            sectionEl.innerHTML = '<div class="group"><p class="toast err">' + esc(e.message) + '</p><button class="btn-ghost" data-back>← Back</button></div>';
+            sectionEl.querySelector('[data-back]').onclick = () => loadSite(site, sectionEl);
+            return;
+          }
+        }
+        let html = '<div class="site-head"><h1>' + (productId ? 'Edit product' : 'New product') + '</h1><a href="#" data-back>← Back</a></div>';
+        html += '<div class="group"><h2>Photo</h2>' + imageFieldHtml('imageUrl', 'Photo', p.imageUrl, site) + fieldHtml('imageAlt', 'Photo description', p.imageAlt, 'Briefly describe the photo for screen readers (e.g. "Box of chocolate chip cookies").') + '</div>';
+        html += '<div class="group"><h2>Details</h2>' + fieldHtml('name', 'Name', p.name) + selectHtml('category', 'Category', p.category, CATS) + fieldHtml('priceLabel', 'Price (e.g. $24 / dozen)', p.priceLabel) + fieldHtml('leadTimeLabel', 'Lead time (e.g. 48 hours)', p.leadTimeLabel) + '</div>';
+        html += '<div class="group"><h2>About this item</h2>' + areaHtml('summary', 'Short summary', p.summary, 'One or two sentences shown in lists (at least a few words).') + areaHtml('description', 'Description', p.description, 'The full details for this item — a sentence or two works great.') + areaHtml('highlights', 'Highlights (one per line)', (p.highlights || []).join('\n')) + '</div>';
+        html += '<div class="group"><h2>Visibility</h2>' + checkHtml('available', 'Available', p.available) + checkHtml('featured', 'Featured', p.featured) + '</div>';
+        html += '<input type="hidden" data-key="slug" value="' + esc(p.slug || '') + '" /><input type="hidden" data-key="sortOrder" value="' + (p.sortOrder || 0) + '" />';
+        html += '<div class="group"><div class="save-bar"><button class="btn-primary" data-save>Save product</button></div>' + (productId ? '<button class="btn-ghost" data-del>Delete product</button>' : '') + '<div class="toast" data-toast></div></div>';
+        sectionEl.innerHTML = html;
+
+        sectionEl.querySelector('[data-back]').onclick = (e) => { e.preventDefault(); loadSite(site, sectionEl); };
+        wireImages(site, sectionEl);
+
+        const occasions = p.occasions || [];
+        const toast = sectionEl.querySelector('[data-toast]');
+        sectionEl.querySelector('[data-save]').onclick = async (ev) => {
+          const btn = ev.target; btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Saving…';
+          toast.textContent = ''; toast.className = 'toast';
+          const obj = { occasions };
+          sectionEl.querySelectorAll('[data-key]').forEach((i) => { obj[i.dataset.key] = i.type === 'checkbox' ? i.checked : i.value; });
+          obj.highlights = (obj.highlights || '').split('\n').map((s) => s.trim()).filter(Boolean);
+          obj.sortOrder = parseInt(obj.sortOrder || '0', 10) || 0;
+          try {
+            if (productId) await api(site, '/products/' + productId, { method: 'PUT', body: JSON.stringify(obj) });
+            else await api(site, '/products', { method: 'POST', body: JSON.stringify(obj) });
+            loadSite(site, sectionEl);
+          } catch (err) { toast.textContent = err.message; toast.className = 'toast err'; btn.disabled = false; btn.textContent = orig; }
+        };
+        const del = sectionEl.querySelector('[data-del]');
+        if (del) del.onclick = async () => {
+          if (!confirm('Delete this product? This cannot be undone.')) return;
+          try { await api(site, '/products/' + productId, { method: 'DELETE' }); loadSite(site, sectionEl); }
+          catch (err) { toast.textContent = err.message; toast.className = 'toast err'; }
+        };
+      }
+
+      /* ---------- books ---------- */
+      const BOOK_FORMATS = ['ebook', 'paperback', 'hardcover', 'audiobook'];
+      // Direct-sale payment modes. Payhip is Jaclyn's primary payment.
+      const DIRECT_MODES = [
+        { value: 'payhip', label: 'Payhip link' },
+        { value: 'external_retailer', label: 'Other store link' },
+        { value: 'unavailable', label: 'Not for sale' },
+      ];
+      const EMPTY_BOOK = {
+        slug: '', title: '', seriesSlug: '', seriesLabel: '', seriesOrder: 0, releaseDate: '',
+        shortHook: '', description: '', genres: [], vibes: [], tropes: [], formats: [],
+        featured: false, coverPalette: 'plum', coverUrl: '', catalogStatus: '',
+        purchase: { availabilityStatus: 'in_stock', merchandisingFlags: [], signedCopy: false, directFromAuthor: false, retailerLinks: [], directSaleFormats: [] },
+      };
+
+      // The plain-language series name for a book (standalone books group under "Standalone").
+      const bookSeries = (b) => b.seriesLabel || b.seriesSlug || 'Standalone';
+
+      // Renders a single book row (markup unchanged from before).
+      function bookRowHtml(site, b) {
+        const cover = b.coverUrl ? (b.coverUrl.startsWith('http') ? b.coverUrl : site.apiBase + b.coverUrl) : '';
+        const series = bookSeries(b);
+        const avail = (b.purchase && b.purchase.availabilityStatus) || 'in_stock';
+        const badges =
+          (avail === 'in_stock' ? '' : '<span class="pill" style="background:var(--border);color:var(--ink-soft);">Unavailable</span> ') +
+          (b.featured ? '<span class="pill">Featured</span>' : '');
+        return '<div data-edit="' + esc(b.id) + '" style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border);cursor:pointer;">' +
+          '<img src="' + esc(cover) + '" style="width:48px;height:72px;border-radius:8px;object-fit:cover;background:var(--bg);flex:none;" />' +
+          '<div style="flex:1;min-width:0;"><div style="font-weight:700;">' + esc(b.title) + '</div>' +
+          '<div style="color:var(--blue);font-weight:600;font-size:13px;">' + esc(series) + '</div>' +
+          (badges ? '<div style="margin-top:5px;">' + badges + '</div>' : '') + '</div>' +
+          '<div style="color:var(--muted);font-size:20px;">›</div></div>';
+      }
+
+      const BOOK_SORTS = [
+        { value: 'series', label: 'By series' },
+        { value: 'title', label: 'Title (A–Z)' },
+        { value: 'newest', label: 'Newest' },
+      ];
+      const BOOK_AVAIL = [
+        { value: 'all', label: 'All' },
+        { value: 'in_stock', label: 'In stock' },
+        { value: 'limited', label: 'Limited' },
+        { value: 'sold_out', label: 'Sold out' },
+        { value: 'preorder', label: 'Preorder' },
+      ];
+
+      async function loadBooks(site, listEl, sectionEl, readOnly) {
+        listEl.innerHTML = '<div class="muted">Loading books…</div>';
+        let books;
+        try {
+          books = await api(site, '/books');
+        } catch (e) { listEl.innerHTML = '<div class="toast err">' + esc(e.message) + '</div>'; return; }
+        if (!books.length) { listEl.innerHTML = '<div class="muted">No books yet — add your first one.</div>'; return; }
+
+        const state = { sort: 'series', series: 'all', avail: 'all' };
+        // Distinct series present, in first-seen order.
+        const seriesNames = [];
+        books.forEach((b) => { const s = bookSeries(b); if (!seriesNames.includes(s)) seriesNames.push(s); });
+        const seriesOpts = [{ value: 'all', label: 'All' }].concat(seriesNames.map((s) => ({ value: s, label: s })));
+
+        function compute() {
+          const availOf = (b) => (b.purchase && b.purchase.availabilityStatus) || 'in_stock';
+          let v = books.filter((b) =>
+            (state.series === 'all' || bookSeries(b) === state.series) &&
+            (state.avail === 'all' || availOf(b) === state.avail)
+          );
+          const byTitle = (a, b) => String(a.title || '').localeCompare(String(b.title || ''));
+          if (state.sort === 'title') v.sort(byTitle);
+          else if (state.sort === 'newest') v.sort((a, b) => String(b.releaseDate || '').localeCompare(String(a.releaseDate || '')) || byTitle(a, b));
+          else v.sort((a, b) =>
+            bookSeries(a).localeCompare(bookSeries(b)) ||
+            ((a.seriesOrder || 0) - (b.seriesOrder || 0)) ||
+            byTitle(a, b)
+          );
+          return v;
+        }
+
+        function render() {
+          const visible = compute();
+          const filtered = state.series !== 'all' || state.avail !== 'all';
+          let bar = '<div class="sf-bar">' +
+            sfPillRow('Sort', 'sort', BOOK_SORTS, state.sort) +
+            sfPillRow('Series', 'series', seriesOpts, state.series) +
+            sfPillRow('Stock', 'avail', BOOK_AVAIL, state.avail) +
+            '<div class="sf-foot"><span class="sf-count">Showing ' + visible.length + ' of ' + books.length + '</span>' +
+            (filtered ? '<button type="button" class="sf-clear" data-sf-clear>Clear</button>' : '') + '</div></div>';
+          const rows = visible.length
+            ? visible.map((b) => bookRowHtml(site, b)).join('')
+            : '<div class="muted" style="padding:12px 0;">No items match. Try clearing the filters.</div>';
+          listEl.innerHTML = bar + rows;
+
+          const barEl = listEl.querySelector('.sf-bar');
+          wireSortFilterBar(barEl, state, render);
+          const clearBtn = listEl.querySelector('[data-sf-clear]');
+          if (clearBtn) clearBtn.onclick = () => { state.series = 'all'; state.avail = 'all'; render(); };
+          // Viewers can browse the list but not open the edit form.
+          if (!readOnly) listEl.querySelectorAll('[data-edit]').forEach((row) => { row.onclick = () => openBookForm(site, row.dataset.edit, sectionEl); });
+          else listEl.querySelectorAll('[data-edit]').forEach((row) => { row.style.cursor = 'default'; });
+        }
+        render();
+      }
+
+      /* a <select> built from value/label pairs (used by the direct-sale mode + format pickers) */
+      const optionsHtml = (pairs, val) => pairs.map((o) => '<option value="' + esc(o.value) + '"' + (o.value === val ? ' selected' : '') + '>' + esc(o.label) + '</option>').join('');
+      const SELECT_STYLE = 'width:100%;font-family:Manrope,sans-serif;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 14px;';
+
+      /* one direct-sale-format row (Payhip / other store link / not for sale + a URL field) */
+      function directRowHtml(d) {
+        const formatPairs = BOOK_FORMATS.map((f) => ({ value: f, label: f }));
+        const mode = DIRECT_MODES.some((m) => m.value === d.purchaseMode) ? d.purchaseMode : 'payhip';
+        const urlLabel = mode === 'payhip' ? 'Payhip product link' : 'Buy link';
+        const urlHelp = mode === 'payhip' ? 'Open your product in Payhip and copy its link.' : '';
+        const urlPlaceholder = mode === 'payhip' ? 'https://payhip.com/b/...' : 'https://...';
+        const showUrl = mode !== 'unavailable';
+        return '<div class="field" data-direct-row style="border-top:1px solid var(--border);padding-top:14px;margin-top:14px;">' +
+          '<label>How readers buy it</label><select data-d-mode style="' + SELECT_STYLE + '">' + optionsHtml(DIRECT_MODES, mode) + '</select>' +
+          '<div data-d-url-wrap' + (showUrl ? '' : ' style="display:none;"') + '><label data-d-url-label>' + esc(urlLabel) + '</label>' +
+          '<span class="helper" data-d-url-help' + (urlHelp ? '' : ' style="display:none;"') + '>' + esc(urlHelp) + '</span>' +
+          '<input type="url" inputmode="url" data-d-url placeholder="' + esc(urlPlaceholder) + '" value="' + esc(d.purchaseUrl || '') + '" /></div>' +
+          '<label>Button label (e.g. Buy the ebook)</label><input type="text" data-d-label value="' + esc(d.label || '') + '" />' + '<label>Price for this format<input data-d-price value="' + esc(d.displayPrice || '') + '"></label>' +
+          '<label>Format</label><select data-d-format style="' + SELECT_STYLE + '">' + optionsHtml(formatPairs, d.format || 'ebook') + '</select>' +
+          '<button type="button" class="btn-ghost" data-d-remove>Remove</button></div>';
+      }
+
+      /* one retailer-link row (store + buy link + button label) */
+      function retailRowHtml(r) {
+        return '<div class="field" data-retail-row style="border-top:1px solid var(--border);padding-top:14px;margin-top:14px;">' +
+          '<label>Store (e.g. Amazon)</label><input type="text" data-r-retailer value="' + esc(r.retailer || '') + '" />' +
+          '<label>Buy link</label><input type="url" inputmode="url" data-r-url placeholder="https://..." value="' + esc(r.purchaseUrl || '') + '" />' +
+          '<label>Button label (e.g. Buy on Amazon)</label><input type="text" data-r-label value="' + esc(r.label || '') + '" />' +
+          '<button type="button" class="btn-ghost" data-r-remove>Remove</button></div>';
+      }
+
+      function wireDirectRow(row) {
+        const modeSel = row.querySelector('[data-d-mode]');
+        const urlWrap = row.querySelector('[data-d-url-wrap]');
+        const urlLabel = row.querySelector('[data-d-url-label]');
+        const urlHelp = row.querySelector('[data-d-url-help]');
+        modeSel.onchange = () => {
+          const mode = modeSel.value;
+          urlWrap.style.display = mode === 'unavailable' ? 'none' : '';
+          urlLabel.textContent = mode === 'payhip' ? 'Payhip product link' : 'Buy link';
+          const help = mode === 'payhip' ? 'Open your product in Payhip and copy its link.' : '';
+          urlHelp.textContent = help;
+          urlHelp.style.display = help ? '' : 'none';
+          const urlInput = row.querySelector('[data-d-url]');
+          urlInput.placeholder = mode === 'payhip' ? 'https://payhip.com/b/...' : 'https://...';
+        };
+        row.querySelector('[data-d-remove]').onclick = () => row.remove();
+      }
+
+      async function openBookForm(site, bookId, sectionEl) {
+        sectionEl.innerHTML = '<div class="group"><div class="muted">Loading…</div></div>';
+        let seriesList = [];
+        let b = JSON.parse(JSON.stringify(EMPTY_BOOK));
+        try {
+          const cat = await api(site, '/public/catalog');
+          seriesList = cat.series || [];
+          if (bookId) {
+            const found = (cat.books || []).find((x) => x.id === bookId);
+            if (found) b = found;
+          }
+        } catch (e) {
+          sectionEl.innerHTML = '<div class="group"><p class="toast err">' + esc(e.message) + '</p><button class="btn-ghost" data-back>← Back</button></div>';
+          sectionEl.querySelector('[data-back]').onclick = () => loadSite(site, sectionEl);
+          return;
+        }
+        const purchase = b.purchase || EMPTY_BOOK.purchase;
+        const seriesOpts = ['Standalone'].concat(seriesList.map((s) => s.name));
+        const currentSeries = b.seriesLabel || b.seriesSlug || 'Standalone';
+        // New books start with one empty Payhip buy-link row so the buy flow is obvious.
+        const directRows = (purchase.directSaleFormats && purchase.directSaleFormats.length)
+          ? purchase.directSaleFormats
+          : (bookId ? [] : [{ format: 'ebook', purchaseMode: 'payhip', purchaseUrl: '', label: '' }]);
+
+        let html = '<div class="site-head"><h1>' + (bookId ? 'Edit book' : 'New book') + '</h1><a href="#" data-back>← Back</a></div>';
+        // 1. Cover + title
+        html += '<div class="group"><h2>Cover &amp; title</h2><p class="muted">Start with the book’s cover and title.</p>' +
+          imageFieldHtml('coverUrl', 'Cover photo', b.coverUrl || '', site) +
+          fieldHtml('title', 'Title', b.title) + fieldHtml('coverAlt', 'Cover description', b.coverAlt || '') +
+          fieldHtml('releaseDate', 'Release date', b.releaseDate, 'Use the format Year-Month-Day, like 2024-09-01.') + '</div>';
+        // 2. Series
+        html += '<div class="group"><h2>Series</h2><p class="muted">Is this book part of a series? Choose Standalone if not.</p>' +
+          selectHtml('seriesName', 'Series', currentSeries, seriesOpts) + fieldHtml('seriesOrder','Reading order',b.seriesOrder || 0) + '</div>';
+        // 3. Blurbs
+        html += '<div class="group"><h2>About the book</h2><p class="muted">The words readers see — a quick hook and the full description.</p>' +
+          areaHtml('shortHook', 'Short hook', b.shortHook, 'One catchy line to grab a reader (shown in book lists).') +
+          areaHtml('description', 'Description', b.description, 'The full back-cover blurb readers see on the book page.') + '</div>';
+        // 4. Optional discovery tags
+        html += '<div class="group"><h2>Extra details</h2><p class="muted">Optional tags that help readers find this book. One per line.</p>' +
+          areaHtml('genres', 'Genres (one per line)', (b.genres || []).join('\n')) +
+          areaHtml('vibes', 'Vibes (one per line)', (b.vibes || []).join('\n')) +
+          areaHtml('tropes', 'Tropes (one per line)', (b.tropes || []).join('\n')) +
+          areaHtml('formats', 'Formats (one per line)', (b.formats || []).join('\n'), 'e.g. ebook, paperback, hardcover, audiobook — one per line.') + '</div>';
+        // 5. Buy links — Payhip-first direct-sale repeater.
+        html += '<div class="group"><h2>Where to buy</h2><p class="muted">Where can readers buy this book? Paste your Payhip product link below.</p>' +
+          fieldHtml('displayPrice','Displayed price',purchase.displayPrice || '', 'Update the checkout amount and its link too; this changes the website label only.') + '<div data-direct-list>' + directRows.map(directRowHtml).join('') + '</div>' +
+          '<button type="button" class="btn-ghost" data-add-direct>+ Add a buy link</button></div>';
+        // 6. Optional other-store links.
+        html += '<div class="group"><h2>Other store links</h2><p class="muted">Optional — add links to Amazon, Barnes &amp; Noble, etc.</p>' +
+          '<div data-retail-list>' + (purchase.retailerLinks || []).map(retailRowHtml).join('') + '</div>' +
+          '<button type="button" class="btn-ghost" data-add-retail>+ Add a store link</button></div>';
+        // 7. Visibility
+        html += '<div class="group"><h2>Visibility</h2><p class="muted">Control where this book shows up on your site.</p>' +
+          selectHtml('availabilityStatus','Availability',purchase.availabilityStatus || 'in_stock',['in_stock','limited','sold_out','preorder']) +
+          '<span class="helper">Choose the availability readers should see.</span>' +
+          checkHtml('visible', 'Show on the website', b.visible !== false) + fieldHtml('sortPriority','Shelf order (lower numbers first)',b.sortPriority || 0) + checkHtml('featured', 'Featured', b.featured) +
+          '<span class="helper">Highlight this on your homepage.</span></div>';
+        html += '<input type="hidden" data-key="slug" value="' + esc(b.slug || '') + '" />';
+        html += '<div class="group"><div class="save-bar"><button class="btn-primary" data-save>Save book</button></div>' + (bookId ? '<button class="btn-ghost" data-del>Delete book</button>' : '') + '<div class="toast" data-toast></div></div>';
+        sectionEl.innerHTML = html;
+
+        sectionEl.querySelector('[data-back]').onclick = (e) => { e.preventDefault(); loadSite(site, sectionEl); };
+        wireImages(site, sectionEl);
+
+        // wire repeaters
+        const directList = sectionEl.querySelector('[data-direct-list]');
+        const retailList = sectionEl.querySelector('[data-retail-list]');
+        directList.querySelectorAll('[data-direct-row]').forEach(wireDirectRow);
+        retailList.querySelectorAll('[data-retail-row]').forEach((row) => { row.querySelector('[data-r-remove]').onclick = () => row.remove(); });
+        sectionEl.querySelector('[data-add-direct]').onclick = () => {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = directRowHtml({ format: 'ebook', purchaseMode: 'payhip' });
+          const row = tmp.firstElementChild;
+          directList.appendChild(row);
+          wireDirectRow(row);
+        };
+        sectionEl.querySelector('[data-add-retail]').onclick = () => {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = retailRowHtml({});
+          const row = tmp.firstElementChild;
+          retailList.appendChild(row);
+          row.querySelector('[data-r-remove]').onclick = () => row.remove();
+        };
+
+        const toast = sectionEl.querySelector('[data-toast]');
+        const lines = (v) => (v || '').split('\n').map((s) => s.trim()).filter(Boolean);
+
+        sectionEl.querySelector('[data-save]').onclick = async (ev) => {
+          const btn = ev.target; btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Saving…';
+          toast.textContent = ''; toast.className = 'toast';
+
+          // collect top-level data-key fields
+          const obj = JSON.parse(JSON.stringify(b));
+          sectionEl.querySelectorAll('[data-key]').forEach((i) => { obj[i.dataset.key] = i.type === 'checkbox' ? i.checked : i.value; });
+
+          // series → slug + label
+          const seriesName = obj.seriesName;
+          delete obj.seriesName;
+          if (!seriesName || seriesName === 'Standalone') { obj.seriesSlug = ''; obj.seriesLabel = ''; }
+          else { const s = seriesList.find((x) => x.name === seriesName); obj.seriesSlug = s ? s.slug : ''; obj.seriesLabel = s ? s.name : seriesName; }
+
+          // list fields
+          obj.genres = lines(obj.genres); obj.vibes = lines(obj.vibes); obj.tropes = lines(obj.tropes); obj.formats = lines(obj.formats);
+
+          // available checkbox → availabilityStatus
+          delete obj.available;
+          const featured = obj.featured === true;
+
+          // direct-sale formats
+          const directSaleFormats = Array.from(directList.querySelectorAll('[data-direct-row]')).map((row) => {
+            const mode = row.querySelector('[data-d-mode]').value;
+            return {
+              label: row.querySelector('[data-d-label]').value,
+              displayPrice: row.querySelector('[data-d-price]').value,
+              format: row.querySelector('[data-d-format]').value,
+              purchaseMode: mode,
+              purchaseUrl: mode === 'unavailable' ? '' : row.querySelector('[data-d-url]').value,
+            };
+          });
+          // retailer links
+          const retailerLinks = Array.from(retailList.querySelectorAll('[data-retail-row]')).map((row) => ({
+            retailer: row.querySelector('[data-r-retailer]').value,
+            label: row.querySelector('[data-r-label]').value,
+            purchaseMode: 'external_retailer',
+            purchaseUrl: row.querySelector('[data-r-url]').value,
+          }));
+
+          obj.seriesOrder = Number(obj.seriesOrder || 0);
+          obj.sortPriority = Number(obj.sortPriority || 0);
+          obj.featured = featured;
+          obj.purchase = {
+            ...purchase,
+            displayPrice: obj.displayPrice || '',
+            availabilityStatus: obj.availabilityStatus,
+            directSaleFormats,
+            retailerLinks,
+          };
+
+          try {
+            if (bookId) await api(site, '/books/' + bookId, { method: 'PUT', body: JSON.stringify(obj) });
+            else await api(site, '/books', { method: 'POST', body: JSON.stringify(obj) });
+            loadSite(site, sectionEl);
+          } catch (err) { toast.textContent = err.message; toast.className = 'toast err'; btn.disabled = false; btn.textContent = orig; }
+        };
+
+        const del = sectionEl.querySelector('[data-del]');
+        if (del) del.onclick = async () => {
+          if (!confirm('Delete this book? This cannot be undone.')) return;
+          try { await api(site, '/books/' + bookId, { method: 'DELETE' }); loadSite(site, sectionEl); }
+          catch (err) { toast.textContent = err.message; toast.className = 'toast err'; }
+        };
+      }
+
+      /* ================= shared admin/manage helpers ================= */
+      const ROLE_OPTS = [
+        { value: 'owner', label: 'Owner' },
+        { value: 'editor', label: 'Editor' },
+        { value: 'viewer', label: 'Viewer' },
+      ];
+      const roleSelectHtml = (cls, val) =>
+        '<select class="' + esc(cls) + '">' + ROLE_OPTS.map((o) => '<option value="' + esc(o.value) + '"' + (o.value === val ? ' selected' : '') + '>' + esc(o.label) + '</option>').join('') + '</select>';
+      // The one-time-setup note shown when the control plane has no admin key yet.
+      const NEEDS_KEY_NOTE = 'Creating new logins and resetting passwords needs Taylor to finish one-time setup.';
+      // Shows a temporary/reset password once, in copy-friendly text.
+      const tempPassHtml = (pass) =>
+        '<div class="temp-pass"><div class="tp-label">Temporary password — share it with them; they can change it later.</div>' +
+        '<code>' + esc(pass) + '</code></div>';
+      function showTempPass(containerEl, pass) {
+        if (!containerEl || !pass) return;
+        const box = document.createElement('div');
+        box.innerHTML = tempPassHtml(pass);
+        containerEl.appendChild(box.firstElementChild);
+      }
+
+      /* ================= per-site "Manage users" panel ================= */
+      // Owner (or super-admin) view: list members + add / change-role / remove / reset.
+      async function openManageUsers(site, sectionEl) {
+        sectionEl.innerHTML = '<div class="group"><div class="muted">Loading members…</div></div>';
+        let data;
+        try {
+          data = await controlApi('/sites/' + encodeURIComponent(site.id) + '/members');
+        } catch (err) {
+          sectionEl.innerHTML = '<div class="group"><div class="site-head"><h1>Manage users</h1><a href="#" data-back>← Back</a></div>' +
+            '<p class="toast err">' + esc(err.message) + '</p></div>';
+          sectionEl.querySelector('[data-back]').onclick = (e) => { e.preventDefault(); loadSite(site, sectionEl); };
+          return;
+        }
+        renderManageUsers(site, sectionEl, data);
+      }
+
+      function renderManageUsers(site, sectionEl, data) {
+        const members = data.members || [];
+        const adminConfigured = data.adminConfigured !== false;
+
+        let html = '<div class="site-head"><h1>Manage users</h1>' +
+          '<div class="head-actions"><a href="#" data-back>← Back to ' + esc(site.name) + '</a></div></div>';
+        html += '<p class="muted" style="margin:-4px 0 14px;">People who can sign in and work on <strong>' + esc(site.name) + '</strong>. Owners manage content and people; editors manage content; viewers can look but not change.</p>';
+
+        // Member list
+        html += '<div class="group"><h2>Members</h2>';
+        if (!members.length) html += '<p class="muted">No members yet — add the first one below.</p>';
+        members.forEach((mem) => {
+          html += '<div class="member-row" data-uid="' + esc(mem.uid) + '">' +
+            '<div class="m-main"><div class="m-email">' + esc(mem.email) + '</div></div>' +
+            '<div class="m-actions">' + roleSelectHtml('mu-role', mem.role) +
+            '<button type="button" class="btn-ghost btn-sm" data-reset>Reset password</button>' +
+            '<button type="button" class="btn-ghost btn-sm" data-remove>Remove</button></div></div>';
+        });
+        html += '<div class="toast" data-list-toast></div>';
+        html += '<div class="temp-pass-slot list-slot"></div></div>';
+
+        // Add a member
+        html += '<div class="group"><h2>Add a member</h2>' +
+          '<label>Email</label><input type="email" data-add-email placeholder="name@example.com" />' +
+          '<label>Role</label>' + roleSelectHtml('mu-add-role', 'editor') +
+          '<button type="button" class="btn-primary" data-add-member>Add member</button>' +
+          (adminConfigured ? '' : '<span class="inline-note">' + esc(NEEDS_KEY_NOTE) + ' You can still add people who already have a login.</span>') +
+          '<div class="toast" data-add-toast></div>' +
+          '<div class="temp-pass-slot add-slot"></div></div>';
+        sectionEl.innerHTML = html;
+
+        const reload = () => openManageUsers(site, sectionEl);
+        sectionEl.querySelector('[data-back]').onclick = (e) => { e.preventDefault(); loadSite(site, sectionEl); };
+        const listToast = sectionEl.querySelector('[data-list-toast]');
+        const listSlot = sectionEl.querySelector('.list-slot');
+
+        // Change role / reset password / remove on each member row.
+        sectionEl.querySelectorAll('.member-row').forEach((row) => {
+          const uid = row.dataset.uid;
+          const sel = row.querySelector('.mu-role');
+          sel.onchange = async () => {
+            const role = sel.value; sel.disabled = true;
+            listToast.textContent = ''; listToast.className = 'toast';
+            try {
+              await controlApi('/sites/' + encodeURIComponent(site.id) + '/members/' + encodeURIComponent(uid), { method: 'PUT', body: JSON.stringify({ role }) });
+              listToast.textContent = 'Role updated.'; listToast.className = 'toast ok';
+            } catch (err) { listToast.textContent = err.message; listToast.className = 'toast err'; reload(); }
+            finally { sel.disabled = false; }
+          };
+          row.querySelector('[data-reset]').onclick = async (ev) => {
+            const btn = ev.target; btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Resetting…';
+            listToast.textContent = ''; listToast.className = 'toast';
+            try {
+              const r = await controlApi('/sites/' + encodeURIComponent(site.id) + '/members/' + encodeURIComponent(uid) + '/reset-password', { method: 'POST', body: JSON.stringify({}) });
+              listToast.textContent = 'Password reset.'; listToast.className = 'toast ok';
+              showTempPass(listSlot, r.password);
+            } catch (err) { listToast.textContent = err.message; listToast.className = 'toast err'; }
+            finally { btn.disabled = false; btn.textContent = orig; }
+          };
+          row.querySelector('[data-remove]').onclick = async () => {
+            if (!confirm('Remove this person from ' + site.name + '? They will lose access to this site.')) return;
+            listToast.textContent = ''; listToast.className = 'toast';
+            try { await controlApi('/sites/' + encodeURIComponent(site.id) + '/members/' + encodeURIComponent(uid), { method: 'DELETE' }); reload(); }
+            catch (err) { listToast.textContent = err.message; listToast.className = 'toast err'; }
+          };
+        });
+
+        // Add a member.
+        const addToast = sectionEl.querySelector('[data-add-toast]');
+        const addSlot = sectionEl.querySelector('.add-slot');
+        sectionEl.querySelector('[data-add-member]').onclick = async (ev) => {
+          const btn = ev.target; const email = sectionEl.querySelector('[data-add-email]').value.trim();
+          const role = sectionEl.querySelector('.mu-add-role').value;
+          addToast.textContent = ''; addToast.className = 'toast';
+          if (!email) { addToast.textContent = 'Enter an email address first.'; addToast.className = 'toast err'; return; }
+          btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Adding…';
+          try {
+            const r = await controlApi('/sites/' + encodeURIComponent(site.id) + '/members', { method: 'POST', body: JSON.stringify({ email, role }) });
+            if (r && r.tempPassword) {
+              addToast.textContent = 'New login created for ' + r.email + '.'; addToast.className = 'toast ok';
+              showTempPass(addSlot, r.tempPassword);
+              sectionEl.querySelector('[data-add-email]').value = '';
+            } else {
+              reload();
+            }
+          } catch (err) { addToast.textContent = err.message; addToast.className = 'toast err'; }
+          finally { btn.disabled = false; btn.textContent = orig; }
+        };
+      }
+
+      /* ================= super-admin console ================= */
+      // Full user directory + site-assignment tools. Only reachable when me.isSuperAdmin.
+      async function openAdminConsole() {
+        const wrap = $('sites');
+        wrap.innerHTML = '<div class="group"><div class="muted">Loading admin console…</div></div>';
+        let data;
+        try {
+          data = await controlApi('/users');
+        } catch (err) {
+          wrap.innerHTML = '<div class="group"><div class="site-head"><h1>Admin</h1><a href="#" data-back>← Back</a></div>' +
+            '<p class="toast err">' + esc(err.message) + '</p></div>';
+          wrap.querySelector('[data-back]').onclick = (e) => { e.preventDefault(); renderSites(); };
+          return;
+        }
+        renderAdminConsole(data);
+      }
+
+      function renderAdminConsole(data) {
+        const wrap = $('sites');
+        const users = data.users || [];
+        const adminConfigured = data.adminConfigured !== false;
+        const sites = (me.memberships || []).map(siteFromMembership);
+        // Sites the super-admin can assign people to. Fall back to known site ids if
+        // the admin happens to have no memberships of their own.
+        const siteChoices = sites.length ? sites : [{ id: 'hixon', name: 'Hixon Homestead' }, { id: 'jaclyn', name: 'Jaclyn Osborn' }];
+        const siteName = (id) => { const s = siteChoices.find((x) => x.id === id); return s ? s.name : id; };
+
+        let html = '<div class="site-head"><h1>Admin</h1><div class="head-actions"><a href="#" data-back>← Back to sites</a></div></div>';
+        if (!adminConfigured) html += '<p class="inline-note" style="margin:-4px 0 14px;">' + esc(NEEDS_KEY_NOTE) + ' Assigning people who already have a login still works.</p>';
+
+        // ---- All users ----
+        html += '<div class="group"><h2>All users</h2>';
+        if (!users.length) html += '<p class="muted">No users yet.</p>';
+        users.forEach((u) => {
+          const tags = (u.memberships || []).length
+            ? (u.memberships || []).map((m) => esc(siteName(m.siteId)) + ' · ' + esc(m.role)).join('<br>')
+            : 'No site assignments';
+          html += '<div class="member-row" data-uid="' + esc(u.uid) + '">' +
+            '<div class="m-main"><div class="m-email">' + esc(u.email) + (u.disabled ? ' <span class="role-badge">Disabled</span>' : '') + '</div>' +
+            '<div class="m-meta">' + tags + '</div></div>' +
+            '<div class="m-actions">' +
+            '<button type="button" class="btn-ghost btn-sm" data-reset>Reset password</button>' +
+            '<button type="button" class="btn-ghost btn-sm" data-toggle>' + (u.disabled ? 'Enable' : 'Disable') + '</button>' +
+            '<button type="button" class="btn-ghost btn-sm" data-delete>Delete</button></div></div>';
+        });
+        html += '<div class="toast" data-users-toast></div><div class="temp-pass-slot users-slot"></div>';
+
+        // Create a brand-new login
+        html += '<div class="row-add"><label>Create a new login</label>' +
+          '<input type="email" data-cu-email placeholder="name@example.com" />' +
+          '<input type="text" data-cu-name placeholder="Display name (optional)" style="margin-top:8px;" />' +
+          '<button type="button" class="btn-primary" data-create-user>Create login</button>' +
+          (adminConfigured ? '' : '<span class="inline-note">' + esc(NEEDS_KEY_NOTE) + '</span>') +
+          '<div class="toast" data-cu-toast></div><div class="temp-pass-slot cu-slot"></div></div>';
+        html += '</div>';
+
+        // ---- Assign a user to a site ----
+        const siteOptsHtml = siteChoices.map((s) => '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>').join('');
+        html += '<div class="group"><h2>Assign a user to a site</h2>' +
+          '<p class="muted">Give an existing or new user a role on a site. Creating a brand-new login may need the one-time setup.</p>' +
+          '<label>Email</label><input type="email" data-as-email placeholder="name@example.com" />' +
+          '<label>Site</label><select data-as-site>' + siteOptsHtml + '</select>' +
+          '<label>Role</label>' + roleSelectHtml('as-role', 'editor') +
+          '<button type="button" class="btn-primary" data-assign>Assign to site</button>' +
+          '<div class="toast" data-as-toast></div><div class="temp-pass-slot as-slot"></div></div>';
+
+        // ---- Remove an assignment ----
+        html += '<div class="group"><h2>Remove a site assignment</h2>' +
+          '<p class="muted">Take a user off a site they currently work on.</p>' +
+          '<label>Email or user ID</label><input type="text" data-rm-id placeholder="name@example.com or uid" />' +
+          '<label>Site</label><select data-rm-site>' + siteOptsHtml + '</select>' +
+          '<button type="button" class="btn-ghost" data-remove-assign>Remove assignment</button>' +
+          '<div class="toast" data-rm-toast></div></div>';
+
+        wrap.innerHTML = html;
+
+        wrap.querySelector('[data-back]').onclick = (e) => { e.preventDefault(); renderSites(); };
+        const reload = () => openAdminConsole();
+
+        // Per-user actions.
+        const usersToast = wrap.querySelector('[data-users-toast]');
+        const usersSlot = wrap.querySelector('.users-slot');
+        wrap.querySelectorAll('.member-row').forEach((row) => {
+          const uid = row.dataset.uid;
+          const u = users.find((x) => x.uid === uid) || {};
+          row.querySelector('[data-reset]').onclick = async (ev) => {
+            const btn = ev.target; btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Resetting…';
+            usersToast.textContent = ''; usersToast.className = 'toast';
+            try {
+              const r = await controlApi('/users/' + encodeURIComponent(uid) + '/reset-password', { method: 'POST', body: JSON.stringify({}) });
+              usersToast.textContent = 'Password reset for ' + (u.email || 'user') + '.'; usersToast.className = 'toast ok';
+              showTempPass(usersSlot, r.password);
+            } catch (err) { usersToast.textContent = err.message; usersToast.className = 'toast err'; }
+            finally { btn.disabled = false; btn.textContent = orig; }
+          };
+          row.querySelector('[data-toggle]').onclick = async (ev) => {
+            const btn = ev.target; const disabled = !u.disabled;
+            if (disabled && !confirm('Disable ' + (u.email || 'this user') + '? They will not be able to sign in.')) return;
+            btn.disabled = true; usersToast.textContent = ''; usersToast.className = 'toast';
+            try { await controlApi('/users/' + encodeURIComponent(uid) + '/disable', { method: 'POST', body: JSON.stringify({ disabled }) }); reload(); }
+            catch (err) { usersToast.textContent = err.message; usersToast.className = 'toast err'; btn.disabled = false; }
+          };
+          row.querySelector('[data-delete]').onclick = async () => {
+            if (!confirm('Permanently delete ' + (u.email || 'this user') + '? This cannot be undone.')) return;
+            usersToast.textContent = ''; usersToast.className = 'toast';
+            try { await controlApi('/users/' + encodeURIComponent(uid), { method: 'DELETE' }); reload(); }
+            catch (err) { usersToast.textContent = err.message; usersToast.className = 'toast err'; }
+          };
+        });
+
+        // Create a new login.
+        const cuToast = wrap.querySelector('[data-cu-toast]');
+        const cuSlot = wrap.querySelector('.cu-slot');
+        wrap.querySelector('[data-create-user]').onclick = async (ev) => {
+          const btn = ev.target; const email = wrap.querySelector('[data-cu-email]').value.trim();
+          const displayName = wrap.querySelector('[data-cu-name]').value.trim();
+          cuToast.textContent = ''; cuToast.className = 'toast';
+          if (!email) { cuToast.textContent = 'Enter an email address first.'; cuToast.className = 'toast err'; return; }
+          btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Creating…';
+          try {
+            const body = { email }; if (displayName) body.displayName = displayName;
+            const r = await controlApi('/users', { method: 'POST', body: JSON.stringify(body) });
+            cuToast.textContent = 'Login created for ' + r.email + '.'; cuToast.className = 'toast ok';
+            showTempPass(cuSlot, r.tempPassword);
+            wrap.querySelector('[data-cu-email]').value = ''; wrap.querySelector('[data-cu-name]').value = '';
+          } catch (err) { cuToast.textContent = err.message; cuToast.className = 'toast err'; }
+          finally { btn.disabled = false; btn.textContent = orig; }
+        };
+
+        // Assign a user to a site.
+        const asToast = wrap.querySelector('[data-as-toast]');
+        const asSlot = wrap.querySelector('.as-slot');
+        wrap.querySelector('[data-assign]').onclick = async (ev) => {
+          const btn = ev.target; const email = wrap.querySelector('[data-as-email]').value.trim();
+          const siteId = wrap.querySelector('[data-as-site]').value;
+          const role = wrap.querySelector('.as-role').value;
+          asToast.textContent = ''; asToast.className = 'toast';
+          if (!email) { asToast.textContent = 'Enter an email address first.'; asToast.className = 'toast err'; return; }
+          btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Assigning…';
+          try {
+            const r = await controlApi('/memberships', { method: 'POST', body: JSON.stringify({ siteId, email, role }) });
+            asToast.textContent = r.email + ' is now ' + r.role + ' on ' + siteName(siteId) + '.'; asToast.className = 'toast ok';
+            showTempPass(asSlot, r.tempPassword);
+            wrap.querySelector('[data-as-email]').value = '';
+          } catch (err) { asToast.textContent = err.message; asToast.className = 'toast err'; }
+          finally { btn.disabled = false; btn.textContent = orig; }
+        };
+
+        // Remove a site assignment. The API expects uid; if an email is entered we
+        // resolve it against the loaded user directory.
+        const rmToast = wrap.querySelector('[data-rm-toast]');
+        wrap.querySelector('[data-remove-assign]').onclick = async (ev) => {
+          const btn = ev.target; const idRaw = wrap.querySelector('[data-rm-id]').value.trim();
+          const siteId = wrap.querySelector('[data-rm-site]').value;
+          rmToast.textContent = ''; rmToast.className = 'toast';
+          if (!idRaw) { rmToast.textContent = 'Enter an email or user ID first.'; rmToast.className = 'toast err'; return; }
+          let uid = idRaw;
+          if (idRaw.includes('@')) {
+            const match = users.find((x) => (x.email || '').toLowerCase() === idRaw.toLowerCase());
+            if (!match) { rmToast.textContent = 'No user found with that email.'; rmToast.className = 'toast err'; return; }
+            uid = match.uid;
+          }
+          if (!confirm('Remove this user from ' + siteName(siteId) + '?')) return;
+          btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Removing…';
+          try {
+            await controlApi('/memberships', { method: 'DELETE', body: JSON.stringify({ siteId, uid }) });
+            rmToast.textContent = 'Assignment removed.'; rmToast.className = 'toast ok';
+            wrap.querySelector('[data-rm-id]').value = '';
+          } catch (err) { rmToast.textContent = err.message; rmToast.className = 'toast err'; }
+          finally { btn.disabled = false; btn.textContent = orig; }
+        };
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          $('member-email').textContent = user.email || '';
+          authView.classList.add('hidden');
+          memberView.classList.remove('hidden');
+          renderSites();
+        } else {
+          memberView.classList.add('hidden');
+          authView.classList.remove('hidden');
+        }
+      });
+    </script>
+  </body>
+</html>

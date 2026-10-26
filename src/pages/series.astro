@@ -1,110 +1,48 @@
 ---
-export const prerender = false;
-
 import BookCard from '../components/BookCard.astro';
 import PageHero from '../components/PageHero.astro';
-import SeriesCard from '../components/SeriesCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublicCatalogData } from '../lib/catalog/repository';
-import { withBase } from '../utils/withBase';
-
 const { booksBySeries } = await getPublicCatalogData();
-
-const seriesHeroStyle = `background:
-  radial-gradient(circle at top left, rgba(255,255,255,0.16), transparent 34%),
-  radial-gradient(circle at bottom right, rgba(255,255,255,0.1), transparent 28%),
-  linear-gradient(
-    135deg,
-    ${booksBySeries[0]?.gradient[0] ?? '#241920'} 0%,
-    ${booksBySeries[1]?.gradient[1] ?? '#6f425e'} 24%,
-    ${booksBySeries[2]?.gradient[1] ?? '#7ea495'} 48%,
-    ${booksBySeries[4]?.gradient[1] ?? '#6fa4b7'} 72%,
-    ${booksBySeries[5]?.gradient[2] ?? '#caa56c'} 100%
-  );`;
+const c = Astro.locals.content;
 ---
 
 <BaseLayout
-  title="Series"
-  description="Browse Jaclyn Osborn series in reading order."
+  title="Series & reading order"
+  description="Explore Jaclyn Osborn’s M/M romance series, with every book in reading order."
 >
   <PageHero
-    eyebrow="Series"
-    title="Series in reading order"
-    description="Browse the series, see where each one begins, and read in order."
-    actions={[
-      { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
-      { href: withBase('about/'), label: 'About Jaclyn', variant: 'secondary' },
-    ]}
+    eyebrow="The reading guide"
+    title={c.seriesTitle}
+    description={c.seriesCopy}
     compact
-    backgroundStyle={seriesHeroStyle}
   />
-
-  <section class="px-4 pt-10 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {
-        booksBySeries.map((item) => (
-          <SeriesCard series={item} books={item.books} href={`#${item.slug}`} />
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="px-4 pb-6 pt-14 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl space-y-6">
-      {
-        booksBySeries.map((item) => (
-          <section
-            id={item.slug}
-            class="card-shell scroll-mt-24 rounded-[1.85rem] p-5 sm:scroll-mt-28 sm:rounded-[2.35rem] sm:p-6"
-          >
-            <div class="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-              <div
-                class="overflow-hidden rounded-[1.6rem] px-5 py-5 sm:rounded-[1.95rem] sm:px-6 sm:py-6"
-                style={`background:linear-gradient(145deg, ${item.gradient[0]} 0%, ${item.gradient[1]} 52%, ${item.gradient[2]} 100%); color:${item.textColor};`}
-              >
-                <p class="text-[0.68rem] uppercase tracking-[0.34em] text-white/72">
-                  {item.lane}
-                </p>
-                <h2 class="mt-3 font-display text-[2rem] leading-none sm:text-[3.2rem]">
-                  {item.name}
-                </h2>
-                <p class="mt-4 text-sm leading-7 text-white/82 sm:text-base">
-                  {item.description}
-                </p>
-
-                <div class="mt-6 grid gap-3 sm:grid-cols-2">
-                  <div class="rounded-[1.35rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
-                    <p class="eyebrow text-white/70">Start here</p>
-                    <p class="mt-2 text-base font-semibold">{item.entryPoint}</p>
-                  </div>
-                  <div class="rounded-[1.35rem] border border-white/14 bg-white/8 p-4 backdrop-blur-sm">
-                    <p class="eyebrow text-white/70">Books</p>
-                    <p class="mt-2 text-base font-semibold">{item.books.length} titles</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p class="eyebrow text-[#7c5a63]">Reading order</p>
-                    <h3 class="mt-2 font-display text-[2rem] text-[#241920]">
-                      Read the series in order.
-                    </h3>
-                  </div>
-                  <a href={withBase(`books/?series=${item.slug}&sort=series-order`)} class="button-secondary w-full justify-center sm:w-auto">
-                    See books
-                  </a>
-                </div>
-
-                <div class="grid gap-4 md:grid-cols-2">
-                  {item.books.map((book) => <BookCard book={book} showSeries={false} showOrder />)}
-                </div>
-              </div>
-            </div>
-          </section>
-        ))
-      }
-    </div>
-  </section>
+  <nav class="editorial-width series-index" aria-label="Jump to series">
+    {booksBySeries.map((s) => (
+      <a href={`#${s.slug}`}>
+        {s.name} <span aria-hidden="true">↓</span>
+      </a>
+    ))}
+  </nav>
+  <div class="editorial-width">
+    {booksBySeries.map((s, index) => (
+      <section id={s.slug} class="series-chapter">
+        <div class="series-intro">
+          <p class="eyebrow">
+            {String(index + 1).padStart(2, '0')} / {s.lane}
+          </p>
+          <h2>{s.name}</h2>
+          <p>{s.description}</p>
+          <p class="series-start">
+            Start with {s.entryPoint || s.books[0]?.title}
+          </p>
+        </div>
+        <div class="series-books">
+          {s.books.map((book) => (
+            <BookCard book={book} showSeries={false} showOrder />
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
 </BaseLayout>

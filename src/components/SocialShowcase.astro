@@ -1,5 +1,6 @@
 ---
-import { siteMeta } from '../data/site';
+import { siteMeta as defaults } from '../data/site';
+const siteMeta = { ...defaults, ...Astro.locals.content };
 ---
 
 <section class="card-shell overflow-hidden rounded-[1.85rem] p-5 sm:rounded-[2.35rem] sm:p-7">
@@ -10,8 +11,7 @@ import { siteMeta } from '../data/site';
         Follow along on Instagram.
       </h2>
       <p class="text-base leading-8 text-[#5f4d54] sm:text-lg">
-        For coffee, anime, cover reveals, and book updates, Instagram is the best
-        place to keep up with Jaclyn between releases.
+        {Astro.locals.content.socialCopy}
       </p>
       <a href={siteMeta.instagramUrl} target="_blank" rel="noreferrer" class="button-secondary w-full justify-center sm:mx-auto sm:w-auto">
         Visit Instagram

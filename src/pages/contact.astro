@@ -1,9 +1,11 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import PageHero from '../components/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { contactCards } from '../data/site';
+import { contactCards as defaults } from '../data/site';
+const c = Astro.locals.content;
+const contactCards = defaults.map((card, i) => ({...card, href: `mailto:${[c.email, c.mediaEmail, c.rightsEmail][i]}`}));
 import { withBase } from '../utils/withBase';
 ---
 
@@ -13,8 +15,8 @@ import { withBase } from '../utils/withBase';
 >
   <PageHero
     eyebrow="Contact"
-    title="Get in touch"
-    description="For reader mail, media requests, and business questions, use the email below that fits best."
+    title={c.contactTitle}
+    description={c.contactCopy}
     actions={[
       { href: withBase('about/'), label: 'About Jaclyn', variant: 'secondary' },
       { href: withBase('books/'), label: 'Browse books', variant: 'primary' },
